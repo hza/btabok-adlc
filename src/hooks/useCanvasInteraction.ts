@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { NODES, PHASES } from '../model';
-import { NODE_W, SNAP, snapV } from '../constants';
+import { NODE_W, SNAP, BAND_PADDING, snapV } from '../constants';
 import { NODE_POSITIONS } from '../positions';
 
 export function useCanvasInteraction() {
@@ -55,7 +55,7 @@ export function useCanvasInteraction() {
         const next = { ...cur, [id]: { x: snapV(ox + dx), y: snapV(oy + dy) } };
         const bands = PHASES.map(ph => {
           const xs = NODES.filter(n => n.phase === ph).map(n => next[n.id].x);
-          return { ph, maxX: Math.max(...xs) + NODE_W + 20 };
+          return { ph, maxX: Math.max(...xs) + NODE_W + BAND_PADDING };
         });
         const gap = 3 * SNAP;
         for (let i = 1; i < bands.length; i++) {

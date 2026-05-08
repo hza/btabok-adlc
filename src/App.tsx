@@ -4,7 +4,7 @@ import {
   NODES, EDGES,
 } from './model';
 import type { Phase } from './model';
-import { NODE_W } from './constants';
+import { NODE_W, BAND_PADDING } from './constants';
 import { computeEdgePaths } from './utils/edgeUtils';
 import { useCanvasInteraction } from './hooks/useCanvasInteraction';
 import NodeCard from './components/NodeCard';
@@ -141,8 +141,8 @@ export default function App() {
     const ns = NODES.filter(n => n.phase === ph);
     if (!ns.length) return null;
     const xs   = ns.map(n => positions[n.id].x);
-    const minX = Math.min(...xs) - 20;
-    const maxX = Math.max(...xs) + NODE_W + 20;
+    const minX = Math.min(...xs) - BAND_PADDING;
+    const maxX = Math.max(...xs) + NODE_W + BAND_PADDING;
     return { ph, minX, maxX, style: PHASE_STYLES[ph] };
   }).filter(Boolean) as { ph: Phase; minX: number; maxX: number; style: { bg:string; band:string; text:string } }[];
 
