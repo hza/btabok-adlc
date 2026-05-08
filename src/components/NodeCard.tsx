@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { badgeColor, BADGE_COLORS } from '../model';
+import { badgeColor } from '../model';
 import type { NodeData } from '../model';
 import { NODE_W } from '../constants';
 
@@ -47,9 +47,9 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
 
   let border: string;
   if (selected)          border = `2px solid ${bc}`;
-  else if (node.external)  border = `2px dashed ${BADGE_COLORS.amber}`;
-  else if (node.recurring) border = '2px dashed #888780';
-  else                   border = '1.5px solid #E2E8F0';
+  else if (node.external)  border = '1.5px solid #E2E8F0';
+  else if (node.recurring) border = '1.5px solid #E2E8F0';
+  else                     border = '1.5px solid #E2E8F0';
 
   const stackLayer = (offset: number) => ({
     position: 'absolute' as const,
