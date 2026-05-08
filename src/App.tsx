@@ -250,10 +250,10 @@ export default function App() {
   const gridOffY100 = ((pan.y % gridStep100) + gridStep100) % gridStep100;
   const infiniteGridStyle = {
     backgroundImage: [
-      'linear-gradient(#CBD5E1 0.35px, transparent 0.35px)',
-      'linear-gradient(90deg, #CBD5E1 0.35px, transparent 0.35px)',
-      'linear-gradient(#94A3B8 0.6px, transparent 0.6px)',
-      'linear-gradient(90deg, #94A3B8 0.6px, transparent 0.6px)',
+      'linear-gradient(rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
+      'linear-gradient(90deg, rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
+      'linear-gradient(rgba(148, 163, 184, 0.12) 0.6px, transparent 0.6px)',
+      'linear-gradient(90deg, rgba(148, 163, 184, 0.1) 0.6px, transparent 0.6px)',
     ].join(','),
     backgroundSize: [
       `${gridStep20}px ${gridStep20}px`,
