@@ -28,7 +28,25 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
   else if (node.recurring) border = '2px dashed #888780';
   else                   border = '1.5px solid #E2E8F0';
 
+  const stackLayer = (offset: number) => ({
+    position: 'absolute' as const,
+    left: pos.x + offset,
+    top:  pos.y + offset,
+    width: NODE_W,
+    height: cardRef.current?.offsetHeight ?? 80,
+    background: '#FFFFFF',
+    borderRadius: 8,
+    border: '1.5px solid #CBD5E1',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    zIndex: 0,
+  });
+
   return (
+    <>
+      {node.recurring && <>
+        <div style={stackLayer(8)} />
+        <div style={stackLayer(4)} />
+      </>}
     <div
       ref={cardRef}
       data-node={node.id}
@@ -85,6 +103,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
         )}
       </div>
     </div>
+    </>
   );
 });
 
