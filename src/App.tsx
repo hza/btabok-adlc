@@ -35,6 +35,7 @@ export default function App() {
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
   const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
+  const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [minImportance, setMinImportance] = useState(1);
   const [copied,      setCopied]      = useState(false);
 
@@ -93,21 +94,6 @@ export default function App() {
     });
   }, [positions]);
 
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  const handleDownloadSVG = useCallback(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const serializer = new XMLSerializer();
-    const svgStr = serializer.serializeToString(svg);
-    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'btabook-adlc.svg';
-    a.click();
-    URL.revokeObjectURL(url);
-  }, []);
 
   // ── derived ──────────────────────────────────────────────────────────────────
   const canvasW = Math.max(...Object.values(positions).map(p => p.x)) + NODE_W + 80;
@@ -175,6 +161,7 @@ export default function App() {
 
       <TopBar
         showLabels={showLabels}
+        showSwimlanes={showSwimlanes}
         copied={copied}
         nodeCount={NODES.length}
         edgeCount={visibleEdges.length}
@@ -184,7 +171,7 @@ export default function App() {
         minImportance={minImportance}
         onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
-        onDownloadSVG={handleDownloadSVG}
+        onShowSwimlanesChange={setShowSwimlanes}
       />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -204,7 +191,7 @@ export default function App() {
             position: 'absolute', transformOrigin: '0 0',
             transform: `translate(${pan.x}px,${pan.y}px) scale(${scale})`,
           }}>
-            <svg ref={svgRef} width={canvasW} height={canvasH} overflow="visible"
+            <svg width={canvasW} height={canvasH} overflow="visible"
               style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
               <defs>
                 <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
@@ -215,7 +202,7 @@ export default function App() {
                 </marker>
               </defs>
 
-              {phaseBands.map(({ ph, minX, maxX, style }) => (
+              {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
                 <g key={ph}>
                   <rect x={minX} y={0} width={maxX - minX} height={canvasH}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>

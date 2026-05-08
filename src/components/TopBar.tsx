@@ -3,22 +3,23 @@ import React from 'react';
 interface TopBarProps {
   minImportance: number;
   showLabels: boolean;
+  showSwimlanes: boolean;
   copied: boolean;
   nodeCount: number;
   edgeCount: number;
   onReset: () => void;
   onFit: () => void;
   onCopyPositions: () => void;
-  onDownloadSVG: () => void;
   onMinImportanceChange: (v: number) => void;
   onShowLabelsChange: (v: boolean) => void;
+  onShowSwimlanesChange: (v: boolean) => void;
 }
 
 export default function TopBar({
-  minImportance, showLabels, copied,
+  minImportance, showLabels, showSwimlanes, copied,
   nodeCount, edgeCount,
-  onReset, onFit, onCopyPositions, onDownloadSVG,
-  onMinImportanceChange, onShowLabelsChange,
+  onReset, onFit, onCopyPositions,
+  onMinImportanceChange, onShowLabelsChange, onShowSwimlanesChange,
 }: TopBarProps) {
   return (
     <div style={{
@@ -34,7 +35,6 @@ export default function TopBar({
       <TopBtn onClick={onReset}>Reset layout</TopBtn>
       <TopBtn onClick={onFit}>Fit to screen</TopBtn>
       <TopBtn onClick={onCopyPositions}>{copied ? '✓ Copied!' : 'Copy positions'}</TopBtn>
-      <TopBtn onClick={onDownloadSVG}>Download SVG</TopBtn>
       <Divider/>
       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
         Edge details:
@@ -48,6 +48,11 @@ export default function TopBar({
         <input type="checkbox" checked={showLabels} onChange={e => onShowLabelsChange(e.target.checked)}
           style={{ accentColor: '#7F77DD', cursor: 'pointer' }}/>
         Edge labels
+      </label>
+      <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, cursor: 'pointer', color: '#94A3B8' }}>
+        <input type="checkbox" checked={showSwimlanes} onChange={e => onShowSwimlanesChange(e.target.checked)}
+          style={{ accentColor: '#7F77DD', cursor: 'pointer' }}/>
+        Swimlanes
       </label>
       <span style={{ marginLeft: 'auto', fontSize: 12, color: '#475569' }}>
         {nodeCount} nodes · {edgeCount} edges · scroll = zoom · drag canvas = pan
