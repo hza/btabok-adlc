@@ -1,0 +1,114 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { NODES, PHASES } from '../model';
+import { NODE_W, SNAP, snapV } from '../constants';
+import { NODE_POSITIONS } from '../data';
+
+export function useCanvasInteraction() {
+  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(
+    () => Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]))
+  );
+  const [pan,   setPan]   = useState({ x: 24, y: 24 });
+  const [scale, setScale] = useState(0.72);
+  const [isPanning, setIsPanning] = useState(false);
+
+  const posRef   = useRef(positions);
+  const panRef   = useRef(pan);
+  const scaleRef = useRef(scale);
+  const dragNode = useRef<{ id: string; sx: number; sy: number; ox: number; oy: number } | null>(null);
+  const dragPan  = useRef<{ sx: number; sy: number; opx: number; opy: number } | null>(null);
+
+  useEffect(() => { posRef.current   = positions; }, [positions]);
+  useEffect(() => { panRef.current   = pan;        }, [pan]);
+  useEffect(() => { scaleRef.current = scale;      }, [scale]);
+
+  const handleWheel = useCallback((e: WheelEvent, containerEl: HTMLElement) => {
+    e.preventDefault();
+    const rect   = containerEl.getBoundingClientRect();
+    const mx     = e.clientX - rect.left;
+    const my     = e.clientY - rect.top;
+    const factor = e.deltaY > 0 ? 0.9 : 1.11;
+    const ns     = Math.max(0.18, Math.min(3, scaleRef.current * factor));
+    const ratio  = ns / scaleRef.current;
+    setPan(p => ({ x: mx - (mx - p.x) * ratio, y: my - (my - p.y) * ratio }));
+    setScale(ns);
+  }, []);
+
+  const startNodeDrag = useCallback((e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (e.button !== 0) return;
+    const pos = posRef.current[id];
+    dragNode.current = { id, sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y };
+  }, []);
+
+  const startPanDrag = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+    dragPan.current = { sx: e.clientX, sy: e.clientY, opx: panRef.current.x, opy: panRef.current.y };
+    setIsPanning(true);
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (dragNode.current) {
+      const { id, sx, sy, ox, oy } = dragNode.current;
+      const dx = (e.clientX - sx) / scaleRef.current;
+      const dy = (e.clientY - sy) / scaleRef.current;
+      setPositions(cur => {
+        const next = { ...cur, [id]: { x: snapV(ox + dx), y: snapV(oy + dy) } };
+        const bands = PHASES.map(ph => {
+          const xs = NODES.filter(n => n.phase === ph).map(n => next[n.id].x);
+          return { ph, maxX: Math.max(...xs) + NODE_W + 20 };
+        });
+        const gap = 3 * SNAP;
+        for (let i = 1; i < bands.length; i++) {
+          const phaseNodes = NODES.filter(n => n.phase === bands[i].ph);
+          const minX  = Math.min(...phaseNodes.map(n => next[n.id].x));
+          const shift = bands[i - 1].maxX + gap - minX;
+          if (shift !== 0) {
+            for (let j = i; j < bands.length; j++) {
+              NODES.filter(n => n.phase === bands[j].ph).forEach(n => {
+                next[n.id] = { ...next[n.id], x: next[n.id].x + shift };
+              });
+              bands[j].maxX += shift;
+            }
+          }
+        }
+        return next;
+      });
+    } else if (dragPan.current) {
+      const { sx, sy, opx, opy } = dragPan.current;
+      setPan({ x: opx + e.clientX - sx, y: opy + e.clientY - sy });
+    }
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    dragNode.current = null;
+    dragPan.current  = null;
+    setIsPanning(false);
+  }, []);
+
+  const resetPositions = useCallback(() => {
+    setPositions(Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }])));
+  }, []);
+
+  const fitToScreen = useCallback((containerEl: HTMLElement) => {
+    const { width, height } = containerEl.getBoundingClientRect();
+    const ps   = posRef.current;
+    const xs   = Object.values(ps).map(p => p.x);
+    const ys   = Object.values(ps).map(p => p.y);
+    const minX = Math.min(...xs), minY = Math.min(...ys);
+    const maxX = Math.max(...xs) + NODE_W;
+    const maxY = Math.max(...ys) + 140;
+    const ns   = Math.min(0.98, (width - 48) / (maxX - minX), (height - 48) / (maxY - minY));
+    setScale(ns);
+    setPan({
+      x: (width  - (maxX - minX) * ns) / 2 - minX * ns,
+      y: (height - (maxY - minY) * ns) / 2 - minY * ns,
+    });
+  }, []);
+
+  return {
+    positions, pan, scale, isPanning,
+    handleWheel, startNodeDrag, startPanDrag,
+    handleMouseMove, handleMouseUp,
+    resetPositions, fitToScreen,
+  };
+}
