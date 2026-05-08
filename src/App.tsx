@@ -213,6 +213,9 @@ export default function App() {
                 <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
                   <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
                 </marker>
+                <marker id="mBtabok" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <polygon points="0 0,7 3.5,0 7" fill="#F5A44A"/>
+                </marker>
               </defs>
 
               {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
@@ -240,17 +243,19 @@ export default function App() {
                   ? !(NODES.find(n => n.id === edge.from)?.phase === phaseFilter ||
                       NODES.find(n => n.id === edge.to)?.phase === phaseFilter)
                   : false;
-                const opacity = dimS || dimP ? 0.18 : hi ? 1 : 0.52;
+                const opacity = dimS || dimP ? 0.18 : hi ? 1 : edge.btabok ? 0.72 : 0.52;
+                const stroke  = hi ? '#7F77DD' : edge.btabok ? '#F5A44A' : edgeGreyColor(edge.importance);
+                const sw      = hi ? 2.2 : edge.btabok ? 1.8 : 1.4;
                 return (
                   <g key={edge.id} opacity={opacity}>
                     <path d={edge.path} fill="none"
-                      stroke={hi ? '#7F77DD' : edgeGreyColor(edge.importance)}
-                      strokeWidth={hi ? 2.2 : 1.4}
-                      markerEnd={`url(#${hi ? 'mHi' : 'mLo'})`}/>
+                      stroke={stroke}
+                      strokeWidth={sw}
+                      markerEnd={`url(#${hi ? 'mHi' : edge.btabok ? 'mBtabok' : 'mLo'})`}/>
                     {showLabels && (
                       <text x={edge.mx} y={edge.my - 5}
                         textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                        fill={hi ? '#7F77DD' : '#1D4ED8'}
+                        fill={hi ? '#7F77DD' : edge.btabok ? '#111827' : '#1D4ED8'}
                         stroke="white" strokeWidth="2.8" paintOrder="stroke">
                         {edge.label}
                       </text>
