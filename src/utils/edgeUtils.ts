@@ -10,7 +10,24 @@ export interface EdgePath extends EdgeData {
   my: number;
 }
 
-function buildSideGroups(edgeSideInfo: ReturnType<typeof computeEdgeSideInfo>) {
+function nodeCenterY(
+  nodeId: string,
+  positions: Record<string, { x: number; y: number }>,
+  heights: Record<string, number>,
+) {
+  const node = NODES.find(n => n.id === nodeId)!;
+  return positions[nodeId].y + (heights[nodeId] ?? nodeH(node)) / 2;
+}
+
+function nodeCenterX(nodeId: string, positions: Record<string, { x: number; y: number }>) {
+  return positions[nodeId].x + NODE_W / 2;
+}
+
+function buildSideGroups(
+  edgeSideInfo: ReturnType<typeof computeEdgeSideInfo>,
+  positions: Record<string, { x: number; y: number }>,
+  heights: Record<string, number>,
+) {
   const sideGroups = new Map<string, string[]>();
   for (const { edgeId, fromId, fromSide, toId, toSide } of edgeSideInfo) {
     const fk = `${fromId}:${fromSide}`;
@@ -20,6 +37,27 @@ function buildSideGroups(edgeSideInfo: ReturnType<typeof computeEdgeSideInfo>) {
     if (!sideGroups.has(tk)) sideGroups.set(tk, []);
     sideGroups.get(tk)!.push(edgeId);
   }
+
+  // Sort each group so port order matches the spatial order of the other endpoint → no crossings.
+  // For a "to" group (incoming): sort by source Y (or X for top/bottom sides).
+  // For a "from" group (outgoing): sort by destination Y (or X for top/bottom sides).
+  for (const [key, group] of sideGroups) {
+    const colonIdx = key.lastIndexOf(':');
+    const nodeId = key.slice(0, colonIdx);
+    const side   = key.slice(colonIdx + 1) as Side;
+    const horizontal = side === 'left' || side === 'right';
+
+    group.sort((a, b) => {
+      const infoA = edgeSideInfo.find(e => e.edgeId === a)!;
+      const infoB = edgeSideInfo.find(e => e.edgeId === b)!;
+      const otherA = infoA.toId === nodeId ? infoA.fromId : infoA.toId;
+      const otherB = infoB.toId === nodeId ? infoB.fromId : infoB.toId;
+      return horizontal
+        ? nodeCenterY(otherA, positions, heights) - nodeCenterY(otherB, positions, heights)
+        : nodeCenterX(otherA, positions) - nodeCenterX(otherB, positions);
+    });
+  }
+
   return sideGroups;
 }
 
@@ -84,7 +122,7 @@ export function computeEdgePaths(
   heights: Record<string, number> = {},
 ): EdgePath[] {
   const edgeSideInfo = computeEdgeSideInfo(edges, positions, heights);
-  const sideGroups   = buildSideGroups(edgeSideInfo);
+  const sideGroups   = buildSideGroups(edgeSideInfo, positions, heights);
 
   return edges.map((edge, i) => {
     const { fromSide, toSide } = edgeSideInfo[i];
