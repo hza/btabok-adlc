@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { NODES, PHASES } from '../model';
 import { NODE_W, SNAP, snapV } from '../constants';
-import { NODE_POSITIONS } from '../data';
+import { NODE_POSITIONS } from '../positions';
 
 export function useCanvasInteraction() {
   const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(
