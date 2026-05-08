@@ -14,7 +14,7 @@ import type { Phase, NodeData, EdgeData } from './model';
 import { NODE_POSITIONS } from './data';
 
 // ─── constants ────────────────────────────────────────────────────────────────
-const NODE_W   = 162;
+const NODE_W   = 200;
 const SNAP     = 20;
 
 function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
@@ -72,27 +72,27 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
         <span style={{
           background: '#F1F5F9', color: '#475569',
           borderRadius: 4, padding: '1px 6px',
-          fontSize: 12, fontWeight: 700, flexShrink: 0,
+          fontSize: 13, fontWeight: 700, flexShrink: 0,
         }}>{node.num}</span>
         <span style={{
           background: `${bc}18`, color: bc,
           borderRadius: 4, padding: '1px 5px',
-          fontSize: 11, fontWeight: 600, lineHeight: 1.35,
+          fontSize: 12, fontWeight: 600, lineHeight: 1.35,
           textAlign: 'right', maxWidth: 92,
         }}>{node.badge}</span>
       </div>
 
       {/* body */}
       <div style={{ padding: '6px 9px 8px' }}>
-        <div style={{ fontWeight: 600, fontSize: 14, color: '#1E293B', lineHeight: 1.35, marginBottom: 3 }}>
+        <div style={{ fontWeight: 600, fontSize: 16, color: '#1E293B', lineHeight: 1.35, marginBottom: 3 }}>
           {node.title}
         </div>
-        <div style={{ fontSize: 12, color: '#64748B', lineHeight: 1.45 }}>
+        <div style={{ fontSize: 13, color: '#64748B', lineHeight: 1.45 }}>
           {node.subtitle}
         </div>
         {node.note && (
           <div style={{
-            fontSize: 11, color: '#94A3B8', fontStyle: 'italic',
+            fontSize: 12, color: '#94A3B8', fontStyle: 'italic',
             lineHeight: 1.35, marginTop: 5,
             borderTop: '1px solid #F1F5F9', paddingTop: 4,
           }}>{node.note}</div>
