@@ -11,6 +11,13 @@ import NodeCard from './components/NodeCard';
 import TopBar from './components/TopBar';
 import { SelectedPanel, LegendPanel } from './components/Sidebar';
 
+function edgeGreyColor(importance: number): string {
+  // importance 1 → rgba light, importance 10 → near-black
+  // use opacity to exaggerate the spread at the low end
+  const opacity = 0.15 + 0.85 * ((importance - 1) / 9) ** 1.4;
+  return `rgba(30,30,30,${opacity.toFixed(2)})`;
+}
+
 export default function App() {
   const {
     positions, pan, scale, isPanning,
@@ -197,7 +204,7 @@ export default function App() {
                 return (
                   <g key={edge.id} opacity={opacity}>
                     <path d={edge.path} fill="none"
-                      stroke={hi ? '#7F77DD' : '#64748B'}
+                      stroke={hi ? '#7F77DD' : edgeGreyColor(edge.importance)}
                       strokeWidth={hi ? 2.2 : 1.4}
                       markerEnd={`url(#${hi ? 'mHi' : 'mLo'})`}/>
                     {showLabels && (
