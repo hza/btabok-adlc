@@ -10,8 +10,7 @@ import type { NodeData, EdgeData } from '../model';
 
 const IMPORTANCY_LABEL: Record<NodeData['importancy'], string> = {
   1: 'High',
-  2: 'Avg',
-  3: 'Low',
+  2: 'Medium',
 };
 
 interface SelectedPanelProps {
@@ -45,12 +44,17 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
           {node.note}
         </div>
       )}
-      <div style={{ fontSize: 13, color: '#64748B', marginBottom: 14 }}>
+      <div style={{ fontSize: 13, color: '#64748B', marginBottom: 6 }}>
         Phase:&nbsp;<strong style={{ color: '#1E293B' }}>{PHASE_LABEL[node.phase]}</strong>
         <br/>
         Importancy:&nbsp;<strong style={{ color: '#1E293B' }}>{IMPORTANCY_LABEL[node.importancy]}</strong>
         {node.recurring && <span style={{ marginLeft: 8, color: BADGE_COLORS.gray }}>● Multiple</span>}
         {node.external  && <span style={{ marginLeft: 8, color: BADGE_COLORS.amber }}>● External</span>}
+      </div>
+      <div style={{ fontSize: 12, color: '#64748B', fontStyle: 'italic', lineHeight: 1.5,
+        padding: '6px 10px', background: '#F8FAFC', borderRadius: 6,
+        borderLeft: '3px solid #CBD5E1', marginBottom: 14 }}>
+        {node.importancyReason}
       </div>
       {node.link && (
         <a href={node.link} target="_blank" rel="noreferrer" style={{
