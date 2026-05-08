@@ -14,7 +14,7 @@ import type { Phase, NodeData, EdgeData } from './model';
 import { NODE_POSITIONS } from './data';
 
 // ─── constants ────────────────────────────────────────────────────────────────
-const NODE_W   = 200;
+const NODE_W   = 210;
 const SNAP     = 20;
 
 function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
