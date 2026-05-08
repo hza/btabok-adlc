@@ -169,7 +169,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
         boxShadow: selected
           ? `0 0 0 3px ${bc}33, 0 6px 20px rgba(0,0,0,0.16)`
           : '0 2px 8px rgba(0,0,0,0.08)',
-        opacity: dimmed ? 0.15 : 1,
+        opacity: dimmed ? 0.85 : 1,
         cursor: 'grab',
         userSelect: 'none',
         transition: 'opacity 0.18s, box-shadow 0.15s',
@@ -550,7 +550,7 @@ export default function App() {
                   ? !(NODES.find(n=>n.id===edge.from)?.phase===phaseFilter ||
                       NODES.find(n=>n.id===edge.to)?.phase===phaseFilter)
                   : false;
-                const opacity = dimS || dimP ? 0.07 : hi ? 1 : 0.52;
+                const opacity = dimS || dimP ? 0.18 : hi ? 1 : 0.52;
                 return (
                   <g key={edge.id} opacity={opacity}>
                     <path d={edge.path} fill="none"
