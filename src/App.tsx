@@ -288,44 +288,89 @@ export default function App() {
     return { ph, minX, maxX, style: PHASE_STYLES[ph] };
   }).filter(Boolean) as { ph: Phase; minX: number; maxX: number; style: { bg:string; band:string; text:string } }[];
 
-  const edgePaths = visibleEdges.map(edge => {
+  // ── port assignment: distribute multiple edges across each node side ──────────
+  type Side = 'left' | 'right' | 'top' | 'bottom';
+  const edgeSideInfo = visibleEdges.map(edge => {
     const fn = NODES.find(n => n.id === edge.from)!;
     const tn = NODES.find(n => n.id === edge.to)!;
-    const fp = positions[edge.from];
-    const tp = positions[edge.to];
+    const fp = positions[edge.from], tp = positions[edge.to];
     const fh = nodeH(fn), th = nodeH(tn);
     const fcx = fp.x + NODE_W / 2, fcy = fp.y + fh / 2;
     const tcx = tp.x + NODE_W / 2, tcy = tp.y + th / 2;
     const dx = tcx - fcx, dy = tcy - fcy;
-    const G = 8; // gap so arrowhead sits outside the node card
-    // pick exit/entry sides by dominant direction
-    let x1: number, y1: number, x2: number, y2: number;
-    let cx1: number, cy1: number, cx2: number, cy2: number;
+    let fromSide: Side, toSide: Side;
     if (Math.abs(dx) >= Math.abs(dy)) {
-      // horizontal dominant
-      if (dx >= 0) {
-        x1 = fp.x + NODE_W; y1 = fcy;
-        x2 = tp.x - G;      y2 = tcy;
-      } else {
-        x1 = fp.x;          y1 = fcy;
-        x2 = tp.x + NODE_W + G; y2 = tcy;
-      }
-      const cp = Math.max(40, Math.abs(dx) * 0.42);
-      cx1 = x1 + (dx >= 0 ? cp : -cp); cy1 = y1;
-      cx2 = x2 + (dx >= 0 ? -cp : cp); cy2 = y2;
+      fromSide = dx >= 0 ? 'right' : 'left';
+      toSide   = dx >= 0 ? 'left'  : 'right';
     } else {
-      // vertical dominant
-      if (dy >= 0) {
-        x1 = fcx; y1 = fp.y + fh;
-        x2 = tcx; y2 = tp.y - G;
-      } else {
-        x1 = fcx; y1 = fp.y;
-        x2 = tcx; y2 = tp.y + th + G;
-      }
-      const cp = Math.max(40, Math.abs(dy) * 0.42);
-      cx1 = x1; cy1 = y1 + (dy >= 0 ? cp : -cp);
-      cx2 = x2; cy2 = y2 + (dy >= 0 ? -cp : cp);
+      fromSide = dy >= 0 ? 'bottom' : 'top';
+      toSide   = dy >= 0 ? 'top'    : 'bottom';
     }
+    return { edgeId: edge.id, fromId: edge.from, toId: edge.to, fromSide, toSide };
+  });
+
+  const sideGroups = new Map<string, string[]>();
+  for (const { edgeId, fromId, fromSide, toId, toSide } of edgeSideInfo) {
+    const fk = `${fromId}:${fromSide}`;
+    if (!sideGroups.has(fk)) sideGroups.set(fk, []);
+    sideGroups.get(fk)!.push(edgeId);
+    const tk = `${toId}:${toSide}`;
+    if (!sideGroups.has(tk)) sideGroups.set(tk, []);
+    sideGroups.get(tk)!.push(edgeId);
+  }
+
+  function getPort(nodeId: string, side: Side, edgeId: string): { x: number; y: number } {
+    const node = NODES.find(n => n.id === nodeId)!;
+    const pos  = positions[nodeId];
+    const h    = nodeH(node);
+    const key  = `${nodeId}:${side}`;
+    const group = sideGroups.get(key) ?? [edgeId];
+    const idx   = group.indexOf(edgeId);
+    const count = group.length;
+    if (side === 'left' || side === 'right') {
+      const x  = side === 'right' ? pos.x + NODE_W : pos.x;
+      const margin = h * 0.18;
+      const y  = pos.y + margin + ((h - 2 * margin) / (count + 1)) * (idx + 1);
+      return { x, y };
+    } else {
+      const y  = side === 'bottom' ? pos.y + h : pos.y;
+      const margin = NODE_W * 0.12;
+      const x  = pos.x + margin + ((NODE_W - 2 * margin) / (count + 1)) * (idx + 1);
+      return { x, y };
+    }
+  }
+
+  const G = 8;
+  const edgePaths = visibleEdges.map((edge, i) => {
+    const { fromSide, toSide } = edgeSideInfo[i];
+    const src = getPort(edge.from, fromSide, edge.id);
+    const dst = getPort(edge.to,   toSide,   edge.id);
+
+    let x1 = src.x, y1 = src.y;
+    let x2 = dst.x, y2 = dst.y;
+
+    // apply gap on entry side
+    if (toSide === 'left')   x2 -= G;
+    if (toSide === 'right')  x2 += G;
+    if (toSide === 'top')    y2 -= G;
+    if (toSide === 'bottom') y2 += G;
+
+    // control points tangent to exit/entry sides
+    const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
+    const cp = Math.max(40, (fromSide === 'left' || fromSide === 'right' ? dx : dy) * 0.42);
+    const cx1 = fromSide === 'left'  ? x1 - cp
+               : fromSide === 'right' ? x1 + cp
+               : x1;
+    const cy1 = fromSide === 'top'    ? y1 - cp
+               : fromSide === 'bottom' ? y1 + cp
+               : y1;
+    const cx2 = toSide === 'left'    ? x2 - cp
+               : toSide === 'right'   ? x2 + cp
+               : x2;
+    const cy2 = toSide === 'top'     ? y2 - cp
+               : toSide === 'bottom'  ? y2 + cp
+               : y2;
+
     return {
       ...edge,
       path: `M${x1},${y1} C${cx1},${cy1} ${cx2},${cy2} ${x2},${y2}`,
