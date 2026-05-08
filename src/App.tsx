@@ -72,27 +72,27 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
         <span style={{
           background: '#F1F5F9', color: '#475569',
           borderRadius: 4, padding: '1px 6px',
-          fontSize: 10, fontWeight: 700, flexShrink: 0,
+          fontSize: 12, fontWeight: 700, flexShrink: 0,
         }}>{node.num}</span>
         <span style={{
           background: `${bc}18`, color: bc,
           borderRadius: 4, padding: '1px 5px',
-          fontSize: 9, fontWeight: 600, lineHeight: 1.35,
+          fontSize: 11, fontWeight: 600, lineHeight: 1.35,
           textAlign: 'right', maxWidth: 92,
         }}>{node.badge}</span>
       </div>
 
       {/* body */}
       <div style={{ padding: '6px 9px 8px' }}>
-        <div style={{ fontWeight: 600, fontSize: 12, color: '#1E293B', lineHeight: 1.35, marginBottom: 3 }}>
+        <div style={{ fontWeight: 600, fontSize: 14, color: '#1E293B', lineHeight: 1.35, marginBottom: 3 }}>
           {node.title}
         </div>
-        <div style={{ fontSize: 10, color: '#64748B', lineHeight: 1.45 }}>
+        <div style={{ fontSize: 12, color: '#64748B', lineHeight: 1.45 }}>
           {node.subtitle}
         </div>
         {node.note && (
           <div style={{
-            fontSize: 9, color: '#94A3B8', fontStyle: 'italic',
+            fontSize: 11, color: '#94A3B8', fontStyle: 'italic',
             lineHeight: 1.35, marginTop: 5,
             borderTop: '1px solid #F1F5F9', paddingTop: 4,
           }}>{node.note}</div>
@@ -324,7 +324,7 @@ export default function App() {
         gap:10, flexShrink:0, boxShadow:'0 2px 10px rgba(0,0,0,0.3)',
         flexWrap:'wrap',
       }}>
-        <span style={{ fontWeight:800, fontSize:13, letterSpacing:'0.03em', marginRight:4 }}>
+        <span style={{ fontWeight:800, fontSize:15, letterSpacing:'0.03em', marginRight:4 }}>
           BTABoK ADLC
         </span>
         <Divider/>
@@ -345,7 +345,7 @@ export default function App() {
                 color: active ? s.text : s.band,
                 border: `1px solid ${s.band}`,
                 borderRadius: 20, padding: '3px 11px',
-                fontSize: 11, cursor: 'pointer',
+                fontSize: 13, cursor: 'pointer',
                 fontFamily: 'inherit', fontWeight: active ? 700 : 400,
                 transition: 'all 0.15s',
               }}
@@ -358,19 +358,19 @@ export default function App() {
           onChange={e => setEdgeFilter(e.target.value as 'all' | 'input')}
           style={{
             background:'#334155', color:'#CBD5E1', border:'1px solid #475569',
-            borderRadius:5, padding:'3px 8px', fontSize:11,
+            borderRadius:5, padding:'3px 8px', fontSize:13,
             cursor:'pointer', fontFamily:'inherit',
           }}
         >
           <option value="all">All edges</option>
           <option value="input">Input flows</option>
         </select>
-        <label style={{ display:'flex', alignItems:'center', gap:5, fontSize:11, cursor:'pointer', color:'#94A3B8' }}>
+        <label style={{ display:'flex', alignItems:'center', gap:5, fontSize:13, cursor:'pointer', color:'#94A3B8' }}>
           <input type="checkbox" checked={showLabels} onChange={e => setShowLabels(e.target.checked)}
             style={{ accentColor:'#7F77DD', cursor:'pointer' }}/>
           Edge labels
         </label>
-        <span style={{ marginLeft:'auto', fontSize:10, color:'#475569' }}>
+        <span style={{ marginLeft:'auto', fontSize:12, color:'#475569' }}>
           {NODES.length} nodes · {visibleEdges.length} edges · scroll = zoom · drag canvas = pan
         </span>
       </div>
@@ -411,7 +411,7 @@ export default function App() {
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
                   <rect x={minX} y={0} width={maxX - minX} height={5} fill={style.band}/>
                   <text x={minX + (maxX - minX) / 2} y={22} textAnchor="middle" fill={style.text}
-                    fontSize={11} fontWeight={700} fontFamily="system-ui" opacity={0.85}>
+                    fontSize={13} fontWeight={700} fontFamily="system-ui" opacity={0.85}>
                     {PHASE_LABEL[ph].toUpperCase()}
                   </text>
                 </g>
@@ -434,7 +434,7 @@ export default function App() {
                       markerEnd={`url(#${hi ? 'mHi' : 'mLo'})`}/>
                     {showLabels && (
                       <text x={edge.mx} y={edge.my - 5}
-                        textAnchor="middle" fontSize={8}
+                        textAnchor="middle" fontSize={10}
                         fontFamily="system-ui"
                         fill={hi ? '#7F77DD' : '#475569'}
                         stroke="white" strokeWidth="2.8"
@@ -465,7 +465,7 @@ export default function App() {
         <div style={{
           width:270, background:'#FFFFFF',
           borderLeft:'1px solid #E2E8F0',
-          overflowY:'auto', flexShrink:0, fontSize:12, color:'#334155',
+          overflowY:'auto', flexShrink:0, fontSize:14, color:'#334155',
         }}>
           {selectedNode
             ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming}/>
@@ -485,7 +485,7 @@ function TopBtn({ onClick, children }: { onClick: () => void; children: React.Re
   return (
     <button onClick={onClick} style={{
       background:'#334155', color:'#CBD5E1', border:'none',
-      borderRadius:5, padding:'4px 10px', fontSize:11,
+      borderRadius:5, padding:'4px 10px', fontSize:13,
       cursor:'pointer', fontFamily:'inherit',
     }}>{children}</button>
   );
@@ -504,26 +504,26 @@ function SelectedPanel({
     <div style={{ padding:16 }}>
       <div style={{ display:'flex', alignItems:'flex-start', gap:8, marginBottom:10 }}>
         <span style={{ background:'#F1F5F9', color:'#475569', borderRadius:4,
-          padding:'2px 8px', fontWeight:700, fontSize:14, flexShrink:0 }}>
+          padding:'2px 8px', fontWeight:700, fontSize:16, flexShrink:0 }}>
           {node.num}
         </span>
         <span style={{ background:`${bc}18`, color:bc, borderRadius:4,
-          padding:'2px 8px', fontSize:10, fontWeight:600, lineHeight:1.4 }}>
+          padding:'2px 8px', fontSize:12, fontWeight:600, lineHeight:1.4 }}>
           {node.badge}
         </span>
       </div>
-      <div style={{ fontWeight:700, fontSize:14, color:'#1E293B', lineHeight:1.35, marginBottom:5 }}>
+      <div style={{ fontWeight:700, fontSize:16, color:'#1E293B', lineHeight:1.35, marginBottom:5 }}>
         {node.title}
       </div>
       <div style={{ color:'#64748B', lineHeight:1.5, marginBottom:8 }}>{node.subtitle}</div>
       {node.note && (
-        <div style={{ fontStyle:'italic', color:'#94A3B8', fontSize:11,
+        <div style={{ fontStyle:'italic', color:'#94A3B8', fontSize:13,
           padding:'8px 10px', background:'#F8FAFC', borderRadius:6,
           borderLeft:`3px solid ${bc}`, marginBottom:10, lineHeight:1.45 }}>
           {node.note}
         </div>
       )}
-      <div style={{ fontSize:11, color:'#64748B', marginBottom:14 }}>
+      <div style={{ fontSize:13, color:'#64748B', marginBottom:14 }}>
         Phase:&nbsp;<strong style={{ color:'#1E293B' }}>{PHASE_LABEL[node.phase]}</strong>
         {node.recurring && <span style={{ marginLeft:8, color:BADGE_COLORS.gray }}>● Recurring</span>}
         {node.external  && <span style={{ marginLeft:8, color:BADGE_COLORS.amber }}>● External</span>}
@@ -533,7 +533,7 @@ function SelectedPanel({
           display:'block', marginBottom:14,
           padding:'7px 10px', borderRadius:6,
           background:'#F8FAFC', border:'1px solid #E2E8F0',
-          fontSize:11, color:'#7F77DD', textDecoration:'none',
+          fontSize:13, color:'#7F77DD', textDecoration:'none',
           wordBreak:'break-all', lineHeight:1.4,
         }}>
           ↗ {node.link.replace(/^https?:\/\//, '')}
@@ -552,13 +552,13 @@ function ConnList({ title, items, accent }: {
 }) {
   return (
     <div style={{ marginBottom:14 }}>
-      <div style={{ fontWeight:600, fontSize:11, color:'#94A3B8', marginBottom:6,
+      <div style={{ fontWeight:600, fontSize:13, color:'#94A3B8', marginBottom:6,
         textTransform:'uppercase', letterSpacing:'0.05em' }}>{title}</div>
       {items.map(({ e, n }) => (
         <div key={e.id} style={{ marginBottom:5, padding:'7px 10px',
           background:'#F8FAFC', borderRadius:6, borderLeft:`3px solid ${accent}` }}>
-          <div style={{ fontWeight:600, color:'#1E293B', fontSize:12 }}>{n.num}. {n.title}</div>
-          <div style={{ color:'#94A3B8', fontSize:10, marginTop:2, fontStyle:'italic' }}>{e.label}</div>
+          <div style={{ fontWeight:600, color:'#1E293B', fontSize:14 }}>{n.num}. {n.title}</div>
+          <div style={{ color:'#94A3B8', fontSize:12, marginTop:2, fontStyle:'italic' }}>{e.label}</div>
         </div>
       ))}
     </div>
@@ -569,13 +569,13 @@ function ConnList({ title, items, accent }: {
 function LegendPanel() {
   return (
     <div style={{ padding:16 }}>
-      <div style={{ fontWeight:700, fontSize:14, color:'#1E293B', marginBottom:12 }}>Legend</div>
+      <div style={{ fontWeight:700, fontSize:16, color:'#1E293B', marginBottom:12 }}>Legend</div>
 
       <SectionLabel>Badge types</SectionLabel>
       {Object.entries(BADGE_COLORS).map(([key, color]) => (
         <div key={key} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
           <div style={{ width:11, height:11, borderRadius:3, background:color, flexShrink:0 }}/>
-          <span style={{ color:'#334155', fontSize:11 }}>{BADGE_LABELS[key]}</span>
+          <span style={{ color:'#334155', fontSize:13 }}>{BADGE_LABELS[key]}</span>
         </div>
       ))}
 
@@ -584,11 +584,11 @@ function LegendPanel() {
       <SectionLabel>Border styles</SectionLabel>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
         <div style={{ width:28, height:14, border:'2px dashed #888780', borderRadius:3, flexShrink:0 }}/>
-        <span style={{ color:'#334155', fontSize:11 }}>Recurring artifact</span>
+        <span style={{ color:'#334155', fontSize:13 }}>Recurring artifact</span>
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
         <div style={{ width:28, height:14, border:`2px dashed ${BADGE_COLORS.amber}`, borderRadius:3, flexShrink:0 }}/>
-        <span style={{ color:'#334155', fontSize:11 }}>External standard (gap)</span>
+        <span style={{ color:'#334155', fontSize:13 }}>External standard (gap)</span>
       </div>
 
       <Hr/>
@@ -600,8 +600,8 @@ function LegendPanel() {
         return (
           <div key={ph} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
             <div style={{ width:11, height:11, borderRadius:3, background:s.band, flexShrink:0 }}/>
-            <span style={{ color:'#334155', fontSize:11 }}>{PHASE_LABEL[ph]}</span>
-            <span style={{ color:'#94A3B8', fontSize:10, marginLeft:'auto' }}>{count}</span>
+            <span style={{ color:'#334155', fontSize:13 }}>{PHASE_LABEL[ph]}</span>
+            <span style={{ color:'#94A3B8', fontSize:12, marginLeft:'auto' }}>{count}</span>
           </div>
         );
       })}
@@ -609,7 +609,7 @@ function LegendPanel() {
       <Hr/>
 
       <div style={{ background:'#F8FAFC', borderRadius:8, padding:'10px 12px',
-        fontSize:11, color:'#64748B', lineHeight:1.7 }}>
+        fontSize:13, color:'#64748B', lineHeight:1.7 }}>
         <strong style={{ color:'#1E293B', display:'block', marginBottom:4 }}>Statistics</strong>
         Nodes: <strong>{NODES.length}</strong><br/>
         Edges: <strong>{EDGES.length}</strong><br/>
@@ -617,7 +617,7 @@ function LegendPanel() {
       </div>
 
       <div style={{ marginTop:12, background:'#F8FAFC', borderRadius:8, padding:'10px 12px',
-        fontSize:10, color:'#94A3B8', lineHeight:1.7 }}>
+        fontSize:12, color:'#94A3B8', lineHeight:1.7 }}>
         <strong style={{ color:'#475569', display:'block', marginBottom:4 }}>Interactions</strong>
         Click a node to explore connections<br/>
         Drag nodes to rearrange<br/>
@@ -630,7 +630,7 @@ function LegendPanel() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontSize:11, fontWeight:600, color:'#94A3B8', marginBottom:8,
+    <div style={{ fontSize:13, fontWeight:600, color:'#94A3B8', marginBottom:8,
       textTransform:'uppercase', letterSpacing:'0.05em' }}>{children}</div>
   );
 }
