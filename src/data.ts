@@ -1,6 +1,5 @@
 export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   // innovation
-  n23: { x:40,   y:280 },   // OKR Canvas — below Business Model Canvas
   n01: { x:40,   y:60  },
   // strategy
   n02: { x:330,  y:540 },
@@ -8,8 +7,9 @@ export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   n03: { x:440,  y:180 },
   n04: { x:800,  y:140 },
   n05: { x:1280, y:140 },
+  n23: { x:1280, y:360 },   // OKR Card — right of NABC, bridges strategy to measurable outcomes
   n25: { x:1040, y:360 },   // Risk Methods Card — mid-strategy, feeds ADRs + ASRs
-  n26: { x:310,  y:340 },   // Service Blueprint — left-strategy, bridges stakeholders → context
+  n26: { x:310,  y:340 },   // Service Blueprint Canvas — left-strategy, bridges stakeholders → context
   n06: { x:780,  y:580 },
   n07: { x:1220, y:500 },
   // planning
