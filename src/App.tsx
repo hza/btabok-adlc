@@ -16,7 +16,6 @@ import { NODE_POSITIONS } from './data';
 // ─── constants ────────────────────────────────────────────────────────────────
 const NODE_W   = 162;
 const SNAP     = 20;
-const CANVAS_H = 1600;
 
 function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
 function nodeH(n: NodeData) { return n.note ? 136 : 104; }
@@ -241,6 +240,34 @@ export default function App() {
 
   // ── derived state ────────────────────────────────────────────────────────────
   const canvasW = Math.max(...Object.values(positions).map(p => p.x)) + NODE_W + 80;
+  const canvasH = Math.max(...Object.values(positions).map(p => p.y)) + 200 + 80;
+
+  const gridStep20 = SNAP * scale;
+  const gridStep100 = 100 * scale;
+  const gridOffX20 = ((pan.x % gridStep20) + gridStep20) % gridStep20;
+  const gridOffY20 = ((pan.y % gridStep20) + gridStep20) % gridStep20;
+  const gridOffX100 = ((pan.x % gridStep100) + gridStep100) % gridStep100;
+  const gridOffY100 = ((pan.y % gridStep100) + gridStep100) % gridStep100;
+  const infiniteGridStyle = {
+    backgroundImage: [
+      'linear-gradient(#CBD5E1 0.35px, transparent 0.35px)',
+      'linear-gradient(90deg, #CBD5E1 0.35px, transparent 0.35px)',
+      'linear-gradient(#94A3B8 0.6px, transparent 0.6px)',
+      'linear-gradient(90deg, #94A3B8 0.6px, transparent 0.6px)',
+    ].join(','),
+    backgroundSize: [
+      `${gridStep20}px ${gridStep20}px`,
+      `${gridStep20}px ${gridStep20}px`,
+      `${gridStep100}px ${gridStep100}px`,
+      `${gridStep100}px ${gridStep100}px`,
+    ].join(','),
+    backgroundPosition: [
+      `${gridOffX20}px ${gridOffY20}px`,
+      `${gridOffX20}px ${gridOffY20}px`,
+      `${gridOffX100}px ${gridOffY100}px`,
+      `${gridOffX100}px ${gridOffY100}px`,
+    ].join(','),
+  };
   const visibleEdges = edgeFilter === 'input' ? EDGES.filter(e => e.tag === 'input') : EDGES;
 
   const connectedEdgeIds = selectedId
@@ -354,7 +381,8 @@ export default function App() {
         <div
           ref={containerRef}
           style={{ flex:1, overflow:'hidden', position:'relative',
-            cursor: isPanning ? 'grabbing' : 'grab' }}
+            cursor: isPanning ? 'grabbing' : 'grab', background:'#F8FAFC',
+            ...infiniteGridStyle }}
           onMouseDown={handleCanvasDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -365,16 +393,9 @@ export default function App() {
             transform:`translate(${pan.x}px,${pan.y}px) scale(${scale})`,
           }}>
             {/* SVG layer: grid, bands, edges */}
-            <svg width={canvasW} height={CANVAS_H}
+            <svg width={canvasW} height={canvasH}
               style={{ position:'absolute', top:0, left:0, pointerEvents:'none' }}>
               <defs>
-                <pattern id="g20" width={SNAP} height={SNAP} patternUnits="userSpaceOnUse">
-                  <path d={`M${SNAP} 0 L0 0 0 ${SNAP}`} fill="none" stroke="#CBD5E1" strokeWidth="0.35"/>
-                </pattern>
-                <pattern id="g100" width={100} height={100} patternUnits="userSpaceOnUse">
-                  <rect width={100} height={100} fill="url(#g20)"/>
-                  <path d="M100 0 L0 0 0 100" fill="none" stroke="#94A3B8" strokeWidth="0.6"/>
-                </pattern>
                 <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
                   <polygon points="0 0,7 3.5,0 7" fill="#64748B"/>
                 </marker>
@@ -383,12 +404,10 @@ export default function App() {
                 </marker>
               </defs>
 
-              <rect width={canvasW} height={CANVAS_H} fill="url(#g100)"/>
-
               {/* phase swim-lanes */}
               {phaseBands.map(({ ph, minX, maxX, style }) => (
                 <g key={ph}>
-                  <rect x={minX} y={0} width={maxX - minX} height={CANVAS_H}
+                  <rect x={minX} y={0} width={maxX - minX} height={canvasH}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
                   <rect x={minX} y={0} width={maxX - minX} height={5} fill={style.band}/>
                   <text x={minX + (maxX - minX) / 2} y={22} textAnchor="middle" fill={style.text}
