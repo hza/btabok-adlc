@@ -423,7 +423,7 @@ export default function App() {
                   <path d="M100 0 L0 0 0 100" fill="none" stroke="#94A3B8" strokeWidth="0.6"/>
                 </pattern>
                 <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                  <polygon points="0 0,7 3.5,0 7" fill="#94A3B8"/>
+                  <polygon points="0 0,7 3.5,0 7" fill="#64748B"/>
                 </marker>
                 <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
                   <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
@@ -457,8 +457,8 @@ export default function App() {
                 return (
                   <g key={edge.id} opacity={opacity}>
                     <path d={edge.path} fill="none"
-                      stroke={hi ? '#7F77DD' : '#94A3B8'}
-                      strokeWidth={hi ? 2.2 : 1.2}
+                      stroke={hi ? '#7F77DD' : '#64748B'}
+                      strokeWidth={hi ? 2.2 : 1.4}
                       markerEnd={`url(#${hi ? 'mHi' : 'mLo'})`}/>
                     {showLabels && (
                       <text x={edge.mx} y={edge.my - 5}
