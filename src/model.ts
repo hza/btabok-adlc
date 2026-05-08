@@ -84,6 +84,7 @@ export interface EdgeData {
   id: string; from: string; to: string; label: string;
   tag?: 'input';
   importance: 1 | 2 | 3 | 4 | 5 | 6;
+  btabok?: true;
 }
 
 // ─── node data ────────────────────────────────────────────────────────────────
@@ -120,40 +121,40 @@ export const NODES: NodeData[] = [
 
 // ─── edge data ────────────────────────────────────────────────────────────────
 export const EDGES: EdgeData[] = [
-  { id:'e01', from:'n01', to:'n02', label:'seeds capability hierarchy',          tag:'input', importance:5 },
-  { id:'e03', from:'n02', to:'n06', label:'source for principles',               tag:'input', importance:4 },
+  { id:'e01', from:'n01', to:'n02', label:'seeds capability hierarchy',          tag:'input', importance:5, btabok:true },
+  { id:'e03', from:'n02', to:'n06', label:'source for principles',               tag:'input', importance:4, btabok:true },
   { id:'e06', from:'n03', to:'n04', label:'populates grid',                      tag:'input', importance:2 },
   { id:'e11', from:'n05', to:'n12', label:'success criteria → definition',       tag:'input', importance:4 },
-  { id:'e12', from:'n06', to:'n12', label:'principles populate definition',       tag:'input', importance:4 },
+  { id:'e12', from:'n06', to:'n12', label:'principles populate definition',       tag:'input', importance:4, btabok:true },
   { id:'e15', from:'n08', to:'n09', label:'interactions trigger ASRs',           tag:'input', importance:6 },
-  { id:'e18', from:'n09', to:'n14', label:'ASR IDs referenced in ADR',           tag:'input', importance:6 },
+  { id:'e18', from:'n09', to:'n14', label:'ASR IDs referenced in ADR',           tag:'input', importance:6, btabok:true },
   { id:'e20', from:'n10', to:'n14', label:'validated hypothesis informs ADR',    tag:'input', importance:1 },
   { id:'e22', from:'n12', to:'n13', label:'scope constrains design options',      tag:'input', importance:4 },
   { id:'e23', from:'n12', to:'n16', label:'boundary → context partitioning',      tag:'input', importance:3 },
   { id:'e25', from:'n13', to:'n14', label:'options → ADR scored columns',        tag:'input', importance:5 },
-  { id:'e27', from:'n14', to:'n15', label:'spawns cascade card',                 tag:'input', importance:2 },
+  { id:'e27', from:'n14', to:'n15', label:'spawns cascade card',                 tag:'input', importance:2, btabok:true },
   { id:'e28', from:'n14', to:'n21', label:'shortcuts → loan card',               tag:'input', importance:2 },
   { id:'e30', from:'n16', to:'n17', label:'language → service operations',       tag:'input', importance:4 },
   { id:'e32', from:'n17', to:'n14', label:'service choices trigger ADR',         tag:'input', importance:4 },
   { id:'e33', from:'n17', to:'n20', label:'operations → sequence messages',      tag:'input', importance:3 },
-  { id:'e36', from:'n21', to:'n22', label:'debt reduces realised benefits',      tag:'input', importance:2 },
+  { id:'e36', from:'n21', to:'n22', label:'debt reduces realised benefits',      tag:'input', importance:2, btabok:true },
   { id:'e37', from:'n22', to:'n07', label:'outcomes reprioritise roadmap',       tag:'input', importance:3 },
   { id:'e40', from:'n22', to:'n01', label:'lessons open new innovation cycle',   tag:'input', importance:3 },
-  { id:'e43', from:'n05', to:'n06', label:'business constraints → principles',   tag:'input', importance:4 },
+  { id:'e43', from:'n05', to:'n06', label:'business constraints → principles',   tag:'input', importance:4, btabok:true },
   { id:'e45', from:'n07', to:'n08', label:'roadmap scope → system boundary',     tag:'input', importance:4 },
   { id:'e46', from:'n09', to:'n10', label:'ASRs generate hypotheses',            tag:'input', importance:1 },
   { id:'e47', from:'n15', to:'n16', label:'cascade effects → context boundaries', tag:'input', importance:2 },
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
   { id:'e48', from:'n09', to:'n11', label:'ASRs define quality scenarios',         tag:'input', importance:5 },
-  { id:'e49', from:'n08', to:'n11', label:'context sets stimulus environment',      tag:'input', importance:3 },
-  { id:'e50', from:'n11', to:'n14', label:'QA tactics inform ADR decisions',        tag:'input', importance:4 },
+  { id:'e49', from:'n08', to:'n11', label:'context sets stimulus environment',      tag:'input', importance:3, btabok:true },
+  { id:'e50', from:'n11', to:'n14', label:'QA tactics inform ADR decisions',        tag:'input', importance:4, btabok:true },
 
   // ── Strategic Roadmap Canvas (n30) ───────────────────────────────────────
   { id:'e82', from:'n02', to:'n30', label:'capabilities anchor strategic IT initiatives', tag:'input', importance:4 },
-  { id:'e83', from:'n05', to:'n30', label:'business case defines initiative scope',       tag:'input', importance:3 },
-  { id:'e84', from:'n06', to:'n30', label:'principles constrain strategic initiatives',   tag:'input', importance:3 },
-  { id:'e85', from:'n23', to:'n30', label:'OKRs align strategic IT direction',            tag:'input', importance:4 },
+  { id:'e83', from:'n05', to:'n30', label:'business case defines initiative scope',       tag:'input', importance:3, btabok:true },
+  { id:'e84', from:'n06', to:'n30', label:'principles constrain strategic initiatives',   tag:'input', importance:3, btabok:true },
+  { id:'e85', from:'n23', to:'n30', label:'OKRs align strategic IT direction',            tag:'input', importance:4, btabok:true },
   { id:'e86', from:'n30', to:'n07', label:'strategic IT direction → phased delivery',     tag:'input', importance:5 },
 
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
@@ -162,7 +163,7 @@ export const EDGES: EdgeData[] = [
   { id:'e54', from:'n22', to:'n23', label:'realized benefits validate OKRs',        tag:'input', importance:2 },
 
   // ── Capability Assessment (n24) ────────────────────────────────────────────
-  { id:'e55', from:'n02', to:'n24', label:'capabilities are assessed for maturity', tag:'input', importance:4 },
+  { id:'e55', from:'n02', to:'n24', label:'capabilities are assessed for maturity', tag:'input', importance:4, btabok:true },
   { id:'e56', from:'n24', to:'n07', label:'gaps drive roadmap priorities',          tag:'input', importance:5 },
   { id:'e58', from:'n24', to:'n25', label:'weak capabilities expose risks',         tag:'input', importance:3 },
 
@@ -172,7 +173,7 @@ export const EDGES: EdgeData[] = [
   { id:'e63', from:'n25', to:'n29', label:'risk exposure → security requirements',  tag:'input', importance:4 },
 
   // ── Service Blueprint (n26) ────────────────────────────────────────────────
-  { id:'e66', from:'n07', to:'n26', label:'roadmap technology lane references service blueprints', tag:'input', importance:3 },
+  { id:'e66', from:'n07', to:'n26', label:'roadmap technology lane references service blueprints', tag:'input', importance:3, btabok:true },
   { id:'e67', from:'n26', to:'n08', label:'service boundary → context view',        tag:'input', importance:3 },
   { id:'e68', from:'n26', to:'n17', label:'front-stage ops → service interface',    tag:'input', importance:4 },
 
