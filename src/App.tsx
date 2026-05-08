@@ -203,7 +203,7 @@ export default function App() {
                     {showLabels && (
                       <text x={edge.mx} y={edge.my - 5}
                         textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                        fill={hi ? '#7F77DD' : '#0F172A'}
+                        fill={hi ? '#7F77DD' : '#1D4ED8'}
                         stroke="white" strokeWidth="2.8" paintOrder="stroke">
                         {edge.label}
                       </text>
