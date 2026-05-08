@@ -293,12 +293,42 @@ export default function App() {
     const tn = NODES.find(n => n.id === edge.to)!;
     const fp = positions[edge.from];
     const tp = positions[edge.to];
-    const x1 = fp.x + NODE_W, y1 = fp.y + nodeH(fn) / 2;
-    const x2 = tp.x,          y2 = tp.y + nodeH(tn) / 2;
-    const cp = Math.max(40, Math.abs(x2 - x1) * 0.42);
+    const fh = nodeH(fn), th = nodeH(tn);
+    const fcx = fp.x + NODE_W / 2, fcy = fp.y + fh / 2;
+    const tcx = tp.x + NODE_W / 2, tcy = tp.y + th / 2;
+    const dx = tcx - fcx, dy = tcy - fcy;
+    const G = 8; // gap so arrowhead sits outside the node card
+    // pick exit/entry sides by dominant direction
+    let x1: number, y1: number, x2: number, y2: number;
+    let cx1: number, cy1: number, cx2: number, cy2: number;
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      // horizontal dominant
+      if (dx >= 0) {
+        x1 = fp.x + NODE_W; y1 = fcy;
+        x2 = tp.x - G;      y2 = tcy;
+      } else {
+        x1 = fp.x;          y1 = fcy;
+        x2 = tp.x + NODE_W + G; y2 = tcy;
+      }
+      const cp = Math.max(40, Math.abs(dx) * 0.42);
+      cx1 = x1 + (dx >= 0 ? cp : -cp); cy1 = y1;
+      cx2 = x2 + (dx >= 0 ? -cp : cp); cy2 = y2;
+    } else {
+      // vertical dominant
+      if (dy >= 0) {
+        x1 = fcx; y1 = fp.y + fh;
+        x2 = tcx; y2 = tp.y - G;
+      } else {
+        x1 = fcx; y1 = fp.y;
+        x2 = tcx; y2 = tp.y + th + G;
+      }
+      const cp = Math.max(40, Math.abs(dy) * 0.42);
+      cx1 = x1; cy1 = y1 + (dy >= 0 ? cp : -cp);
+      cx2 = x2; cy2 = y2 + (dy >= 0 ? -cp : cp);
+    }
     return {
       ...edge,
-      path: `M${x1},${y1} C${x1+cp},${y1} ${x2-cp},${y2} ${x2},${y2}`,
+      path: `M${x1},${y1} C${cx1},${cy1} ${cx2},${cy2} ${x2},${y2}`,
       mx: (x1 + x2) / 2,
       my: (y1 + y2) / 2,
     };
@@ -393,7 +423,7 @@ export default function App() {
             transform:`translate(${pan.x}px,${pan.y}px) scale(${scale})`,
           }}>
             {/* SVG layer: grid, bands, edges */}
-            <svg width={canvasW} height={canvasH}
+            <svg width={canvasW} height={canvasH} overflow="visible"
               style={{ position:'absolute', top:0, left:0, pointerEvents:'none' }}>
               <defs>
                 <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
