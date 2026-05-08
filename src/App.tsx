@@ -204,90 +204,19 @@ export default function App() {
     setIsPanning(false);
   }, []);
 
-  // ── PlantUML export ─────────────────────────────────────────────────────────
+  // ── Copy positions ───────────────────────────────────────────────────────────
   const [copied, setCopied] = useState(false);
 
-  const handleCopyPlantUML = useCallback(() => {
-    const lines: string[] = [
-      '@startuml BTABoK_ADLC',
-      "' Generated from BTABoK ADLC interactive graph",
-      '',
-      'skinparam componentStyle rectangle',
-      'skinparam defaultFontName "system-ui"',
-      'skinparam defaultFontSize 11',
-      'skinparam component {',
-      '  BackgroundColor #FFFFFF',
-      '  BorderColor #CBD5E1',
-      '  FontColor #1E293B',
-      '}',
-      'skinparam package {',
-      '  FontStyle bold',
-      '  FontSize 12',
-      '}',
-      '',
-    ];
-
-    // Phase colour map for skinparam overrides
-    const phaseColors: Record<Phase, string> = {
-      innovation:     '#FFF8F0',
-      strategy:       '#F0FAF4',
-      planning:       '#EFF6FF',
-      transformation: '#FFF0F4',
-      utilize:        '#F5F3FF',
-    };
-
-    // Group nodes by phase in declaration order
-    for (const ph of PHASES) {
-      const phNodes = NODES.filter(n => n.phase === ph);
-      if (!phNodes.length) continue;
-      lines.push(`package "${PHASE_LABEL[ph]}" #${phaseColors[ph].slice(1)} {`);
-      for (const n of phNodes) {
-        // stereotypes: badge-colour group (drives skinparam) + optional modifier
-        const stereos = [`<<${n.badgeColor}>>`];
-        if (n.recurring) stereos.push('<<recurring>>');
-        if (n.external)  stereos.push('<<external>>');
-        const title = n.title.replace(/[[\]]/g, '');
-        lines.push(`  component "${n.num} ${title}" ${stereos.join(' ')} as ${n.id}`);
-      }
-      lines.push('}');
-      lines.push('');
-    }
-
-    // One skinparam block per badge-colour group (stereotype = badgeColor key)
-    // Light background derived by blending badge colour toward white
-    const badgeBgLight: Record<string, string> = {
-      purple: '#EDEAFC',
-      teal:   '#D3F2E8',
-      coral:  '#FAE0D8',
-      green:  '#DCF0B8',
-      gray:   '#E8E8E6',
-      amber:  '#F5E4C0',
-    };
-    lines.push("' badge-colour stereotypes");
-    for (const [key, border] of Object.entries(BADGE_COLORS)) {
-      const bg = badgeBgLight[key] ?? '#FFFFFF';
-      lines.push(`skinparam component<<${key}>> {`);
-      lines.push(`  BackgroundColor ${bg}`);
-      lines.push(`  BorderColor ${border}`);
-      lines.push('}');
-    }
-    lines.push('');
-
-    // Edges
-    lines.push("' relationships");
-    for (const e of EDGES) {
-      lines.push(`${e.from} --> ${e.to} : ${e.label}`);
-    }
-
-    lines.push('');
-    lines.push('@enduml');
-
-    const src = lines.join('\n');
+  const handleCopyPositions = useCallback(() => {
+    const entries = Object.entries(positions)
+      .map(([id, pos]) => `  ${id}: { x:${pos.x}, y:${pos.y} },`)
+      .join('\n');
+    const src = `export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {\n${entries}\n};\n`;
     navigator.clipboard.writeText(src).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }, []);
+  }, [positions]);
 
   // ── fit / reset ─────────────────────────────────────────────────────────────
   const handleReset = useCallback(() => setPositions(INIT_POS()), []);
@@ -374,8 +303,8 @@ export default function App() {
         <Divider/>
         <TopBtn onClick={handleReset}>Reset layout</TopBtn>
         <TopBtn onClick={handleFit}>Fit to screen</TopBtn>
-        <TopBtn onClick={handleCopyPlantUML}>
-          {copied ? '✓ Copied!' : 'Copy as PlantUML'}
+        <TopBtn onClick={handleCopyPositions}>
+          {copied ? '✓ Copied!' : 'Copy positions'}
         </TopBtn>
         <Divider/>
         {PHASES.map(ph => {
