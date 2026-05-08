@@ -168,7 +168,30 @@ export default function App() {
       const { id, sx, sy, ox, oy } = dragNode.current;
       const dx = (e.clientX - sx) / scaleRef.current;
       const dy = (e.clientY - sy) / scaleRef.current;
-      setPositions(prev => ({ ...prev, [id]: { x: snapV(ox + dx), y: snapV(oy + dy) } }));
+      setPositions(cur => {
+        const next = { ...cur, [id]: { x: snapV(ox + dx), y: snapV(oy + dy) } };
+
+        // compute each phase's right edge then cascade-shift later phases to prevent overlap
+        const bands = PHASES.map(ph => {
+          const xs = NODES.filter(n => n.phase === ph).map(n => next[n.id].x);
+          return { ph, maxX: Math.max(...xs) + NODE_W + 20 };
+        });
+        for (let i = 1; i < bands.length; i++) {
+          const phaseNodes = NODES.filter(n => n.phase === bands[i].ph);
+          const minX = Math.min(...phaseNodes.map(n => next[n.id].x));
+          const gap = 20;
+          const overlap = bands[i - 1].maxX + gap - minX;
+          if (overlap > 0) {
+            for (let j = i; j < bands.length; j++) {
+              NODES.filter(n => n.phase === bands[j].ph).forEach(n => {
+                next[n.id] = { ...next[n.id], x: next[n.id].x + overlap };
+              });
+              bands[j].maxX += overlap;
+            }
+          }
+        }
+        return next;
+      });
     } else if (dragPan.current) {
       const { sx, sy, opx, opy } = dragPan.current;
       setPan({ x: opx + e.clientX - sx, y: opy + e.clientY - sy });
