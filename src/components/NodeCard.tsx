@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { BADGE_COLORS } from '../model';
+import { badgeColor, BADGE_COLORS } from '../model';
 import type { NodeData } from '../model';
 import { NODE_W } from '../constants';
 
@@ -20,7 +20,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
     if (h > 0) onHeightChange(node.id, h);
   });
 
-  const bc = BADGE_COLORS[node.badgeColor] ?? '#888';
+  const bc = badgeColor(node.badge);
 
   let border: string;
   if (selected)          border = `2px solid ${bc}`;

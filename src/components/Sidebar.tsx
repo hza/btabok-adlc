@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BADGE_COLORS, BADGE_LABELS,
+  badgeColor, BADGE_COLORS, BADGE_LABELS,
   PHASE_STYLES, PHASES, PHASE_LABEL,
   NODES, EDGES,
 } from '../model';
@@ -15,7 +15,7 @@ interface SelectedPanelProps {
 }
 
 export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) {
-  const bc = BADGE_COLORS[node.badgeColor] ?? '#888';
+  const bc = badgeColor(node.badge);
   return (
     <div style={{ padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 10 }}>
