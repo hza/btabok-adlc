@@ -9,11 +9,11 @@ export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   n05: { x:1280, y:140 },
   n23: { x:1280, y:360 },   // OKR Card — right of NABC, bridges strategy to measurable outcomes
   n25: { x:1040, y:360 },   // Risk Methods Card — mid-strategy, feeds ADRs + ASRs
-  n26: { x:310,  y:340 },   // Service Blueprint Canvas — left-strategy, bridges stakeholders → context
   n06: { x:780,  y:580 },
   n07: { x:1220, y:500 },
   // planning
   n08: { x:1570, y:360 },
+  n26: { x:1570, y:580 },   // Service Blueprint Canvas — planning companion to Context View
   n27: { x:1800, y:580 },   // Event Storming — below Context View, feeds Bounded Contexts
   n09: { x:2020, y:160 },
   n10: { x:2420, y:80  },
