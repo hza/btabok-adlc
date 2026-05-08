@@ -11,6 +11,7 @@ import {
   NODES, EDGES,
 } from './model';
 import type { Phase, NodeData, EdgeData } from './model';
+import { NODE_POSITIONS } from './data';
 
 // ─── constants ────────────────────────────────────────────────────────────────
 const NODE_W   = 162;
@@ -21,7 +22,7 @@ function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
 function nodeH(n: NodeData) { return n.note ? 136 : 104; }
 
 const INIT_POS = () =>
-  Object.fromEntries(NODES.map(n => [n.id, { x: n.x, y: n.y }]));
+  Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]));
 
 // ─── NodeCard ─────────────────────────────────────────────────────────────────
 interface CardProps {
@@ -175,17 +176,17 @@ export default function App() {
           const xs = NODES.filter(n => n.phase === ph).map(n => next[n.id].x);
           return { ph, maxX: Math.max(...xs) + NODE_W + 20 };
         });
+        const gap = 3 * SNAP;
         for (let i = 1; i < bands.length; i++) {
           const phaseNodes = NODES.filter(n => n.phase === bands[i].ph);
           const minX = Math.min(...phaseNodes.map(n => next[n.id].x));
-          const gap = 3 * SNAP;
-          const overlap = bands[i - 1].maxX + gap - minX;
-          if (overlap > 0) {
+          const shift = bands[i - 1].maxX + gap - minX;
+          if (shift !== 0) {
             for (let j = i; j < bands.length; j++) {
               NODES.filter(n => n.phase === bands[j].ph).forEach(n => {
-                next[n.id] = { ...next[n.id], x: next[n.id].x + overlap };
+                next[n.id] = { ...next[n.id], x: next[n.id].x + shift };
               });
-              bands[j].maxX += overlap;
+              bands[j].maxX += shift;
             }
           }
         }
