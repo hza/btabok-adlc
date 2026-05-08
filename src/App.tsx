@@ -37,6 +37,7 @@ export default function App() {
   const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
+  const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [minImportance, setMinImportance] = useState(1);
   const [saved,       setSaved]       = useState(false);
@@ -175,6 +176,7 @@ export default function App() {
       <TopBar
         showLabels={showLabels}
         showSwimlanes={showSwimlanes}
+        showGrid={showGrid}
         showSidebar={showLegend}
         saved={saved}
         onReset={resetPositions}
@@ -184,6 +186,7 @@ export default function App() {
         onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
         onShowSwimlanesChange={setShowSwimlanes}
+        onShowGridChange={setShowGrid}
         onToggleSidebar={() => setShowLegend(v => !v)}
       />
 
@@ -194,7 +197,7 @@ export default function App() {
           ref={containerRef}
           style={{ flex: 1, overflow: 'hidden', position: 'relative',
             cursor: isPanning ? 'grabbing' : 'grab', background: '#FFFFFF',
-            ...infiniteGridStyle }}
+            ...(showGrid ? infiniteGridStyle : {}) }}
           onMouseDown={handleCanvasDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleCanvasUp}

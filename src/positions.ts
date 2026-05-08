@@ -15,7 +15,7 @@ export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   n09: { x:2140, y:340 },
   n10: { x:2470, y:240 },
   n11: { x:2470, y:480 },
-  n12: { x:2490, y:680 },
+  n12: { x:2400, y:760 },
   n13: { x:2800, y:760 },
   n14: { x:2810, y:360 },
   n15: { x:2810, y:120 },
