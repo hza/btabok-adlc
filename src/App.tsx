@@ -556,6 +556,17 @@ function SelectedPanel({
         {node.recurring && <span style={{ marginLeft:8, color:BADGE_COLORS.gray }}>● Recurring</span>}
         {node.external  && <span style={{ marginLeft:8, color:BADGE_COLORS.amber }}>● External</span>}
       </div>
+      {node.link && (
+        <a href={node.link} target="_blank" rel="noreferrer" style={{
+          display:'block', marginBottom:14,
+          padding:'7px 10px', borderRadius:6,
+          background:'#F8FAFC', border:'1px solid #E2E8F0',
+          fontSize:11, color:'#7F77DD', textDecoration:'none',
+          wordBreak:'break-all', lineHeight:1.4,
+        }}>
+          ↗ {node.link.replace(/^https?:\/\//, '')}
+        </a>
+      )}
       {outgoing.length > 0 && <ConnList title={`→ Outgoing (${outgoing.length})`} items={outgoing} accent="#7F77DD"/>}
       {incoming.length > 0 && <ConnList title={`← Incoming (${incoming.length})`} items={incoming} accent="#1D9E75"/>}
     </div>
