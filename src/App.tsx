@@ -335,7 +335,7 @@ export default function App() {
   // ── render ───────────────────────────────────────────────────────────────────
   return (
     <div style={{ display:'flex', flexDirection:'column', height:'100vh',
-      fontFamily:'system-ui,-apple-system,sans-serif', background:'#F0F4F8' }}>
+      fontFamily:'system-ui,-apple-system,sans-serif', background:'#FFFFFF' }}>
 
       {/* ── top bar ── */}
       <div style={{
