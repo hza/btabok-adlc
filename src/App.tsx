@@ -52,12 +52,24 @@ export default function App() {
   }, [onWheel]);
 
   // ── canvas mouse down ────────────────────────────────────────────────────────
+  const panStartPos = useRef<{ x: number; y: number } | null>(null);
+
   const handleCanvasDown = useCallback((e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest('[data-node]')) return;
-    setSelectedId(null);
+    panStartPos.current = { x: e.clientX, y: e.clientY };
     startPanDrag(e);
   }, [startPanDrag]);
+
+  const handleCanvasUp = useCallback((e: React.MouseEvent) => {
+    if (panStartPos.current) {
+      const dx = Math.abs(e.clientX - panStartPos.current.x);
+      const dy = Math.abs(e.clientY - panStartPos.current.y);
+      if (dx < 4 && dy < 4) setSelectedId(null);
+      panStartPos.current = null;
+    }
+    handleMouseUp();
+  }, [handleMouseUp]);
 
   const handleNodeDown = useCallback((e: React.MouseEvent, id: string) => {
     setSelectedId(id);
@@ -166,8 +178,8 @@ export default function App() {
             ...infiniteGridStyle }}
           onMouseDown={handleCanvasDown}
           onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+          onMouseUp={handleCanvasUp}
+          onMouseLeave={handleCanvasUp}
         >
           <div style={{
             position: 'absolute', transformOrigin: '0 0',
