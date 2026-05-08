@@ -34,6 +34,35 @@ export const PHASE_LABEL: Record<Phase, string> = {
   utilize:        'Utilize',
 };
 
+export const PHASE_DESCRIPTION: Record<Phase, string> = {
+  innovation:
+    'The entry point of every engagement. Teams explore new business opportunities, validate ideas against market demand, and establish the shared business model that anchors all downstream architecture to real customer outcomes.',
+  strategy:
+    'Translates the business model into a structured technology strategy. Capabilities are mapped, assessed for maturity, and risks are identified early. Stakeholders are aligned, objectives are measured via OKRs, and the investment roadmap is prioritised.',
+  planning:
+    'Architecture is shaped and constrained before any build begins. System boundaries are drawn, quality attributes are made testable, significant requirements become traceable ASRs, and every key decision is logged as an ADR with explicit trade-offs.',
+  transformation:
+    'Design is realised as working software and infrastructure. Bounded contexts drive service decomposition, interfaces are contractually defined, and all structural, deployment, security, and dynamic views are produced to make the architecture verifiable.',
+  utilize:
+    'The cycle closes here. Deployed architecture is measured against the OKRs set in Strategy, benefits are realised and attributed to decisions, technical debt is tracked, and lessons feed back into the next Innovation cycle.',
+};
+
+export const PHASE_GOAL: Record<Phase, string> = {
+  innovation:     'Establish a shared understanding of value, customers, and business model',
+  strategy:       'Prioritise capability investment and set measurable architectural objectives',
+  planning:       'Define, trace, and formally decide the architecture before build',
+  transformation: 'Implement, decompose, and verify the architecture across all key viewpoints',
+  utilize:        'Measure outcomes, close the loop, and seed the next cycle',
+};
+
+export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
+  innovation:     ['What problem are we solving?', 'Who are our customers and what do they value?', 'How does this create sustainable business value?'],
+  strategy:       ['What capabilities must improve?', 'Who are the key stakeholders and what do they need?', 'What are the measurable outcomes we commit to?'],
+  planning:       ['What is the system boundary?', 'What quality attributes are non-negotiable?', 'What decisions must be made and documented before build begins?'],
+  transformation: ['How do bounded contexts map to services?', 'What are the explicit contracts between components?', 'Are all architectural viewpoints covered and verified?'],
+  utilize:        ['Did the architecture deliver the promised business outcomes?', 'What debt was incurred and how will it be repaid?', 'What should the next innovation cycle learn from this one?'],
+};
+
 // ─── data types ───────────────────────────────────────────────────────────────
 export interface NodeData {
   id: string; phase: Phase; num: string; title: string; subtitle: string;

@@ -2,9 +2,10 @@ import React from 'react';
 import {
   badgeColor, BADGE_COLORS, BADGE_TYPES,
   PHASE_STYLES, PHASES, PHASE_LABEL,
+  PHASE_DESCRIPTION, PHASE_GOAL, PHASE_KEY_QUESTIONS,
   NODES,
 } from '../model';
-import type { NodeData, EdgeData } from '../model';
+import type { NodeData, EdgeData, Phase } from '../model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
 
@@ -89,6 +90,94 @@ function ConnList({ title, items, accent }: {
           <div style={{ color: '#94A3B8', fontSize: 12, marginTop: 2, fontStyle: 'italic' }}>{e.label}</div>
         </div>
       ))}
+    </div>
+  );
+}
+
+// ─── PhasePanel ───────────────────────────────────────────────────────────────
+
+interface PhasePanelProps {
+  phase: Phase;
+  onClose: () => void;
+}
+
+export function PhasePanel({ phase, onClose }: PhasePanelProps) {
+  const style  = PHASE_STYLES[phase];
+  const nodes  = NODES.filter(n => n.phase === phase);
+  const highPriority = nodes.filter(n => n.importancy === 1);
+
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <div style={{ width: 12, height: 12, borderRadius: 3, background: style.band, flexShrink: 0 }}/>
+        <div style={{ fontWeight: 700, fontSize: 17, color: '#1E293B', flex: 1 }}>
+          {PHASE_LABEL[phase]}
+        </div>
+        <button
+          onClick={onClose}
+          style={{ background: 'none', border: 'none', cursor: 'pointer',
+            color: '#94A3B8', fontSize: 18, lineHeight: 1, padding: '0 2px' }}>
+          ×
+        </button>
+      </div>
+
+      <div style={{ fontSize: 13, color: '#475569', lineHeight: 1.6,
+        padding: '10px 12px', background: '#F8FAFC', borderRadius: 8,
+        borderLeft: `3px solid ${style.band}`, marginBottom: 14 }}>
+        {PHASE_DESCRIPTION[phase]}
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <SectionLabel>Goal</SectionLabel>
+        <div style={{ fontSize: 13, color: '#1E293B', fontWeight: 500, lineHeight: 1.5 }}>
+          {PHASE_GOAL[phase]}
+        </div>
+      </div>
+
+      <Hr/>
+
+      <SectionLabel>Key questions</SectionLabel>
+      <div style={{ marginBottom: 14 }}>
+        {PHASE_KEY_QUESTIONS[phase].map((q, i) => (
+          <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 7, alignItems: 'flex-start' }}>
+            <span style={{ color: style.band, fontWeight: 700, fontSize: 14, lineHeight: 1.4, flexShrink: 0 }}>?</span>
+            <span style={{ fontSize: 13, color: '#334155', lineHeight: 1.5 }}>{q}</span>
+          </div>
+        ))}
+      </div>
+
+      <Hr/>
+
+      <SectionLabel>Artifacts ({nodes.length})</SectionLabel>
+      <div style={{ marginBottom: 6 }}>
+        {nodes.map(n => {
+          const bc = badgeColor(n.badge);
+          return (
+            <div key={n.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8,
+              marginBottom: 6, padding: '7px 10px', background: '#F8FAFC', borderRadius: 6,
+              borderLeft: `3px solid ${n.importancy === 1 ? bc : '#E2E8F0'}` }}>
+              <span style={{ color: '#94A3B8', fontWeight: 700, fontSize: 12, flexShrink: 0, paddingTop: 1 }}>
+                {n.num}
+              </span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#1E293B', lineHeight: 1.35 }}>{n.title}</div>
+                <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 1 }}>{n.subtitle}</div>
+              </div>
+              {n.importancy === 1 && (
+                <span style={{ background: `${bc}18`, color: bc, borderRadius: 3,
+                  padding: '1px 5px', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>
+                  Core
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {highPriority.length < nodes.length && (
+        <div style={{ fontSize: 12, color: '#94A3B8', fontStyle: 'italic', marginBottom: 8 }}>
+          {nodes.length - highPriority.length} medium-priority artifact{nodes.length - highPriority.length > 1 ? 's' : ''} not shown as core
+        </div>
+      )}
     </div>
   );
 }

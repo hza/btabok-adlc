@@ -9,7 +9,7 @@ import { computeEdgePaths } from './utils/edgeUtils';
 import { useCanvasInteraction } from './hooks/useCanvasInteraction';
 import NodeCard from './components/NodeCard';
 import TopBar from './components/TopBar';
-import { SelectedPanel, LegendPanel } from './components/Sidebar';
+import { SelectedPanel, LegendPanel, PhasePanel } from './components/Sidebar';
 
 const EDGE_GREY_COLORS: Record<number, string> = {
   1: 'rgba(30,30,30,0.30)',
@@ -32,7 +32,8 @@ export default function App() {
     resetPositions, fitToScreen,
   } = useCanvasInteraction();
 
-  const [selectedId,  setSelectedId]  = useState<string | null>(null);
+  const [selectedId,    setSelectedId]    = useState<string | null>(null);
+  const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
   const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
@@ -215,10 +216,14 @@ export default function App() {
               </defs>
 
               {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
-                <g key={ph}>
+                <g key={ph} style={{ cursor: 'pointer' }} onClick={() => {
+                  setSelectedId(null);
+                  setSelectedPhase(p => p === ph ? null : ph);
+                }}>
                   <rect x={minX} y={0} width={maxX - minX} height={canvasH}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
-                  <rect x={minX} y={0} width={maxX - minX} height={24} fill={style.band}/>
+                  <rect x={minX} y={0} width={maxX - minX} height={24}
+                    fill={style.band} opacity={selectedPhase === ph ? 1 : 0.75}/>
                   <text x={minX + (maxX - minX) / 2} y={16}
                     textAnchor="middle" fontSize={12} fontWeight="600"
                     fontFamily="system-ui,-apple-system,sans-serif"
@@ -277,7 +282,9 @@ export default function App() {
         }}>
           {selectedNode
             ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming}/>
-            : <LegendPanel/>}
+            : selectedPhase
+              ? <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>
+              : <LegendPanel/>}
         </div>}
       </div>
     </div>
