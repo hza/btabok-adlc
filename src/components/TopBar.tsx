@@ -10,6 +10,7 @@ interface TopBarProps {
   onReset: () => void;
   onFit: () => void;
   onCopyPositions: () => void;
+  onDownloadSVG: () => void;
   onEdgeFilterChange: (v: 'all' | 'input') => void;
   onMinImportanceChange: (v: number) => void;
   onShowLabelsChange: (v: boolean) => void;
@@ -18,7 +19,7 @@ interface TopBarProps {
 export default function TopBar({
   edgeFilter, minImportance, showLabels, copied,
   nodeCount, edgeCount,
-  onReset, onFit, onCopyPositions,
+  onReset, onFit, onCopyPositions, onDownloadSVG,
   onEdgeFilterChange, onMinImportanceChange, onShowLabelsChange,
 }: TopBarProps) {
   return (
@@ -35,6 +36,7 @@ export default function TopBar({
       <TopBtn onClick={onReset}>Reset layout</TopBtn>
       <TopBtn onClick={onFit}>Fit to screen</TopBtn>
       <TopBtn onClick={onCopyPositions}>{copied ? '✓ Copied!' : 'Copy positions'}</TopBtn>
+      <TopBtn onClick={onDownloadSVG}>Download SVG</TopBtn>
       <Divider/>
       <select
         value={edgeFilter}

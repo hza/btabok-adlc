@@ -12,12 +12,12 @@ import TopBar from './components/TopBar';
 import { SelectedPanel, LegendPanel } from './components/Sidebar';
 
 const EDGE_GREY_COLORS: Record<number, string> = {
-  1: 'rgba(30,30,30,0.10)',
-  2: 'rgba(30,30,30,0.22)',
-  3: 'rgba(30,30,30,0.36)',
+  1: 'rgba(30,30,30,0.30)',
+  2: 'rgba(30,30,30,0.36)',
+  3: 'rgba(30,30,30,0.40)',
   4: 'rgba(30,30,30,0.52)',
   5: 'rgba(30,30,30,0.68)',
-  6: 'rgba(30,30,30,0.85)',
+  6: 'rgba(30,30,30,0.95)',
 };
 
 function edgeGreyColor(importance: number): string {
@@ -93,6 +93,22 @@ export default function App() {
       setTimeout(() => setCopied(false), 2000);
     });
   }, [positions]);
+
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const handleDownloadSVG = useCallback(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(svg);
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'btabook-adlc.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
 
   // ── derived ──────────────────────────────────────────────────────────────────
   const canvasW = Math.max(...Object.values(positions).map(p => p.x)) + NODE_W + 80;
@@ -172,6 +188,7 @@ export default function App() {
         minImportance={minImportance}
         onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
+        onDownloadSVG={handleDownloadSVG}
       />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -191,7 +208,7 @@ export default function App() {
             position: 'absolute', transformOrigin: '0 0',
             transform: `translate(${pan.x}px,${pan.y}px) scale(${scale})`,
           }}>
-            <svg width={canvasW} height={canvasH} overflow="visible"
+            <svg ref={svgRef} width={canvasW} height={canvasH} overflow="visible"
               style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
               <defs>
                 <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
