@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface TopBarProps {
-  edgeFilter: 'all' | 'input';
   minImportance: number;
   showLabels: boolean;
   copied: boolean;
@@ -11,16 +10,15 @@ interface TopBarProps {
   onFit: () => void;
   onCopyPositions: () => void;
   onDownloadSVG: () => void;
-  onEdgeFilterChange: (v: 'all' | 'input') => void;
   onMinImportanceChange: (v: number) => void;
   onShowLabelsChange: (v: boolean) => void;
 }
 
 export default function TopBar({
-  edgeFilter, minImportance, showLabels, copied,
+  minImportance, showLabels, copied,
   nodeCount, edgeCount,
   onReset, onFit, onCopyPositions, onDownloadSVG,
-  onEdgeFilterChange, onMinImportanceChange, onShowLabelsChange,
+  onMinImportanceChange, onShowLabelsChange,
 }: TopBarProps) {
   return (
     <div style={{
@@ -38,26 +36,13 @@ export default function TopBar({
       <TopBtn onClick={onCopyPositions}>{copied ? '✓ Copied!' : 'Copy positions'}</TopBtn>
       <TopBtn onClick={onDownloadSVG}>Download SVG</TopBtn>
       <Divider/>
-      <select
-        value={edgeFilter}
-        onChange={e => onEdgeFilterChange(e.target.value as 'all' | 'input')}
-        style={{
-          background: '#334155', color: '#CBD5E1', border: '1px solid #475569',
-          borderRadius: 5, padding: '3px 8px', fontSize: 13,
-          cursor: 'pointer', fontFamily: 'inherit',
-        }}
-      >
-        <option value="all">All edges</option>
-        <option value="input">Input flows</option>
-      </select>
       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
-        Min importance:
+        Edge details:
         <input
           type="range" min={1} max={6} value={7 - minImportance}
           onChange={e => onMinImportanceChange(7 - Number(e.target.value))}
           style={{ accentColor: '#7F77DD', width: 80, cursor: 'pointer' }}
         />
-        <span style={{ minWidth: 14, color: '#CBD5E1' }}>{minImportance}</span>
       </label>
       <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, cursor: 'pointer', color: '#94A3B8' }}>
         <input type="checkbox" checked={showLabels} onChange={e => onShowLabelsChange(e.target.checked)}

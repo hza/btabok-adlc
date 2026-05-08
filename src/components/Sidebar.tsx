@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  badgeColor, BADGE_COLORS, BADGE_LABELS,
+  badgeColor, BADGE_COLORS, BADGE_TYPES,
   PHASE_STYLES, PHASES, PHASE_LABEL,
   NODES, EDGES,
 } from '../model';
@@ -101,10 +101,13 @@ export function LegendPanel() {
       <div style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', marginBottom: 12 }}>Legend</div>
 
       <SectionLabel>Badge types</SectionLabel>
-      {Object.entries(BADGE_COLORS).map(([key, color]) => (
-        <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
-          <div style={{ width: 11, height: 11, borderRadius: 3, background: color, flexShrink: 0 }}/>
-          <span style={{ color: '#334155', fontSize: 13 }}>{BADGE_LABELS[key]}</span>
+      {BADGE_TYPES.map(({ badge, color, description }) => (
+        <div key={badge} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
+          <span style={{ background: `${color}18`, color, borderRadius: 4,
+            padding: '1px 6px', fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
+            {badge}
+          </span>
+          <span style={{ color: '#334155', fontSize: 13 }}>{description}</span>
         </div>
       ))}
 

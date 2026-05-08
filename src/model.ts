@@ -8,14 +8,12 @@ export const BADGE_COLORS: Record<string, string> = {
   amber:  '#BA7517',
 };
 
-export const BADGE_LABELS: Record<string, string> = {
-  purple: 'Core',
-  teal:   'Software',
-  coral:  'Solution',
-  green:  'Practice',
-  gray:   'Multiple',
-  amber:  'External',
-};
+export const BADGE_TYPES: { badge: string; color: string; description: string }[] = [
+  { badge: 'BTABoK', color: '#7F77DD', description: 'BTABoK native artifact' },
+  { badge: 'DDD',    color: '#888780', description: 'Domain-Driven Design' },
+  { badge: 'C4',     color: '#BA7517', description: 'C4 model' },
+  { badge: 'OWASP',  color: '#BA7517', description: 'OWASP' },
+];
 
 export const PHASE_STYLES: Record<string, { bg: string; band: string; text: string }> = {
   innovation:     { bg: '#F9FAFB', band: '#D1D5DB', text: '#111827' },
@@ -88,6 +86,7 @@ export const NODES: NodeData[] = [
   { id:'n20', phase:'transformation', num:'20', title:'Sequence / Scenario View',             subtitle:'Time-ordered message flow for key use cases',                  link:'https://c4model.com/#DynamicDiagram',                                                                                badge:'C4', importancy:1, importancyReason:'Dynamic behaviour verification catches integration failures and timing assumptions before they reach production', note:'BTABoK gap: scenario view (Views & Viewpoints) — use UML Sequence or C4 Dynamic Diagram', external:true},
   { id:'n21', phase:'transformation', num:'21', title:'Technical Loan Request Card',          subtitle:'Debt as a loan: principal, interest, repayment plan',          link:'https://iasa-global.github.io/btabok/technical_loan_request_card.html',  badge:'BTABoK', importancy:1, importancyReason:'Explicit debt management is a professional obligation — treating shortcuts as loans with a repayment plan keeps architectural integrity visible to business', note:'One card per technical debt item', recurring:true},
   { id:'n22', phase:'utilize',        num:'22', title:'Benefits Realization View Canvas',     subtitle:'Decisions → enablers → measurable business benefits',          link:'https://iasa-global.github.io/btabok/benefits_realization_view_canvas.html', badge:'BTABoK', importancy:1, importancyReason:'Closes the loop between architecture decisions and business outcomes — without it, architecture value is claimed but never demonstrated' },
+  { id:'n30', phase:'strategy',       num:'07a',title:'Strategic Roadmap Canvas',             subtitle:'Portfolio-level IT strategic direction, initiatives, dependencies', link:'https://iasa-global.github.io/btabok/strategic_roadmap_canvas.html',      badge:'BTABoK', importancy:1, importancyReason:'Bridges business vision and OKRs to a portfolio of IT initiatives — without it, the Layered Roadmap has no strategic anchor and initiatives compete without alignment' },
 ];
 
 // ─── edge data ────────────────────────────────────────────────────────────────
@@ -121,6 +120,13 @@ export const EDGES: EdgeData[] = [
   { id:'e49', from:'n08', to:'n11', label:'context sets stimulus environment',      tag:'input', importance:3 },
   { id:'e50', from:'n11', to:'n14', label:'QA tactics inform ADR decisions',        tag:'input', importance:4 },
 
+  // ── Strategic Roadmap Canvas (n30) ───────────────────────────────────────
+  { id:'e82', from:'n02', to:'n30', label:'capabilities anchor strategic IT initiatives', tag:'input', importance:4 },
+  { id:'e83', from:'n05', to:'n30', label:'business case defines initiative scope',       tag:'input', importance:3 },
+  { id:'e84', from:'n06', to:'n30', label:'principles constrain strategic initiatives',   tag:'input', importance:3 },
+  { id:'e85', from:'n23', to:'n30', label:'OKRs align strategic IT direction',            tag:'input', importance:4 },
+  { id:'e86', from:'n30', to:'n07', label:'strategic IT direction → phased delivery',     tag:'input', importance:5 },
+
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
   { id:'e51', from:'n05', to:'n23', label:'business case seeds OKR objectives',     tag:'input', importance:3 },
   { id:'e53', from:'n23', to:'n07', label:'objectives set roadmap goals',           tag:'input', importance:4 },
@@ -137,6 +143,7 @@ export const EDGES: EdgeData[] = [
   { id:'e63', from:'n25', to:'n29', label:'risk exposure → security requirements',  tag:'input', importance:4 },
 
   // ── Service Blueprint (n26) ────────────────────────────────────────────────
+  { id:'e66', from:'n07', to:'n26', label:'roadmap technology lane references service blueprints', tag:'input', importance:3 },
   { id:'e67', from:'n26', to:'n08', label:'service boundary → context view',        tag:'input', importance:3 },
   { id:'e68', from:'n26', to:'n17', label:'front-stage ops → service interface',    tag:'input', importance:4 },
 

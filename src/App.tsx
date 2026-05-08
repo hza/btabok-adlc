@@ -35,7 +35,6 @@ export default function App() {
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
   const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
-  const [edgeFilter,  setEdgeFilter]  = useState<'all' | 'input'>('input');
   const [minImportance, setMinImportance] = useState(1);
   const [copied,      setCopied]      = useState(false);
 
@@ -139,7 +138,6 @@ export default function App() {
   };
 
   const visibleEdges = EDGES
-    .filter(e => edgeFilter === 'input' ? e.tag === 'input' : true)
     .filter(e => e.importance >= minImportance);
 
   const connectedEdgeIds = selectedId
@@ -176,7 +174,6 @@ export default function App() {
       fontFamily: 'system-ui,-apple-system,sans-serif', background: '#FFFFFF' }}>
 
       <TopBar
-        edgeFilter={edgeFilter}
         showLabels={showLabels}
         copied={copied}
         nodeCount={NODES.length}
@@ -184,7 +181,6 @@ export default function App() {
         onReset={resetPositions}
         onFit={() => containerRef.current && fitToScreen(containerRef.current)}
         onCopyPositions={handleCopyPositions}
-        onEdgeFilterChange={setEdgeFilter}
         minImportance={minImportance}
         onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
