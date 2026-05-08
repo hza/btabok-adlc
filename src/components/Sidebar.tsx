@@ -101,70 +101,70 @@ export function LegendPanel() {
       <div style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', marginBottom: 12 }}>Legend</div>
 
       <SectionLabel>Badge types</SectionLabel>
-      {BADGE_TYPES.map(({ badge, color, description }) => (
-        <div key={badge} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
-          <span style={{ background: `${color}18`, color, borderRadius: 4,
-            padding: '1px 6px', fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
-            {badge}
-          </span>
-          <span style={{ color: '#334155', fontSize: 13 }}>{description}</span>
-        </div>
-      ))}
+          {BADGE_TYPES.map(({ badge, color, description }) => (
+            <div key={badge} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
+              <span style={{ background: `${color}18`, color, borderRadius: 4,
+                padding: '1px 6px', fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
+                {badge}
+              </span>
+              <span style={{ color: '#334155', fontSize: 13 }}>{description}</span>
+            </div>
+          ))}
 
-      <Hr/>
+          <Hr/>
 
-      <SectionLabel>Border styles</SectionLabel>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
-        <div style={{ width: 28, height: 14, border: '2px dashed #888780', borderRadius: 3, flexShrink: 0 }}/>
-        <span style={{ color: '#334155', fontSize: 13 }}>Multiple artifact</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-        <div style={{ width: 28, height: 14, border: `2px dashed ${BADGE_COLORS.amber}`, borderRadius: 3, flexShrink: 0 }}/>
-        <span style={{ color: '#334155', fontSize: 13 }}>External (gap)</span>
-      </div>
-
-      <Hr/>
-
-      <SectionLabel>Importancy</SectionLabel>
-      <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.7 }}>
-        1 = High<br/>
-        2 = Avg<br/>
-        3 = Low
-      </div>
-
-      <Hr/>
-
-      <SectionLabel>Phases</SectionLabel>
-      {PHASES.map(ph => {
-        const s = PHASE_STYLES[ph];
-        const count = NODES.filter(n => n.phase === ph).length;
-        return (
-          <div key={ph} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
-            <div style={{ width: 11, height: 11, borderRadius: 3, background: s.band, flexShrink: 0 }}/>
-            <span style={{ color: '#334155', fontSize: 13 }}>{PHASE_LABEL[ph]}</span>
-            <span style={{ color: '#94A3B8', fontSize: 12, marginLeft: 'auto' }}>{count}</span>
+          <SectionLabel>Border styles</SectionLabel>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
+            <div style={{ width: 28, height: 14, border: '2px dashed #888780', borderRadius: 3, flexShrink: 0 }}/>
+            <span style={{ color: '#334155', fontSize: 13 }}>Multiple artifact</span>
           </div>
-        );
-      })}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+            <div style={{ width: 28, height: 14, border: `2px dashed ${BADGE_COLORS.amber}`, borderRadius: 3, flexShrink: 0 }}/>
+            <span style={{ color: '#334155', fontSize: 13 }}>External (gap)</span>
+          </div>
 
-      <Hr/>
+          <Hr/>
 
-      <div style={{ background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
-        fontSize: 13, color: '#64748B', lineHeight: 1.7 }}>
-        <strong style={{ color: '#1E293B', display: 'block', marginBottom: 4 }}>Statistics</strong>
-        Nodes: <strong>{NODES.length}</strong><br/>
-        Edges: <strong>{EDGES.length}</strong><br/>
-        Phases: <strong>{PHASES.length}</strong>
-      </div>
+          <SectionLabel>Importancy</SectionLabel>
+          <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.7 }}>
+            1 = High<br/>
+            2 = Avg<br/>
+            3 = Low
+          </div>
 
-      <div style={{ marginTop: 12, background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
-        fontSize: 12, color: '#94A3B8', lineHeight: 1.7 }}>
-        <strong style={{ color: '#475569', display: 'block', marginBottom: 4 }}>Interactions</strong>
-        Click a node to explore connections<br/>
-        Drag nodes to rearrange<br/>
-        Scroll to zoom · Drag canvas to pan<br/>
-        Phase chips filter the view
-      </div>
+          <Hr/>
+
+          <SectionLabel>Phases</SectionLabel>
+          {PHASES.map(ph => {
+            const s = PHASE_STYLES[ph];
+            const count = NODES.filter(n => n.phase === ph).length;
+            return (
+              <div key={ph} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
+                <div style={{ width: 11, height: 11, borderRadius: 3, background: s.band, flexShrink: 0 }}/>
+                <span style={{ color: '#334155', fontSize: 13 }}>{PHASE_LABEL[ph]}</span>
+                <span style={{ color: '#94A3B8', fontSize: 12, marginLeft: 'auto' }}>{count}</span>
+              </div>
+            );
+          })}
+
+          <Hr/>
+
+          <div style={{ background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
+            fontSize: 13, color: '#64748B', lineHeight: 1.7 }}>
+            <strong style={{ color: '#1E293B', display: 'block', marginBottom: 4 }}>Statistics</strong>
+            Nodes: <strong>{NODES.length}</strong><br/>
+            Edges: <strong>{EDGES.length}</strong><br/>
+            Phases: <strong>{PHASES.length}</strong>
+          </div>
+
+          <div style={{ marginTop: 12, background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
+            fontSize: 12, color: '#94A3B8', lineHeight: 1.7 }}>
+            <strong style={{ color: '#475569', display: 'block', marginBottom: 4 }}>Interactions</strong>
+            Click a node to explore connections<br/>
+            Drag nodes to rearrange<br/>
+            Scroll to zoom · Drag canvas to pan<br/>
+            Phase chips filter the view
+          </div>
     </div>
   );
 }

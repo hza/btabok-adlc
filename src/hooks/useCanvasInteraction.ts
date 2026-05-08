@@ -87,6 +87,8 @@ export function useCanvasInteraction() {
 
   const resetPositions = useCallback(() => {
     setPositions(Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }])));
+    setScale(1);
+    setPan({ x: 24, y: 24 });
   }, []);
 
   const fitToScreen = useCallback((containerEl: HTMLElement) => {

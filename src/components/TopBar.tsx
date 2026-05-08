@@ -4,6 +4,7 @@ interface TopBarProps {
   minImportance: number;
   showLabels: boolean;
   showSwimlanes: boolean;
+  showSidebar: boolean;
   copied: boolean;
   nodeCount: number;
   edgeCount: number;
@@ -13,13 +14,14 @@ interface TopBarProps {
   onMinImportanceChange: (v: number) => void;
   onShowLabelsChange: (v: boolean) => void;
   onShowSwimlanesChange: (v: boolean) => void;
+  onToggleSidebar: () => void;
 }
 
 export default function TopBar({
-  minImportance, showLabels, showSwimlanes, copied,
+  minImportance, showLabels, showSwimlanes, showSidebar, copied,
   nodeCount, edgeCount,
   onReset, onFit, onCopyPositions,
-  onMinImportanceChange, onShowLabelsChange, onShowSwimlanesChange,
+  onMinImportanceChange, onShowLabelsChange, onShowSwimlanesChange, onToggleSidebar,
 }: TopBarProps) {
   return (
     <div style={{
@@ -57,6 +59,20 @@ export default function TopBar({
       <span style={{ marginLeft: 'auto', fontSize: 12, color: '#475569' }}>
         {nodeCount} nodes · {edgeCount} edges · scroll = zoom · drag canvas = pan
       </span>
+      <Divider/>
+      <button
+        onClick={onToggleSidebar}
+        title={showSidebar ? 'Hide sidebar' : 'Show sidebar'}
+        style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: '#94A3B8', fontSize: 18, lineHeight: 1, padding: '2px 4px',
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+          <line x1="12" y1="1.5" x2="12" y2="16.5" stroke="currentColor" strokeWidth="1.5"/>
+        </svg>
+      </button>
     </div>
   );
 }

@@ -36,6 +36,7 @@ export default function App() {
   const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
+  const [showLegend, setShowLegend] = useState(true);
   const [minImportance, setMinImportance] = useState(1);
   const [copied,      setCopied]      = useState(false);
 
@@ -162,6 +163,7 @@ export default function App() {
       <TopBar
         showLabels={showLabels}
         showSwimlanes={showSwimlanes}
+        showSidebar={showLegend}
         copied={copied}
         nodeCount={NODES.length}
         edgeCount={visibleEdges.length}
@@ -172,6 +174,7 @@ export default function App() {
         onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
         onShowSwimlanesChange={setShowSwimlanes}
+        onToggleSidebar={() => setShowLegend(v => !v)}
       />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -258,7 +261,7 @@ export default function App() {
         </div>
 
         {/* sidebar */}
-        <div style={{
+        {showLegend && <div style={{
           width: 270, background: '#FFFFFF',
           borderLeft: '1px solid #E2E8F0',
           overflowY: 'auto', flexShrink: 0, fontSize: 14, color: '#334155',
@@ -266,7 +269,7 @@ export default function App() {
           {selectedNode
             ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming}/>
             : <LegendPanel/>}
-        </div>
+        </div>}
       </div>
     </div>
   );
