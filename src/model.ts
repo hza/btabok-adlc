@@ -56,6 +56,7 @@ export function badgeColor(badge: string): string {
 export interface EdgeData {
   id: string; from: string; to: string; label: string;
   tag?: 'input';
+  importance: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 }
 
 // ─── node data ────────────────────────────────────────────────────────────────
@@ -91,63 +92,63 @@ export const NODES: NodeData[] = [
 
 // ─── edge data ────────────────────────────────────────────────────────────────
 export const EDGES: EdgeData[] = [
-  { id:'e01', from:'n01', to:'n02', label:'seeds capability hierarchy',          tag:'input' },
-  { id:'e03', from:'n02', to:'n06', label:'source for principles',               tag:'input' },
-  { id:'e06', from:'n03', to:'n04', label:'populates grid',                      tag:'input' },
-  { id:'e11', from:'n05', to:'n12', label:'success criteria → definition',       tag:'input' },
-  { id:'e12', from:'n06', to:'n12', label:'principles populate definition',       tag:'input' },
-  { id:'e15', from:'n08', to:'n09', label:'interactions trigger ASRs',           tag:'input' },
-  { id:'e18', from:'n09', to:'n14', label:'ASR IDs referenced in ADR',           tag:'input' },
-  { id:'e20', from:'n10', to:'n14', label:'validated hypothesis informs ADR',    tag:'input' },
-  { id:'e22', from:'n12', to:'n13', label:'scope constrains design options',      tag:'input' },
-  { id:'e23', from:'n12', to:'n16', label:'boundary → context partitioning',      tag:'input' },
-  { id:'e25', from:'n13', to:'n14', label:'options → ADR scored columns',        tag:'input' },
-  { id:'e27', from:'n14', to:'n15', label:'spawns cascade card',                 tag:'input' },
-  { id:'e28', from:'n14', to:'n21', label:'shortcuts → loan card',               tag:'input' },
-  { id:'e30', from:'n16', to:'n17', label:'language → service operations',       tag:'input' },
-  { id:'e32', from:'n17', to:'n14', label:'service choices trigger ADR',         tag:'input' },
-  { id:'e33', from:'n17', to:'n20', label:'operations → sequence messages',      tag:'input' },
-  { id:'e36', from:'n21', to:'n22', label:'debt reduces realised benefits',      tag:'input' },
-  { id:'e37', from:'n22', to:'n07', label:'outcomes reprioritise roadmap',       tag:'input' },
-  { id:'e40', from:'n22', to:'n01', label:'lessons open new innovation cycle',   tag:'input' },
-  { id:'e43', from:'n05', to:'n06', label:'business constraints → principles',   tag:'input' },
-  { id:'e45', from:'n07', to:'n08', label:'roadmap scope → system boundary',     tag:'input' },
-  { id:'e46', from:'n09', to:'n10', label:'ASRs generate hypotheses',            tag:'input' },
-  { id:'e47', from:'n15', to:'n16', label:'cascade effects → context boundaries', tag:'input' },
+  { id:'e01', from:'n01', to:'n02', label:'seeds capability hierarchy',          tag:'input', importance:9 },
+  { id:'e03', from:'n02', to:'n06', label:'source for principles',               tag:'input', importance:8 },
+  { id:'e06', from:'n03', to:'n04', label:'populates grid',                      tag:'input', importance:6 },
+  { id:'e11', from:'n05', to:'n12', label:'success criteria → definition',       tag:'input', importance:8 },
+  { id:'e12', from:'n06', to:'n12', label:'principles populate definition',       tag:'input', importance:8 },
+  { id:'e15', from:'n08', to:'n09', label:'interactions trigger ASRs',           tag:'input', importance:10 },
+  { id:'e18', from:'n09', to:'n14', label:'ASR IDs referenced in ADR',           tag:'input', importance:10 },
+  { id:'e20', from:'n10', to:'n14', label:'validated hypothesis informs ADR',    tag:'input', importance:5 },
+  { id:'e22', from:'n12', to:'n13', label:'scope constrains design options',      tag:'input', importance:8 },
+  { id:'e23', from:'n12', to:'n16', label:'boundary → context partitioning',      tag:'input', importance:7 },
+  { id:'e25', from:'n13', to:'n14', label:'options → ADR scored columns',        tag:'input', importance:9 },
+  { id:'e27', from:'n14', to:'n15', label:'spawns cascade card',                 tag:'input', importance:6 },
+  { id:'e28', from:'n14', to:'n21', label:'shortcuts → loan card',               tag:'input', importance:6 },
+  { id:'e30', from:'n16', to:'n17', label:'language → service operations',       tag:'input', importance:8 },
+  { id:'e32', from:'n17', to:'n14', label:'service choices trigger ADR',         tag:'input', importance:8 },
+  { id:'e33', from:'n17', to:'n20', label:'operations → sequence messages',      tag:'input', importance:7 },
+  { id:'e36', from:'n21', to:'n22', label:'debt reduces realised benefits',      tag:'input', importance:6 },
+  { id:'e37', from:'n22', to:'n07', label:'outcomes reprioritise roadmap',       tag:'input', importance:7 },
+  { id:'e40', from:'n22', to:'n01', label:'lessons open new innovation cycle',   tag:'input', importance:7 },
+  { id:'e43', from:'n05', to:'n06', label:'business constraints → principles',   tag:'input', importance:8 },
+  { id:'e45', from:'n07', to:'n08', label:'roadmap scope → system boundary',     tag:'input', importance:8 },
+  { id:'e46', from:'n09', to:'n10', label:'ASRs generate hypotheses',            tag:'input', importance:5 },
+  { id:'e47', from:'n15', to:'n16', label:'cascade effects → context boundaries', tag:'input', importance:6 },
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
-  { id:'e48', from:'n09', to:'n11', label:'ASRs define quality scenarios',         tag:'input' },
-  { id:'e49', from:'n08', to:'n11', label:'context sets stimulus environment',      tag:'input' },
-  { id:'e50', from:'n11', to:'n14', label:'QA tactics inform ADR decisions',        tag:'input' },
+  { id:'e48', from:'n09', to:'n11', label:'ASRs define quality scenarios',         tag:'input', importance:9 },
+  { id:'e49', from:'n08', to:'n11', label:'context sets stimulus environment',      tag:'input', importance:7 },
+  { id:'e50', from:'n11', to:'n14', label:'QA tactics inform ADR decisions',        tag:'input', importance:8 },
 
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
-  { id:'e51', from:'n05', to:'n23', label:'business case seeds OKR objectives',     tag:'input' },
-  { id:'e53', from:'n23', to:'n07', label:'objectives set roadmap goals',           tag:'input' },
-  { id:'e54', from:'n22', to:'n23', label:'realized benefits validate OKRs',        tag:'input' },
+  { id:'e51', from:'n05', to:'n23', label:'business case seeds OKR objectives',     tag:'input', importance:7 },
+  { id:'e53', from:'n23', to:'n07', label:'objectives set roadmap goals',           tag:'input', importance:8 },
+  { id:'e54', from:'n22', to:'n23', label:'realized benefits validate OKRs',        tag:'input', importance:6 },
 
   // ── Capability Assessment (n24) ────────────────────────────────────────────
-  { id:'e55', from:'n02', to:'n24', label:'capabilities are assessed for maturity', tag:'input' },
-  { id:'e56', from:'n24', to:'n07', label:'gaps drive roadmap priorities',          tag:'input' },
-  { id:'e58', from:'n24', to:'n25', label:'weak capabilities expose risks',         tag:'input' },
+  { id:'e55', from:'n02', to:'n24', label:'capabilities are assessed for maturity', tag:'input', importance:8 },
+  { id:'e56', from:'n24', to:'n07', label:'gaps drive roadmap priorities',          tag:'input', importance:9 },
+  { id:'e58', from:'n24', to:'n25', label:'weak capabilities expose risks',         tag:'input', importance:7 },
 
   // ── Risk Methods Card (n25) ────────────────────────────────────────────────
-  { id:'e61', from:'n25', to:'n14', label:'risks trigger ADRs',                     tag:'input' },
-  { id:'e62', from:'n25', to:'n09', label:'risks become ASRs',                      tag:'input' },
-  { id:'e63', from:'n25', to:'n29', label:'risk exposure → security requirements',  tag:'input' },
+  { id:'e61', from:'n25', to:'n14', label:'risks trigger ADRs',                     tag:'input', importance:8 },
+  { id:'e62', from:'n25', to:'n09', label:'risks become ASRs',                      tag:'input', importance:9 },
+  { id:'e63', from:'n25', to:'n29', label:'risk exposure → security requirements',  tag:'input', importance:8 },
 
   // ── Service Blueprint (n26) ────────────────────────────────────────────────
-  { id:'e67', from:'n26', to:'n08', label:'service boundary → context view',        tag:'input' },
-  { id:'e68', from:'n26', to:'n17', label:'front-stage ops → service interface',    tag:'input' },
+  { id:'e67', from:'n26', to:'n08', label:'service boundary → context view',        tag:'input', importance:7 },
+  { id:'e68', from:'n26', to:'n17', label:'front-stage ops → service interface',    tag:'input', importance:8 },
 
 
   // ── Container / Component View (n28) ──────────────────────────────────────
-  { id:'e74', from:'n08', to:'n28', label:'context boundary decomposed to containers', tag:'input' },
-  { id:'e75', from:'n16', to:'n28', label:'bounded contexts map to containers',     tag:'input' },
-  { id:'e76', from:'n28', to:'n17', label:'containers expose service interfaces',   tag:'input' },
-  { id:'e77', from:'n28', to:'n18', label:'containers mapped to deployment nodes',  tag:'input' },
+  { id:'e74', from:'n08', to:'n28', label:'context boundary decomposed to containers', tag:'input', importance:9 },
+  { id:'e75', from:'n16', to:'n28', label:'bounded contexts map to containers',     tag:'input', importance:9 },
+  { id:'e76', from:'n28', to:'n17', label:'containers expose service interfaces',   tag:'input', importance:8 },
+  { id:'e77', from:'n28', to:'n18', label:'containers mapped to deployment nodes',  tag:'input', importance:8 },
 
   // ── Security Architecture View (n29) ──────────────────────────────────────
-  { id:'e80', from:'n29', to:'n14', label:'security decisions → ADRs',             tag:'input' },
-  { id:'e81', from:'n29', to:'n18', label:'security zones constrain deployment',    tag:'input' },
+  { id:'e80', from:'n29', to:'n14', label:'security decisions → ADRs',             tag:'input', importance:9 },
+  { id:'e81', from:'n29', to:'n18', label:'security zones constrain deployment',    tag:'input', importance:8 },
 
 ];
