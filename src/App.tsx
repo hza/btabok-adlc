@@ -26,6 +26,10 @@ export default function App() {
   const [copied,      setCopied]      = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const [nodeHeights, setNodeHeights] = useState<Record<string, number>>({});
+  const handleHeightChange = useCallback((id: string, h: number) => {
+    setNodeHeights(prev => prev[id] === h ? prev : { ...prev, [id]: h });
+  }, []);
 
   // ── wheel zoom ───────────────────────────────────────────────────────────────
   const onWheel = useCallback((e: WheelEvent) => {
@@ -112,7 +116,7 @@ export default function App() {
     return { ph, minX, maxX, style: PHASE_STYLES[ph] };
   }).filter(Boolean) as { ph: Phase; minX: number; maxX: number; style: { bg:string; band:string; text:string } }[];
 
-  const edgePaths = computeEdgePaths(visibleEdges, positions);
+  const edgePaths = computeEdgePaths(visibleEdges, positions, nodeHeights);
 
   const selectedNode = selectedId ? NODES.find(n => n.id === selectedId) ?? null : null;
   const outgoing = selectedId
@@ -216,7 +220,8 @@ export default function App() {
                 <NodeCard key={node.id} node={node} pos={positions[node.id]}
                   selected={node.id === selectedId}
                   dimmed={!!(dimSel || dimPhase)}
-                  onMouseDown={e => handleNodeDown(e, node.id)}/>
+                  onMouseDown={e => handleNodeDown(e, node.id)}
+                  onHeightChange={handleHeightChange}/>
               );
             })}
           </div>

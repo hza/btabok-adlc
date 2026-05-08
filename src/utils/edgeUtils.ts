@@ -26,12 +26,13 @@ function buildSideGroups(edgeSideInfo: ReturnType<typeof computeEdgeSideInfo>) {
 function computeEdgeSideInfo(
   edges: EdgeData[],
   positions: Record<string, { x: number; y: number }>,
+  heights: Record<string, number>,
 ) {
   return edges.map(edge => {
     const fn = NODES.find(n => n.id === edge.from)!;
     const tn = NODES.find(n => n.id === edge.to)!;
     const fp = positions[edge.from], tp = positions[edge.to];
-    const fh = nodeH(fn), th = nodeH(tn);
+    const fh = heights[edge.from] ?? nodeH(fn), th = heights[edge.to] ?? nodeH(tn);
     const fcx = fp.x + NODE_W / 2, fcy = fp.y + fh / 2;
     const tcx = tp.x + NODE_W / 2, tcy = tp.y + th / 2;
     const dx = tcx - fcx, dy = tcy - fcy;
@@ -53,10 +54,11 @@ function getPort(
   edgeId: string,
   positions: Record<string, { x: number; y: number }>,
   sideGroups: Map<string, string[]>,
+  heights: Record<string, number>,
 ): { x: number; y: number } {
   const node = NODES.find(n => n.id === nodeId)!;
   const pos  = positions[nodeId];
-  const h    = nodeH(node);
+  const h    = heights[nodeId] ?? nodeH(node);
   const key  = `${nodeId}:${side}`;
   const group = sideGroups.get(key) ?? [edgeId];
   const idx   = group.indexOf(edgeId);
@@ -79,14 +81,15 @@ const G = 8;
 export function computeEdgePaths(
   edges: EdgeData[],
   positions: Record<string, { x: number; y: number }>,
+  heights: Record<string, number> = {},
 ): EdgePath[] {
-  const edgeSideInfo = computeEdgeSideInfo(edges, positions);
+  const edgeSideInfo = computeEdgeSideInfo(edges, positions, heights);
   const sideGroups   = buildSideGroups(edgeSideInfo);
 
   return edges.map((edge, i) => {
     const { fromSide, toSide } = edgeSideInfo[i];
-    const src = getPort(edge.from, fromSide, edge.id, positions, sideGroups);
-    const dst = getPort(edge.to,   toSide,   edge.id, positions, sideGroups);
+    const src = getPort(edge.from, fromSide, edge.id, positions, sideGroups, heights);
+    const dst = getPort(edge.to,   toSide,   edge.id, positions, sideGroups, heights);
 
     let x1 = src.x, y1 = src.y;
     let x2 = dst.x, y2 = dst.y;

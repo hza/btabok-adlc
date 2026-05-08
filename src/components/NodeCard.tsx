@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { BADGE_COLORS } from '../model';
 import type { NodeData } from '../model';
 import { NODE_W } from '../constants';
@@ -9,9 +9,17 @@ interface CardProps {
   selected: boolean;
   dimmed: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
+  onHeightChange?: (id: string, height: number) => void;
 }
 
-const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown }: CardProps) {
+const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown, onHeightChange }: CardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!cardRef.current || !onHeightChange) return;
+    const h = cardRef.current.offsetHeight;
+    if (h > 0) onHeightChange(node.id, h);
+  });
+
   const bc = BADGE_COLORS[node.badgeColor] ?? '#888';
 
   let border: string;
@@ -22,6 +30,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
 
   return (
     <div
+      ref={cardRef}
       data-node={node.id}
       onMouseDown={onMouseDown}
       style={{
