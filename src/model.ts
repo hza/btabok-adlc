@@ -115,6 +115,11 @@ export const EDGES: EdgeData[] = [
   { id:'e46', from:'n09', to:'n10', label:'ASRs generate hypotheses',            tag:'input' },
   { id:'e47', from:'n15', to:'n16', label:'cascade effects → context boundaries', tag:'input' },
 
+  // ── QATT Card (n11) ───────────────────────────────────────────────────────
+  { id:'e48', from:'n09', to:'n11', label:'ASRs define quality scenarios',         tag:'input' },
+  { id:'e49', from:'n08', to:'n11', label:'context sets stimulus environment',      tag:'input' },
+  { id:'e50', from:'n11', to:'n14', label:'QA tactics inform ADR decisions',        tag:'input' },
+
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
   { id:'e51', from:'n05', to:'n23', label:'business case seeds OKR objectives',     tag:'input' },
   { id:'e53', from:'n23', to:'n07', label:'objectives set roadmap goals',           tag:'input' },
