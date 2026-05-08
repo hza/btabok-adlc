@@ -202,8 +202,8 @@ export default function App() {
                       markerEnd={`url(#${hi ? 'mHi' : 'mLo'})`}/>
                     {showLabels && (
                       <text x={edge.mx} y={edge.my - 5}
-                        textAnchor="middle" fontSize={10} fontFamily="system-ui"
-                        fill={hi ? '#7F77DD' : '#475569'}
+                        textAnchor="middle" fontSize={12} fontFamily="system-ui"
+                        fill={hi ? '#7F77DD' : '#0F172A'}
                         stroke="white" strokeWidth="2.8" paintOrder="stroke">
                         {edge.label}
                       </text>
