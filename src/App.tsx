@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
-  PHASE_STYLES, PHASES,
+  PHASE_STYLES, PHASES, PHASE_LABEL,
   NODES, EDGES,
 } from './model';
 import type { Phase } from './model';
@@ -11,11 +11,17 @@ import NodeCard from './components/NodeCard';
 import TopBar from './components/TopBar';
 import { SelectedPanel, LegendPanel } from './components/Sidebar';
 
+const EDGE_GREY_COLORS: Record<number, string> = {
+  1: 'rgba(30,30,30,0.10)',
+  2: 'rgba(30,30,30,0.22)',
+  3: 'rgba(30,30,30,0.36)',
+  4: 'rgba(30,30,30,0.52)',
+  5: 'rgba(30,30,30,0.68)',
+  6: 'rgba(30,30,30,0.85)',
+};
+
 function edgeGreyColor(importance: number): string {
-  // importance 1 → rgba light, importance 10 → near-black
-  // use opacity to exaggerate the spread at the low end
-  const opacity = 0.15 + 0.85 * ((importance - 1) / 5) ** 1.4;
-  return `rgba(30,30,30,${opacity.toFixed(2)})`;
+  return EDGE_GREY_COLORS[importance] ?? EDGE_GREY_COLORS[6];
 }
 
 export default function App() {
@@ -200,7 +206,13 @@ export default function App() {
                 <g key={ph}>
                   <rect x={minX} y={0} width={maxX - minX} height={canvasH}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
-                  <rect x={minX} y={0} width={maxX - minX} height={5} fill={style.band}/>
+                  <rect x={minX} y={0} width={maxX - minX} height={24} fill={style.band}/>
+                  <text x={minX + (maxX - minX) / 2} y={16}
+                    textAnchor="middle" fontSize={12} fontWeight="600"
+                    fontFamily="system-ui,-apple-system,sans-serif"
+                    fill={style.text} style={{ userSelect: 'none' }}>
+                    {PHASE_LABEL[ph]}
+                  </text>
                 </g>
               ))}
 
