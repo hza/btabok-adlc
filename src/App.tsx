@@ -179,7 +179,7 @@ export default function App() {
         for (let i = 1; i < bands.length; i++) {
           const phaseNodes = NODES.filter(n => n.phase === bands[i].ph);
           const minX = Math.min(...phaseNodes.map(n => next[n.id].x));
-          const gap = 20;
+          const gap = 3 * SNAP;
           const overlap = bands[i - 1].maxX + gap - minX;
           if (overlap > 0) {
             for (let j = i; j < bands.length; j++) {
