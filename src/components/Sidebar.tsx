@@ -41,7 +41,7 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
       )}
       <div style={{ fontSize: 13, color: '#64748B', marginBottom: 14 }}>
         Phase:&nbsp;<strong style={{ color: '#1E293B' }}>{PHASE_LABEL[node.phase]}</strong>
-        {node.recurring && <span style={{ marginLeft: 8, color: BADGE_COLORS.gray }}>● Recurring</span>}
+        {node.recurring && <span style={{ marginLeft: 8, color: BADGE_COLORS.gray }}>● Multiple</span>}
         {node.external  && <span style={{ marginLeft: 8, color: BADGE_COLORS.amber }}>● External</span>}
       </div>
       {node.link && (
@@ -101,11 +101,11 @@ export function LegendPanel() {
       <SectionLabel>Border styles</SectionLabel>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
         <div style={{ width: 28, height: 14, border: '2px dashed #888780', borderRadius: 3, flexShrink: 0 }}/>
-        <span style={{ color: '#334155', fontSize: 13 }}>Recurring artifact</span>
+        <span style={{ color: '#334155', fontSize: 13 }}>Multiple artifact</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
         <div style={{ width: 28, height: 14, border: `2px dashed ${BADGE_COLORS.amber}`, borderRadius: 3, flexShrink: 0 }}/>
-        <span style={{ color: '#334155', fontSize: 13 }}>External standard (gap)</span>
+        <span style={{ color: '#334155', fontSize: 13 }}>External (gap)</span>
       </div>
 
       <Hr/>
