@@ -381,7 +381,7 @@ export default function App() {
         <div
           ref={containerRef}
           style={{ flex:1, overflow:'hidden', position:'relative',
-            cursor: isPanning ? 'grabbing' : 'grab', background:'#F8FAFC',
+            cursor: isPanning ? 'grabbing' : 'grab', background:'#FFFFFF',
             ...infiniteGridStyle }}
           onMouseDown={handleCanvasDown}
           onMouseMove={handleMouseMove}
