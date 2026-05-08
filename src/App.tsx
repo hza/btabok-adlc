@@ -15,8 +15,8 @@ import type { Phase, NodeData, EdgeData } from './model';
 // ─── constants ────────────────────────────────────────────────────────────────
 const NODE_W   = 162;
 const SNAP     = 20;
-const CANVAS_W = 2800;
-const CANVAS_H = 2200;
+const CANVAS_W = 1440;
+const CANVAS_H = 1600;
 
 function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
 function nodeH(n: NodeData) { return n.note ? 136 : 104; }
@@ -302,11 +302,11 @@ export default function App() {
   const phaseBands = PHASES.map(ph => {
     const ns = NODES.filter(n => n.phase === ph);
     if (!ns.length) return null;
-    const ys = ns.map(n => positions[n.id].y);
-    const minY = Math.min(...ys) - 18;
-    const maxY = Math.max(...ns.map((n, i) => ys[i] + nodeH(n))) + 18;
-    return { ph, minY, maxY, style: PHASE_STYLES[ph] };
-  }).filter(Boolean) as { ph: Phase; minY: number; maxY: number; style: { bg:string; band:string; text:string } }[];
+    const xs = ns.map(n => positions[n.id].x);
+    const minX = Math.min(...xs) - 20;
+    const maxX = Math.max(...xs) + NODE_W + 20;
+    return { ph, minX, maxX, style: PHASE_STYLES[ph] };
+  }).filter(Boolean) as { ph: Phase; minX: number; maxX: number; style: { bg:string; band:string; text:string } }[];
 
   const edgePaths = visibleEdges.map(edge => {
     const fn = NODES.find(n => n.id === edge.from)!;
@@ -433,12 +433,12 @@ export default function App() {
               <rect width={CANVAS_W} height={CANVAS_H} fill="url(#g100)"/>
 
               {/* phase swim-lanes */}
-              {phaseBands.map(({ ph, minY, maxY, style }) => (
+              {phaseBands.map(({ ph, minX, maxX, style }) => (
                 <g key={ph}>
-                  <rect x={0} y={minY} width={CANVAS_W} height={maxY - minY}
+                  <rect x={minX} y={0} width={maxX - minX} height={CANVAS_H}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
-                  <rect x={0} y={minY} width={5} height={maxY - minY} fill={style.band}/>
-                  <text x={14} y={minY + 17} fill={style.text}
+                  <rect x={minX} y={0} width={maxX - minX} height={5} fill={style.band}/>
+                  <text x={minX + (maxX - minX) / 2} y={22} textAnchor="middle" fill={style.text}
                     fontSize={11} fontWeight={700} fontFamily="system-ui" opacity={0.85}>
                     {PHASE_LABEL[ph].toUpperCase()}
                   </text>
