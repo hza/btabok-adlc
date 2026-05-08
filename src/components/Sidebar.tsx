@@ -46,8 +46,7 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
         </div>
       )}
       <div style={{ fontSize: 13, color: '#64748B', marginBottom: 6 }}>
-        Phase:&nbsp;<strong style={{ color: '#1E293B' }}>{PHASE_LABEL[node.phase]}</strong>
-        <br/>
+        <div style={{ marginBottom: 3 }}>Phase:&nbsp;<strong style={{ color: '#1E293B' }}>{PHASE_LABEL[node.phase]}</strong></div>
         Importancy:&nbsp;<strong style={{ color: '#1E293B' }}>{IMPORTANCY_LABEL[node.importancy]}</strong>
         {node.recurring && <span style={{ marginLeft: 8, color: BADGE_COLORS.gray }}>● Multiple</span>}
         {node.external  && <span style={{ marginLeft: 8, color: BADGE_COLORS.amber }}>● External</span>}

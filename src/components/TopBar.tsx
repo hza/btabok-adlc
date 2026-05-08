@@ -30,7 +30,7 @@ export default function TopBar({
       flexWrap: 'wrap',
     }}>
       <span style={{ fontWeight: 800, fontSize: 15, letterSpacing: '0.03em', marginRight: 4 }}>
-        BTABoK ADLC
+        BTABoK Architecture Development Life Cycle
       </span>
       <span style={{ marginLeft: 'auto' }}/>
       <Divider/>
