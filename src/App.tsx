@@ -14,7 +14,7 @@ import { SelectedPanel, LegendPanel } from './components/Sidebar';
 function edgeGreyColor(importance: number): string {
   // importance 1 → rgba light, importance 10 → near-black
   // use opacity to exaggerate the spread at the low end
-  const opacity = 0.15 + 0.85 * ((importance - 1) / 9) ** 1.4;
+  const opacity = 0.15 + 0.85 * ((importance - 1) / 5) ** 1.4;
   return `rgba(30,30,30,${opacity.toFixed(2)})`;
 }
 
@@ -27,9 +27,10 @@ export default function App() {
   } = useCanvasInteraction();
 
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
-  const [phaseFilter, setPhaseFilter] = useState<Phase | null>(null);
+  const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
   const [edgeFilter,  setEdgeFilter]  = useState<'all' | 'input'>('input');
+  const [minImportance, setMinImportance] = useState(1);
   const [copied,      setCopied]      = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -103,7 +104,9 @@ export default function App() {
     ].join(','),
   };
 
-  const visibleEdges = edgeFilter === 'input' ? EDGES.filter(e => e.tag === 'input') : EDGES;
+  const visibleEdges = EDGES
+    .filter(e => edgeFilter === 'input' ? e.tag === 'input' : true)
+    .filter(e => e.importance >= minImportance);
 
   const connectedEdgeIds = selectedId
     ? new Set(visibleEdges.filter(e => e.from === selectedId || e.to === selectedId).map(e => e.id))
@@ -139,7 +142,6 @@ export default function App() {
       fontFamily: 'system-ui,-apple-system,sans-serif', background: '#FFFFFF' }}>
 
       <TopBar
-        phaseFilter={phaseFilter}
         edgeFilter={edgeFilter}
         showLabels={showLabels}
         copied={copied}
@@ -148,8 +150,9 @@ export default function App() {
         onReset={resetPositions}
         onFit={() => containerRef.current && fitToScreen(containerRef.current)}
         onCopyPositions={handleCopyPositions}
-        onPhaseFilter={ph => setPhaseFilter(f => f === ph ? null : ph)}
         onEdgeFilterChange={setEdgeFilter}
+        minImportance={minImportance}
+        onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
       />
 

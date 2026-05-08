@@ -2,6 +2,7 @@ import React from 'react';
 
 interface TopBarProps {
   edgeFilter: 'all' | 'input';
+  minImportance: number;
   showLabels: boolean;
   copied: boolean;
   nodeCount: number;
@@ -10,14 +11,15 @@ interface TopBarProps {
   onFit: () => void;
   onCopyPositions: () => void;
   onEdgeFilterChange: (v: 'all' | 'input') => void;
+  onMinImportanceChange: (v: number) => void;
   onShowLabelsChange: (v: boolean) => void;
 }
 
 export default function TopBar({
-  phaseFilter, edgeFilter, showLabels, copied,
+  edgeFilter, minImportance, showLabels, copied,
   nodeCount, edgeCount,
   onReset, onFit, onCopyPositions,
-  onPhaseFilter, onEdgeFilterChange, onShowLabelsChange,
+  onEdgeFilterChange, onMinImportanceChange, onShowLabelsChange,
 }: TopBarProps) {
   return (
     <div style={{
@@ -46,6 +48,15 @@ export default function TopBar({
         <option value="all">All edges</option>
         <option value="input">Input flows</option>
       </select>
+      <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
+        Min importance:
+        <input
+          type="range" min={1} max={6} value={7 - minImportance}
+          onChange={e => onMinImportanceChange(7 - Number(e.target.value))}
+          style={{ accentColor: '#7F77DD', width: 80, cursor: 'pointer' }}
+        />
+        <span style={{ minWidth: 14, color: '#CBD5E1' }}>{minImportance}</span>
+      </label>
       <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, cursor: 'pointer', color: '#94A3B8' }}>
         <input type="checkbox" checked={showLabels} onChange={e => onShowLabelsChange(e.target.checked)}
           style={{ accentColor: '#7F77DD', cursor: 'pointer' }}/>
