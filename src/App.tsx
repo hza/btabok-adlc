@@ -1,0 +1,754 @@
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+} from 'react';
+
+// ─── colour tokens ────────────────────────────────────────────────────────────
+const BADGE_COLORS: Record<string, string> = {
+  purple: '#7F77DD',
+  teal:   '#1D9E75',
+  coral:  '#D85A30',
+  green:  '#639922',
+  gray:   '#888780',
+  amber:  '#BA7517',
+};
+
+const BADGE_LABELS: Record<string, string> = {
+  purple: 'BTABoK Core SCA',
+  teal:   'BTABoK Software SCA',
+  coral:  'BTABoK Solution SCA',
+  green:  'Architecture practice',
+  gray:   'Recurring',
+  amber:  'External standard',
+};
+
+const PHASE_STYLES: Record<string, { bg: string; band: string; text: string }> = {
+  innovation:     { bg: '#FFF8F0', band: '#FFDEAA', text: '#92400E' },
+  strategy:       { bg: '#F0FAF4', band: '#86EFAC', text: '#14532D' },
+  planning:       { bg: '#EFF6FF', band: '#93C5FD', text: '#1E3A8A' },
+  transformation: { bg: '#FFF0F4', band: '#FDA4AF', text: '#881337' },
+  utilize:        { bg: '#F5F3FF', band: '#C4B5FD', text: '#4C1D95' },
+};
+
+const PHASES = ['innovation', 'strategy', 'planning', 'transformation', 'utilize'] as const;
+type Phase = typeof PHASES[number];
+
+const PHASE_LABEL: Record<Phase, string> = {
+  innovation:     'Innovation',
+  strategy:       'Strategy',
+  planning:       'Planning',
+  transformation: 'Transformation',
+  utilize:        'Utilize',
+};
+
+// ─── data types ───────────────────────────────────────────────────────────────
+interface NodeData {
+  id: string; phase: Phase; num: string; title: string; subtitle: string;
+  badge: string; badgeColor: string;
+  note?: string; recurring?: boolean; external?: boolean;
+  x: number; y: number;
+}
+interface EdgeData {
+  id: string; from: string; to: string; label: string;
+}
+
+// ─── node data ────────────────────────────────────────────────────────────────
+const NODES: NodeData[] = [
+  { id:'n01', phase:'innovation', num:'01', title:'Business Model Canvas', subtitle:'Value proposition, customers, revenue streams', badge:'BTABoK Core SCA', badgeColor:'purple', x:60, y:60 },
+  { id:'n02', phase:'strategy', num:'02', title:'Business Capability Canvas', subtitle:'What the business does, capability hierarchy', badge:'BTABoK Core SCA', badgeColor:'purple', x:60, y:230 },
+  { id:'n03', phase:'strategy', num:'03', title:'Architect Stakeholder Canvas', subtitle:'All parties, engagement levels, governance', badge:'BTABoK Core SCA', badgeColor:'purple', x:300, y:230 },
+  { id:'n04', phase:'strategy', num:'04', title:'Power-Interest Grid', subtitle:'2×2 prioritisation by power and interest', badge:'BTABoK Core SCA', badgeColor:'purple', x:540, y:230 },
+  { id:'n05', phase:'strategy', num:'05', title:'Business Case (NABC Card)', subtitle:'Need, approach, benefit, competition', badge:'BTABoK Core SCA', badgeColor:'purple', x:780, y:230 },
+  { id:'n06', phase:'strategy', num:'06', title:'Architecture Principles Register', subtitle:'Principles from capabilities and constraints, linked to ADRs', badge:'Architecture practice', badgeColor:'green', note:'BTABoK Principles topic — no SCA canvas; maintain as a structured register', x:60, y:400 },
+  { id:'n07', phase:'strategy', num:'07', title:'Layered Roadmap Canvas', subtitle:'Current → target state, phased investment gates', badge:'BTABoK Core SCA', badgeColor:'purple', x:300, y:400 },
+  { id:'n08', phase:'planning', num:'08', title:'Context View Card', subtitle:'System boundary, external actors, interfaces', badge:'BTABoK Core SCA', badgeColor:'purple', x:60, y:590 },
+  { id:'n09', phase:'planning', num:'09', title:'ASR Card', subtitle:'Architecturally significant requirements', badge:'BTABoK Core SCA', badgeColor:'purple', x:300, y:590 },
+  { id:'n10', phase:'planning', num:'10', title:'Architecture Hypothesis Canvas', subtitle:'Assumption → experiment → success metric', badge:'BTABoK Core SCA', badgeColor:'purple', x:540, y:590 },
+  { id:'n11', phase:'planning', num:'11', title:'QATT Card', subtitle:'Stimulus–response quality attribute scenarios', badge:'BTABoK Software SCA', badgeColor:'teal', x:780, y:590 },
+  { id:'n12', phase:'planning', num:'12', title:'Architecture Definition Canvas', subtitle:'Scope, principles, key decisions on one page', badge:'BTABoK Core SCA', badgeColor:'purple', x:60, y:770 },
+  { id:'n13', phase:'planning', num:'13', title:'Solution Design Canvas', subtitle:'Problem → options → hypotheses', badge:'BTABoK Solution SCA', badgeColor:'coral', note:'Spans Planning → Transformation continuously', x:300, y:770 },
+  { id:'n14', phase:'planning', num:'14', title:'Architecture Decision Record', subtitle:'Options scored, chosen decision, trade-offs', badge:'Recurring', badgeColor:'gray', note:'BTABoK Core SCA — new ADR for every significant decision in Planning and Transformation', recurring:true, x:540, y:770 },
+  { id:'n15', phase:'planning', num:'15', title:'Architecture Decision Cascade Card', subtitle:'Downstream ripple effects of each decision', badge:'Recurring', badgeColor:'gray', note:'BTABoK Core SCA — one Cascade Card per ADR, in both phases', recurring:true, x:780, y:770 },
+  { id:'n16', phase:'transformation', num:'16', title:'Bounded Context Canvas', subtitle:'DDD boundaries, language, dependencies', badge:'BTABoK Core SCA', badgeColor:'purple', x:60, y:980 },
+  { id:'n17', phase:'transformation', num:'17', title:'Service Interface Design Canvas', subtitle:'Operations, contracts, SLAs, consumers', badge:'BTABoK Software SCA', badgeColor:'teal', x:300, y:980 },
+  { id:'n18', phase:'transformation', num:'18', title:'Deployment / Infrastructure View', subtitle:'Components mapped to nodes, networks, environments', badge:'External standard', badgeColor:'amber', note:'BTABoK gap: physical view (Views & Viewpoints) — use C4 Deployment or UML Deployment Diagram', external:true, x:540, y:980 },
+  { id:'n19', phase:'transformation', num:'19', title:'Data / Information Architecture View', subtitle:'Entities, ownership, flows, persistence boundaries', badge:'External standard', badgeColor:'amber', note:'BTABoK gap: Information Architecture tag — use ERD or Data Flow Diagram', external:true, x:780, y:980 },
+  { id:'n20', phase:'transformation', num:'20', title:'Sequence / Scenario View', subtitle:'Time-ordered message flow for key use cases', badge:'External standard', badgeColor:'amber', note:'BTABoK gap: scenario view (Views & Viewpoints) — use UML Sequence or C4 Dynamic Diagram', external:true, x:1020, y:980 },
+  { id:'n21', phase:'transformation', num:'21', title:'Technical Loan Request Card', subtitle:'Debt as a loan: principal, interest, repayment plan', badge:'BTABoK Software SCA', badgeColor:'teal', x:60, y:1160 },
+  { id:'n22', phase:'utilize', num:'22', title:'Benefits Realization View Canvas', subtitle:'Decisions → enablers → measurable business benefits', badge:'BTABoK Software SCA', badgeColor:'teal', x:60, y:1360 },
+];
+
+// ─── edge data ────────────────────────────────────────────────────────────────
+const EDGES: EdgeData[] = [
+  { id:'e01', from:'n01', to:'n02', label:'seeds capability hierarchy' },
+  { id:'e02', from:'n01', to:'n07', label:'sets investment gates' },
+  { id:'e03', from:'n02', to:'n06', label:'source for principles' },
+  { id:'e04', from:'n02', to:'n07', label:'capability gaps drive phases' },
+  { id:'e05', from:'n02', to:'n08', label:'capabilities in scope → boundary' },
+  { id:'e06', from:'n03', to:'n04', label:'populates grid' },
+  { id:'e07', from:'n03', to:'n06', label:'constraints feed principles' },
+  { id:'e08', from:'n03', to:'n08', label:'stakeholders → context actors' },
+  { id:'e09', from:'n04', to:'n14', label:'approvers named in ADR' },
+  { id:'e10', from:'n05', to:'n07', label:'scope constrains roadmap' },
+  { id:'e11', from:'n05', to:'n12', label:'success criteria → definition' },
+  { id:'e12', from:'n06', to:'n12', label:'principles populate definition' },
+  { id:'e13', from:'n06', to:'n14', label:'principles referenced in ADR' },
+  { id:'e14', from:'n07', to:'n12', label:'phase scope constrains definition' },
+  { id:'e15', from:'n08', to:'n09', label:'interactions trigger ASRs' },
+  { id:'e16', from:'n08', to:'n18', label:'external nodes → deployment' },
+  { id:'e17', from:'n08', to:'n20', label:'actors → sequence lifelines' },
+  { id:'e18', from:'n09', to:'n14', label:'ASR IDs referenced in ADR' },
+  { id:'e19', from:'n10', to:'n11', label:'evidence sets QATT thresholds' },
+  { id:'e20', from:'n10', to:'n14', label:'results confirm ADR assumption' },
+  { id:'e21', from:'n11', to:'n12', label:'thresholds → acceptance criteria' },
+  { id:'e22', from:'n12', to:'n13', label:'scope constrains design options' },
+  { id:'e23', from:'n12', to:'n16', label:'boundary → context partitioning' },
+  { id:'e24', from:'n12', to:'n22', label:'objectives baseline benefits' },
+  { id:'e25', from:'n13', to:'n14', label:'options → ADR scored columns' },
+  { id:'e26', from:'n13', to:'n16', label:'options → bounded contexts' },
+  { id:'e27', from:'n14', to:'n15', label:'spawns cascade card' },
+  { id:'e28', from:'n14', to:'n21', label:'shortcuts → loan card' },
+  { id:'e29', from:'n15', to:'n12', label:'cascade invalidation → revise' },
+  { id:'e30', from:'n16', to:'n17', label:'language → service operations' },
+  { id:'e31', from:'n16', to:'n19', label:'ownership → data entities' },
+  { id:'e32', from:'n17', to:'n14', label:'tech choices trigger ADR' },
+  { id:'e33', from:'n17', to:'n20', label:'operations → sequence messages' },
+  { id:'e34', from:'n18', to:'n20', label:'nodes constrain call topology' },
+  { id:'e35', from:'n19', to:'n20', label:'data flows → sequence arrows' },
+  { id:'e36', from:'n21', to:'n22', label:'debt reduces realised benefits' },
+  { id:'e37', from:'n22', to:'n07', label:'outcomes reprioritise roadmap' },
+  { id:'e38', from:'n22', to:'n14', label:'shortfall → revisit ADR' },
+  { id:'e39', from:'n22', to:'n21', label:'unrealised benefits → renegotiate' },
+  { id:'e40', from:'n22', to:'n01', label:'lessons open new innovation cycle' },
+];
+
+// ─── constants ────────────────────────────────────────────────────────────────
+const NODE_W   = 162;
+const SNAP     = 20;
+const CANVAS_W = 2800;
+const CANVAS_H = 2200;
+
+function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
+function nodeH(n: NodeData) { return n.note ? 136 : 104; }
+
+const INIT_POS = () =>
+  Object.fromEntries(NODES.map(n => [n.id, { x: n.x, y: n.y }]));
+
+// ─── NodeCard ─────────────────────────────────────────────────────────────────
+interface CardProps {
+  node: NodeData;
+  pos: { x: number; y: number };
+  selected: boolean;
+  dimmed: boolean;
+  onMouseDown: (e: React.MouseEvent) => void;
+}
+
+const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown }: CardProps) {
+  const bc = BADGE_COLORS[node.badgeColor] ?? '#888';
+
+  let border: string;
+  if (selected)         border = `2px solid ${bc}`;
+  else if (node.external) border = `2px dashed ${BADGE_COLORS.amber}`;
+  else if (node.recurring) border = '2px dashed #888780';
+  else                  border = '1.5px solid #E2E8F0';
+
+  return (
+    <div
+      data-node={node.id}
+      onMouseDown={onMouseDown}
+      style={{
+        position: 'absolute',
+        left: pos.x,
+        top:  pos.y,
+        width: NODE_W,
+        background: '#FFFFFF',
+        borderRadius: 8,
+        border,
+        boxShadow: selected
+          ? `0 0 0 3px ${bc}33, 0 6px 20px rgba(0,0,0,0.16)`
+          : '0 2px 8px rgba(0,0,0,0.08)',
+        opacity: dimmed ? 0.15 : 1,
+        cursor: 'grab',
+        userSelect: 'none',
+        transition: 'opacity 0.18s, box-shadow 0.15s',
+        fontFamily: 'system-ui,-apple-system,sans-serif',
+        zIndex: selected ? 10 : 1,
+      }}
+    >
+      {/* badge row */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+        padding: '6px 8px 4px', borderBottom: '1px solid #F1F5F9',
+      }}>
+        <span style={{
+          background: '#F1F5F9', color: '#475569',
+          borderRadius: 4, padding: '1px 6px',
+          fontSize: 10, fontWeight: 700, flexShrink: 0,
+        }}>{node.num}</span>
+        <span style={{
+          background: `${bc}18`, color: bc,
+          borderRadius: 4, padding: '1px 5px',
+          fontSize: 9, fontWeight: 600, lineHeight: 1.35,
+          textAlign: 'right', maxWidth: 92,
+        }}>{node.badge}</span>
+      </div>
+
+      {/* body */}
+      <div style={{ padding: '6px 9px 8px' }}>
+        <div style={{ fontWeight: 600, fontSize: 12, color: '#1E293B', lineHeight: 1.35, marginBottom: 3 }}>
+          {node.title}
+        </div>
+        <div style={{ fontSize: 10, color: '#64748B', lineHeight: 1.45 }}>
+          {node.subtitle}
+        </div>
+        {node.note && (
+          <div style={{
+            fontSize: 9, color: '#94A3B8', fontStyle: 'italic',
+            lineHeight: 1.35, marginTop: 5,
+            borderTop: '1px solid #F1F5F9', paddingTop: 4,
+          }}>{node.note}</div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+// ─── App ──────────────────────────────────────────────────────────────────────
+export default function App() {
+  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(INIT_POS);
+  const [selectedId,  setSelectedId]  = useState<string | null>(null);
+  const [phaseFilter, setPhaseFilter] = useState<Phase | null>(null);
+  const [showLabels,  setShowLabels]  = useState(true);
+  const [pan,   setPan]   = useState({ x: 24, y: 24 });
+  const [scale, setScale] = useState(0.72);
+  const [isPanning, setIsPanning] = useState(false);
+
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const posRef        = useRef(positions);
+  const panRef        = useRef(pan);
+  const scaleRef      = useRef(scale);
+  const dragNode      = useRef<{ id: string; sx: number; sy: number; ox: number; oy: number } | null>(null);
+  const dragPan       = useRef<{ sx: number; sy: number; opx: number; opy: number } | null>(null);
+
+  useEffect(() => { posRef.current   = positions; }, [positions]);
+  useEffect(() => { panRef.current   = pan;        }, [pan]);
+  useEffect(() => { scaleRef.current = scale;      }, [scale]);
+
+  // ── wheel zoom ──────────────────────────────────────────────────────────────
+  const handleWheel = useCallback((e: WheelEvent) => {
+    e.preventDefault();
+    const rect = containerRef.current!.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const factor = e.deltaY > 0 ? 0.9 : 1.11;
+    const ns = Math.max(0.18, Math.min(3, scaleRef.current * factor));
+    const ratio = ns / scaleRef.current;
+    setPan(p => ({ x: mx - (mx - p.x) * ratio, y: my - (my - p.y) * ratio }));
+    setScale(ns);
+  }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [handleWheel]);
+
+  // ── pointer handlers ────────────────────────────────────────────────────────
+  const handleCanvasDown = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-node]')) return;
+    setSelectedId(null);
+    dragPan.current = { sx: e.clientX, sy: e.clientY, opx: panRef.current.x, opy: panRef.current.y };
+    setIsPanning(true);
+  }, []);
+
+  const handleNodeDown = useCallback((e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (e.button !== 0) return;
+    setSelectedId(id);
+    const pos = posRef.current[id];
+    dragNode.current = { id, sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y };
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (dragNode.current) {
+      const { id, sx, sy, ox, oy } = dragNode.current;
+      const dx = (e.clientX - sx) / scaleRef.current;
+      const dy = (e.clientY - sy) / scaleRef.current;
+      setPositions(prev => ({ ...prev, [id]: { x: snapV(ox + dx), y: snapV(oy + dy) } }));
+    } else if (dragPan.current) {
+      const { sx, sy, opx, opy } = dragPan.current;
+      setPan({ x: opx + e.clientX - sx, y: opy + e.clientY - sy });
+    }
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    dragNode.current = null;
+    dragPan.current  = null;
+    setIsPanning(false);
+  }, []);
+
+  // ── PlantUML export ─────────────────────────────────────────────────────────
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyPlantUML = useCallback(() => {
+    const lines: string[] = [
+      '@startuml BTABoK_ADLC',
+      "' Generated from BTABoK ADLC interactive graph",
+      '',
+      'skinparam componentStyle rectangle',
+      'skinparam defaultFontName "system-ui"',
+      'skinparam defaultFontSize 11',
+      'skinparam component {',
+      '  BackgroundColor #FFFFFF',
+      '  BorderColor #CBD5E1',
+      '  FontColor #1E293B',
+      '}',
+      'skinparam package {',
+      '  FontStyle bold',
+      '  FontSize 12',
+      '}',
+      '',
+    ];
+
+    // Phase colour map for skinparam overrides
+    const phaseColors: Record<Phase, string> = {
+      innovation:     '#FFF8F0',
+      strategy:       '#F0FAF4',
+      planning:       '#EFF6FF',
+      transformation: '#FFF0F4',
+      utilize:        '#F5F3FF',
+    };
+
+    // Group nodes by phase in declaration order
+    for (const ph of PHASES) {
+      const phNodes = NODES.filter(n => n.phase === ph);
+      if (!phNodes.length) continue;
+      lines.push(`package "${PHASE_LABEL[ph]}" #${phaseColors[ph].slice(1)} {`);
+      for (const n of phNodes) {
+        // stereotypes: badge-colour group (drives skinparam) + optional modifier
+        const stereos = [`<<${n.badgeColor}>>`];
+        if (n.recurring) stereos.push('<<recurring>>');
+        if (n.external)  stereos.push('<<external>>');
+        const title = n.title.replace(/[[\]]/g, '');
+        lines.push(`  component "${n.num} ${title}" ${stereos.join(' ')} as ${n.id}`);
+      }
+      lines.push('}');
+      lines.push('');
+    }
+
+    // One skinparam block per badge-colour group (stereotype = badgeColor key)
+    // Light background derived by blending badge colour toward white
+    const badgeBgLight: Record<string, string> = {
+      purple: '#EDEAFC',
+      teal:   '#D3F2E8',
+      coral:  '#FAE0D8',
+      green:  '#DCF0B8',
+      gray:   '#E8E8E6',
+      amber:  '#F5E4C0',
+    };
+    lines.push("' badge-colour stereotypes");
+    for (const [key, border] of Object.entries(BADGE_COLORS)) {
+      const bg = badgeBgLight[key] ?? '#FFFFFF';
+      lines.push(`skinparam component<<${key}>> {`);
+      lines.push(`  BackgroundColor ${bg}`);
+      lines.push(`  BorderColor ${border}`);
+      lines.push('}');
+    }
+    lines.push('');
+
+    // Edges
+    lines.push("' relationships");
+    for (const e of EDGES) {
+      lines.push(`${e.from} --> ${e.to} : ${e.label}`);
+    }
+
+    lines.push('');
+    lines.push('@enduml');
+
+    const src = lines.join('\n');
+    navigator.clipboard.writeText(src).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, []);
+
+  // ── fit / reset ─────────────────────────────────────────────────────────────
+  const handleReset = useCallback(() => setPositions(INIT_POS()), []);
+
+  const handleFit = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    const ps = posRef.current;
+    const xs = Object.values(ps).map(p => p.x);
+    const ys = Object.values(ps).map(p => p.y);
+    const minX = Math.min(...xs), minY = Math.min(...ys);
+    const maxX = Math.max(...xs) + NODE_W;
+    const maxY = Math.max(...ys) + 140;
+    const ns = Math.min(0.98, (width - 48) / (maxX - minX), (height - 48) / (maxY - minY));
+    setScale(ns);
+    setPan({
+      x: (width  - (maxX - minX) * ns) / 2 - minX * ns,
+      y: (height - (maxY - minY) * ns) / 2 - minY * ns,
+    });
+  }, []);
+
+  // ── derived state ────────────────────────────────────────────────────────────
+  const connectedEdgeIds = selectedId
+    ? new Set(EDGES.filter(e => e.from === selectedId || e.to === selectedId).map(e => e.id))
+    : null;
+  const connectedNodeIds = selectedId
+    ? new Set([selectedId, ...EDGES
+        .filter(e => e.from === selectedId || e.to === selectedId)
+        .flatMap(e => [e.from, e.to])])
+    : null;
+
+  const phaseBands = PHASES.map(ph => {
+    const ns = NODES.filter(n => n.phase === ph);
+    if (!ns.length) return null;
+    const ys = ns.map(n => positions[n.id].y);
+    const minY = Math.min(...ys) - 18;
+    const maxY = Math.max(...ns.map((n, i) => ys[i] + nodeH(n))) + 18;
+    return { ph, minY, maxY, style: PHASE_STYLES[ph] };
+  }).filter(Boolean) as { ph: Phase; minY: number; maxY: number; style: { bg:string; band:string; text:string } }[];
+
+  const edgePaths = EDGES.map(edge => {
+    const fn = NODES.find(n => n.id === edge.from)!;
+    const tn = NODES.find(n => n.id === edge.to)!;
+    const fp = positions[edge.from];
+    const tp = positions[edge.to];
+    const x1 = fp.x + NODE_W, y1 = fp.y + nodeH(fn) / 2;
+    const x2 = tp.x,          y2 = tp.y + nodeH(tn) / 2;
+    const cp = Math.max(40, Math.abs(x2 - x1) * 0.42);
+    return {
+      ...edge,
+      path: `M${x1},${y1} C${x1+cp},${y1} ${x2-cp},${y2} ${x2},${y2}`,
+      mx: (x1 + x2) / 2,
+      my: (y1 + y2) / 2,
+    };
+  });
+
+  const selectedNode = selectedId ? NODES.find(n => n.id === selectedId) ?? null : null;
+  const outgoing = selectedId
+    ? EDGES.filter(e => e.from === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.to)! }))
+    : [];
+  const incoming = selectedId
+    ? EDGES.filter(e => e.to === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.from)! }))
+    : [];
+
+  // ── render ───────────────────────────────────────────────────────────────────
+  return (
+    <div style={{ display:'flex', flexDirection:'column', height:'100vh',
+      fontFamily:'system-ui,-apple-system,sans-serif', background:'#F0F4F8' }}>
+
+      {/* ── top bar ── */}
+      <div style={{
+        background:'#1E293B', color:'#F1F5F9',
+        padding:'7px 14px', display:'flex', alignItems:'center',
+        gap:10, flexShrink:0, boxShadow:'0 2px 10px rgba(0,0,0,0.3)',
+        flexWrap:'wrap',
+      }}>
+        <span style={{ fontWeight:800, fontSize:13, letterSpacing:'0.03em', marginRight:4 }}>
+          BTABoK ADLC
+        </span>
+        <Divider/>
+        <TopBtn onClick={handleReset}>Reset layout</TopBtn>
+        <TopBtn onClick={handleFit}>Fit to screen</TopBtn>
+        <TopBtn onClick={handleCopyPlantUML}>
+          {copied ? '✓ Copied!' : 'Copy as PlantUML'}
+        </TopBtn>
+        <Divider/>
+        {PHASES.map(ph => {
+          const active = phaseFilter === ph;
+          const s = PHASE_STYLES[ph];
+          return (
+            <button key={ph}
+              onClick={() => setPhaseFilter(f => f === ph ? null : ph)}
+              style={{
+                background: active ? s.band : 'transparent',
+                color: active ? s.text : s.band,
+                border: `1px solid ${s.band}`,
+                borderRadius: 20, padding: '3px 11px',
+                fontSize: 11, cursor: 'pointer',
+                fontFamily: 'inherit', fontWeight: active ? 700 : 400,
+                transition: 'all 0.15s',
+              }}
+            >{PHASE_LABEL[ph]}</button>
+          );
+        })}
+        <Divider/>
+        <label style={{ display:'flex', alignItems:'center', gap:5, fontSize:11, cursor:'pointer', color:'#94A3B8' }}>
+          <input type="checkbox" checked={showLabels} onChange={e => setShowLabels(e.target.checked)}
+            style={{ accentColor:'#7F77DD', cursor:'pointer' }}/>
+          Edge labels
+        </label>
+        <span style={{ marginLeft:'auto', fontSize:10, color:'#475569' }}>
+          {NODES.length} nodes · {EDGES.length} edges · scroll = zoom · drag canvas = pan
+        </span>
+      </div>
+
+      <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
+
+        {/* ── canvas ── */}
+        <div
+          ref={containerRef}
+          style={{ flex:1, overflow:'hidden', position:'relative',
+            cursor: isPanning ? 'grabbing' : 'grab' }}
+          onMouseDown={handleCanvasDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div style={{
+            position:'absolute', transformOrigin:'0 0',
+            transform:`translate(${pan.x}px,${pan.y}px) scale(${scale})`,
+          }}>
+            {/* SVG layer: grid, bands, edges */}
+            <svg width={CANVAS_W} height={CANVAS_H}
+              style={{ position:'absolute', top:0, left:0, pointerEvents:'none' }}>
+              <defs>
+                <pattern id="g20" width={SNAP} height={SNAP} patternUnits="userSpaceOnUse">
+                  <path d={`M${SNAP} 0 L0 0 0 ${SNAP}`} fill="none" stroke="#CBD5E1" strokeWidth="0.35"/>
+                </pattern>
+                <pattern id="g100" width={100} height={100} patternUnits="userSpaceOnUse">
+                  <rect width={100} height={100} fill="url(#g20)"/>
+                  <path d="M100 0 L0 0 0 100" fill="none" stroke="#94A3B8" strokeWidth="0.6"/>
+                </pattern>
+                <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <polygon points="0 0,7 3.5,0 7" fill="#94A3B8"/>
+                </marker>
+                <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
+                </marker>
+              </defs>
+
+              <rect width={CANVAS_W} height={CANVAS_H} fill="url(#g100)"/>
+
+              {/* phase swim-lanes */}
+              {phaseBands.map(({ ph, minY, maxY, style }) => (
+                <g key={ph}>
+                  <rect x={0} y={minY} width={CANVAS_W} height={maxY - minY}
+                    fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
+                  <rect x={0} y={minY} width={5} height={maxY - minY} fill={style.band}/>
+                  <text x={14} y={minY + 17} fill={style.text}
+                    fontSize={11} fontWeight={700} fontFamily="system-ui" opacity={0.85}>
+                    {PHASE_LABEL[ph].toUpperCase()}
+                  </text>
+                </g>
+              ))}
+
+              {/* edges */}
+              {edgePaths.map(edge => {
+                const hi   = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
+                const dimS = connectedEdgeIds ? !hi : false;
+                const dimP = phaseFilter
+                  ? !(NODES.find(n=>n.id===edge.from)?.phase===phaseFilter ||
+                      NODES.find(n=>n.id===edge.to)?.phase===phaseFilter)
+                  : false;
+                const opacity = dimS || dimP ? 0.07 : hi ? 1 : 0.52;
+                return (
+                  <g key={edge.id} opacity={opacity}>
+                    <path d={edge.path} fill="none"
+                      stroke={hi ? '#7F77DD' : '#94A3B8'}
+                      strokeWidth={hi ? 2.2 : 1.2}
+                      markerEnd={`url(#${hi ? 'mHi' : 'mLo'})`}/>
+                    {showLabels && (
+                      <text x={edge.mx} y={edge.my - 5}
+                        textAnchor="middle" fontSize={8}
+                        fontFamily="system-ui"
+                        fill={hi ? '#7F77DD' : '#475569'}
+                        stroke="white" strokeWidth="2.8"
+                        paintOrder="stroke">
+                        {edge.label}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* node cards */}
+            {NODES.map(node => {
+              const dimSel   = connectedNodeIds && !connectedNodeIds.has(node.id);
+              const dimPhase = phaseFilter && node.phase !== phaseFilter;
+              return (
+                <NodeCard key={node.id} node={node} pos={positions[node.id]}
+                  selected={node.id === selectedId}
+                  dimmed={!!(dimSel || dimPhase)}
+                  onMouseDown={e => handleNodeDown(e, node.id)}/>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── sidebar ── */}
+        <div style={{
+          width:270, background:'#FFFFFF',
+          borderLeft:'1px solid #E2E8F0',
+          overflowY:'auto', flexShrink:0, fontSize:12, color:'#334155',
+        }}>
+          {selectedNode
+            ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming}/>
+            : <LegendPanel/>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── small UI atoms ───────────────────────────────────────────────────────────
+function Divider() {
+  return <div style={{ width:1, height:20, background:'#334155', flexShrink:0 }}/>;
+}
+
+function TopBtn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick} style={{
+      background:'#334155', color:'#CBD5E1', border:'none',
+      borderRadius:5, padding:'4px 10px', fontSize:11,
+      cursor:'pointer', fontFamily:'inherit',
+    }}>{children}</button>
+  );
+}
+
+// ─── SelectedPanel ────────────────────────────────────────────────────────────
+function SelectedPanel({
+  node, outgoing, incoming,
+}: {
+  node: NodeData;
+  outgoing: { e: EdgeData; n: NodeData }[];
+  incoming: { e: EdgeData; n: NodeData }[];
+}) {
+  const bc = BADGE_COLORS[node.badgeColor] ?? '#888';
+  return (
+    <div style={{ padding:16 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', gap:8, marginBottom:10 }}>
+        <span style={{ background:'#F1F5F9', color:'#475569', borderRadius:4,
+          padding:'2px 8px', fontWeight:700, fontSize:14, flexShrink:0 }}>
+          {node.num}
+        </span>
+        <span style={{ background:`${bc}18`, color:bc, borderRadius:4,
+          padding:'2px 8px', fontSize:10, fontWeight:600, lineHeight:1.4 }}>
+          {node.badge}
+        </span>
+      </div>
+      <div style={{ fontWeight:700, fontSize:14, color:'#1E293B', lineHeight:1.35, marginBottom:5 }}>
+        {node.title}
+      </div>
+      <div style={{ color:'#64748B', lineHeight:1.5, marginBottom:8 }}>{node.subtitle}</div>
+      {node.note && (
+        <div style={{ fontStyle:'italic', color:'#94A3B8', fontSize:11,
+          padding:'8px 10px', background:'#F8FAFC', borderRadius:6,
+          borderLeft:`3px solid ${bc}`, marginBottom:10, lineHeight:1.45 }}>
+          {node.note}
+        </div>
+      )}
+      <div style={{ fontSize:11, color:'#64748B', marginBottom:14 }}>
+        Phase:&nbsp;<strong style={{ color:'#1E293B' }}>{PHASE_LABEL[node.phase]}</strong>
+        {node.recurring && <span style={{ marginLeft:8, color:BADGE_COLORS.gray }}>● Recurring</span>}
+        {node.external  && <span style={{ marginLeft:8, color:BADGE_COLORS.amber }}>● External</span>}
+      </div>
+      {outgoing.length > 0 && <ConnList title={`→ Outgoing (${outgoing.length})`} items={outgoing} accent="#7F77DD"/>}
+      {incoming.length > 0 && <ConnList title={`← Incoming (${incoming.length})`} items={incoming} accent="#1D9E75"/>}
+    </div>
+  );
+}
+
+function ConnList({ title, items, accent }: {
+  title: string;
+  items: { e: EdgeData; n: NodeData }[];
+  accent: string;
+}) {
+  return (
+    <div style={{ marginBottom:14 }}>
+      <div style={{ fontWeight:600, fontSize:11, color:'#94A3B8', marginBottom:6,
+        textTransform:'uppercase', letterSpacing:'0.05em' }}>{title}</div>
+      {items.map(({ e, n }) => (
+        <div key={e.id} style={{ marginBottom:5, padding:'7px 10px',
+          background:'#F8FAFC', borderRadius:6, borderLeft:`3px solid ${accent}` }}>
+          <div style={{ fontWeight:600, color:'#1E293B', fontSize:12 }}>{n.num}. {n.title}</div>
+          <div style={{ color:'#94A3B8', fontSize:10, marginTop:2, fontStyle:'italic' }}>{e.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── LegendPanel ──────────────────────────────────────────────────────────────
+function LegendPanel() {
+  return (
+    <div style={{ padding:16 }}>
+      <div style={{ fontWeight:700, fontSize:14, color:'#1E293B', marginBottom:12 }}>Legend</div>
+
+      <SectionLabel>Badge types</SectionLabel>
+      {Object.entries(BADGE_COLORS).map(([key, color]) => (
+        <div key={key} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
+          <div style={{ width:11, height:11, borderRadius:3, background:color, flexShrink:0 }}/>
+          <span style={{ color:'#334155', fontSize:11 }}>{BADGE_LABELS[key]}</span>
+        </div>
+      ))}
+
+      <Hr/>
+
+      <SectionLabel>Border styles</SectionLabel>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
+        <div style={{ width:28, height:14, border:'2px dashed #888780', borderRadius:3, flexShrink:0 }}/>
+        <span style={{ color:'#334155', fontSize:11 }}>Recurring artifact</span>
+      </div>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
+        <div style={{ width:28, height:14, border:`2px dashed ${BADGE_COLORS.amber}`, borderRadius:3, flexShrink:0 }}/>
+        <span style={{ color:'#334155', fontSize:11 }}>External standard (gap)</span>
+      </div>
+
+      <Hr/>
+
+      <SectionLabel>Phases</SectionLabel>
+      {PHASES.map(ph => {
+        const s = PHASE_STYLES[ph];
+        const count = NODES.filter(n => n.phase === ph).length;
+        return (
+          <div key={ph} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:7 }}>
+            <div style={{ width:11, height:11, borderRadius:3, background:s.band, flexShrink:0 }}/>
+            <span style={{ color:'#334155', fontSize:11 }}>{PHASE_LABEL[ph]}</span>
+            <span style={{ color:'#94A3B8', fontSize:10, marginLeft:'auto' }}>{count}</span>
+          </div>
+        );
+      })}
+
+      <Hr/>
+
+      <div style={{ background:'#F8FAFC', borderRadius:8, padding:'10px 12px',
+        fontSize:11, color:'#64748B', lineHeight:1.7 }}>
+        <strong style={{ color:'#1E293B', display:'block', marginBottom:4 }}>Statistics</strong>
+        Nodes: <strong>{NODES.length}</strong><br/>
+        Edges: <strong>{EDGES.length}</strong><br/>
+        Phases: <strong>{PHASES.length}</strong>
+      </div>
+
+      <div style={{ marginTop:12, background:'#F8FAFC', borderRadius:8, padding:'10px 12px',
+        fontSize:10, color:'#94A3B8', lineHeight:1.7 }}>
+        <strong style={{ color:'#475569', display:'block', marginBottom:4 }}>Interactions</strong>
+        Click a node to explore connections<br/>
+        Drag nodes to rearrange<br/>
+        Scroll to zoom · Drag canvas to pan<br/>
+        Phase chips filter the view
+      </div>
+    </div>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize:11, fontWeight:600, color:'#94A3B8', marginBottom:8,
+      textTransform:'uppercase', letterSpacing:'0.05em' }}>{children}</div>
+  );
+}
+
+function Hr() {
+  return <div style={{ height:1, background:'#E2E8F0', margin:'12px 0' }}/>;
+}
