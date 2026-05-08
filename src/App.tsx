@@ -38,7 +38,7 @@ export default function App() {
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
   const [minImportance, setMinImportance] = useState(1);
-  const [copied,      setCopied]      = useState(false);
+  const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [nodeHeights, setNodeHeights] = useState<Record<string, number>>({});
@@ -84,14 +84,14 @@ export default function App() {
   }, [startNodeDrag]);
 
   // ── copy positions ───────────────────────────────────────────────────────────
-  const handleCopyPositions = useCallback(() => {
+  const handleSave = useCallback(() => {
     const entries = Object.entries(positions)
       .map(([id, pos]) => `  ${id}: { x:${pos.x}, y:${pos.y} },`)
       .join('\n');
     const src = `export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {\n${entries}\n};\n`;
     navigator.clipboard.writeText(src).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
     });
   }, [positions]);
 
@@ -160,16 +160,25 @@ export default function App() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh',
       fontFamily: 'system-ui,-apple-system,sans-serif', background: '#FFFFFF' }}>
 
+      {saved && (
+        <div style={{
+          position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+          background: '#1E293B', color: '#F1F5F9', borderRadius: 8,
+          padding: '10px 20px', fontSize: 14, fontWeight: 500,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.3)', zIndex: 9999,
+          pointerEvents: 'none',
+        }}>
+          ✓ Copied to clipboard
+        </div>
+      )}
       <TopBar
         showLabels={showLabels}
         showSwimlanes={showSwimlanes}
         showSidebar={showLegend}
-        copied={copied}
-        nodeCount={NODES.length}
-        edgeCount={visibleEdges.length}
+        saved={saved}
         onReset={resetPositions}
         onFit={() => containerRef.current && fitToScreen(containerRef.current)}
-        onCopyPositions={handleCopyPositions}
+        onSave={handleSave}
         minImportance={minImportance}
         onMinImportanceChange={setMinImportance}
         onShowLabelsChange={setShowLabels}
@@ -262,7 +271,7 @@ export default function App() {
 
         {/* sidebar */}
         {showLegend && <div style={{
-          width: 270, background: '#FFFFFF',
+          width: 320, background: '#FFFFFF',
           borderLeft: '1px solid #E2E8F0',
           overflowY: 'auto', flexShrink: 0, fontSize: 14, color: '#334155',
         }}>

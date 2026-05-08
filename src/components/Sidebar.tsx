@@ -2,7 +2,7 @@ import React from 'react';
 import {
   badgeColor, BADGE_COLORS, BADGE_TYPES,
   PHASE_STYLES, PHASES, PHASE_LABEL,
-  NODES, EDGES,
+  NODES,
 } from '../model';
 import type { NodeData, EdgeData } from '../model';
 
@@ -125,15 +125,6 @@ export function LegendPanel() {
 
           <Hr/>
 
-          <SectionLabel>Importancy</SectionLabel>
-          <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.7 }}>
-            1 = High<br/>
-            2 = Avg<br/>
-            3 = Low
-          </div>
-
-          <Hr/>
-
           <SectionLabel>Phases</SectionLabel>
           {PHASES.map(ph => {
             const s = PHASE_STYLES[ph];
@@ -148,14 +139,6 @@ export function LegendPanel() {
           })}
 
           <Hr/>
-
-          <div style={{ background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
-            fontSize: 13, color: '#64748B', lineHeight: 1.7 }}>
-            <strong style={{ color: '#1E293B', display: 'block', marginBottom: 4 }}>Statistics</strong>
-            Nodes: <strong>{NODES.length}</strong><br/>
-            Edges: <strong>{EDGES.length}</strong><br/>
-            Phases: <strong>{PHASES.length}</strong>
-          </div>
 
           <div style={{ marginTop: 12, background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
             fontSize: 12, color: '#94A3B8', lineHeight: 1.7 }}>

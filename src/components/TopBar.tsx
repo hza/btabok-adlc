@@ -5,12 +5,10 @@ interface TopBarProps {
   showLabels: boolean;
   showSwimlanes: boolean;
   showSidebar: boolean;
-  copied: boolean;
-  nodeCount: number;
-  edgeCount: number;
+  saved: boolean;
   onReset: () => void;
   onFit: () => void;
-  onCopyPositions: () => void;
+  onSave: () => void;
   onMinImportanceChange: (v: number) => void;
   onShowLabelsChange: (v: boolean) => void;
   onShowSwimlanesChange: (v: boolean) => void;
@@ -18,9 +16,8 @@ interface TopBarProps {
 }
 
 export default function TopBar({
-  minImportance, showLabels, showSwimlanes, showSidebar, copied,
-  nodeCount, edgeCount,
-  onReset, onFit, onCopyPositions,
+  minImportance, showLabels, showSwimlanes, showSidebar, saved,
+  onReset, onFit, onSave,
   onMinImportanceChange, onShowLabelsChange, onShowSwimlanesChange, onToggleSidebar,
 }: TopBarProps) {
   return (
@@ -33,10 +30,7 @@ export default function TopBar({
       <span style={{ fontWeight: 800, fontSize: 15, letterSpacing: '0.03em', marginRight: 4 }}>
         BTABoK ADLC
       </span>
-      <Divider/>
-      <TopBtn onClick={onReset}>Reset layout</TopBtn>
-      <TopBtn onClick={onFit}>Fit to screen</TopBtn>
-      <TopBtn onClick={onCopyPositions}>{copied ? '✓ Copied!' : 'Copy positions'}</TopBtn>
+      <span style={{ marginLeft: 'auto' }}/>
       <Divider/>
       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
         Edge details:
@@ -56,23 +50,41 @@ export default function TopBar({
           style={{ accentColor: '#7F77DD', cursor: 'pointer' }}/>
         Swimlanes
       </label>
-      <span style={{ marginLeft: 'auto', fontSize: 12, color: '#475569' }}>
-        {nodeCount} nodes · {edgeCount} edges · scroll = zoom · drag canvas = pan
-      </span>
+      <IconBtn onClick={onSave} title={saved ? 'Saved!' : 'Save positions'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M3 2h9.5L15 4.5V15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+          <rect x="6" y="2" width="5" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.4"/>
+          <rect x="5" y="9" width="8" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.4"/>
+        </svg>
+      </IconBtn>
       <Divider/>
-      <button
-        onClick={onToggleSidebar}
-        title={showSidebar ? 'Hide sidebar' : 'Show sidebar'}
-        style={{
-          background: 'none', border: 'none', cursor: 'pointer',
-          color: '#94A3B8', fontSize: 18, lineHeight: 1, padding: '2px 4px',
-        }}
-      >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <IconBtn onClick={onReset} title="Reset zoom to 100%">
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#94A3B8', letterSpacing: '-0.5px' }}>100%</span>
+      </IconBtn>
+      <IconBtn onClick={onFit} title="Fit to screen">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="2.2" stroke="currentColor" strokeWidth="1.4"/>
+          {/* NW */}
+          <line x1="7.5" y1="7.5" x2="2.5" y2="2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          <polyline points="2.5,5.5 2.5,2.5 5.5,2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          {/* NE */}
+          <line x1="10.5" y1="7.5" x2="15.5" y2="2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          <polyline points="12.5,2.5 15.5,2.5 15.5,5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          {/* SW */}
+          <line x1="7.5" y1="10.5" x2="2.5" y2="15.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          <polyline points="5.5,15.5 2.5,15.5 2.5,12.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          {/* SE */}
+          <line x1="10.5" y1="10.5" x2="15.5" y2="15.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          <polyline points="15.5,12.5 15.5,15.5 12.5,15.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </IconBtn>
+      <Divider/>
+      <IconBtn onClick={onToggleSidebar} title={showSidebar ? 'Hide sidebar' : 'Show sidebar'}>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" strokeWidth="1.5"/>
           <line x1="12" y1="1.5" x2="12" y2="16.5" stroke="currentColor" strokeWidth="1.5"/>
         </svg>
-      </button>
+      </IconBtn>
     </div>
   );
 }
@@ -81,12 +93,12 @@ function Divider() {
   return <div style={{ width: 1, height: 20, background: '#334155', flexShrink: 0 }}/>;
 }
 
-function TopBtn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+function IconBtn({ onClick, title, children, style }: { onClick: () => void; title: string; children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <button onClick={onClick} style={{
-      background: '#334155', color: '#CBD5E1', border: 'none',
-      borderRadius: 5, padding: '4px 10px', fontSize: 13,
-      cursor: 'pointer', fontFamily: 'inherit',
+    <button onClick={onClick} title={title} style={{
+      background: 'none', border: 'none', cursor: 'pointer',
+      color: '#94A3B8', lineHeight: 1, padding: '2px 4px', display: 'flex', alignItems: 'center',
+      ...style,
     }}>{children}</button>
   );
 }
