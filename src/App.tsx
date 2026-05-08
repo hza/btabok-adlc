@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
-  PHASE_STYLES, PHASES, PHASE_LABEL,
+  PHASE_STYLES, PHASES,
   NODES, EDGES,
 } from './model';
 import type { Phase } from './model';
@@ -186,10 +186,6 @@ export default function App() {
                   <rect x={minX} y={0} width={maxX - minX} height={canvasH}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
                   <rect x={minX} y={0} width={maxX - minX} height={5} fill={style.band}/>
-                  <text x={minX + (maxX - minX) / 2} y={22} textAnchor="middle" fill={style.text}
-                    fontSize={13} fontWeight={700} fontFamily="system-ui" opacity={0.85}>
-                    {PHASE_LABEL[ph].toUpperCase()}
-                  </text>
                 </g>
               ))}
 

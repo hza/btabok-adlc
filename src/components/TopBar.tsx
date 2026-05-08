@@ -1,9 +1,6 @@
 import React from 'react';
-import { PHASES, PHASE_STYLES, PHASE_LABEL } from '../model';
-import type { Phase } from '../model';
 
 interface TopBarProps {
-  phaseFilter: Phase | null;
   edgeFilter: 'all' | 'input';
   showLabels: boolean;
   copied: boolean;
@@ -12,7 +9,6 @@ interface TopBarProps {
   onReset: () => void;
   onFit: () => void;
   onCopyPositions: () => void;
-  onPhaseFilter: (ph: Phase) => void;
   onEdgeFilterChange: (v: 'all' | 'input') => void;
   onShowLabelsChange: (v: boolean) => void;
 }
@@ -37,25 +33,6 @@ export default function TopBar({
       <TopBtn onClick={onReset}>Reset layout</TopBtn>
       <TopBtn onClick={onFit}>Fit to screen</TopBtn>
       <TopBtn onClick={onCopyPositions}>{copied ? '✓ Copied!' : 'Copy positions'}</TopBtn>
-      <Divider/>
-      {PHASES.map(ph => {
-        const active = phaseFilter === ph;
-        const s = PHASE_STYLES[ph];
-        return (
-          <button key={ph}
-            onClick={() => onPhaseFilter(ph)}
-            style={{
-              background: active ? s.band : 'transparent',
-              color: active ? s.text : s.band,
-              border: `1px solid ${s.band}`,
-              borderRadius: 20, padding: '3px 11px',
-              fontSize: 13, cursor: 'pointer',
-              fontFamily: 'inherit', fontWeight: active ? 700 : 400,
-              transition: 'all 0.15s',
-            }}
-          >{PHASE_LABEL[ph]}</button>
-        );
-      })}
       <Divider/>
       <select
         value={edgeFilter}
