@@ -109,6 +109,7 @@ export default function App() {
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
   const [phaseFilter, setPhaseFilter] = useState<Phase | null>(null);
   const [showLabels,  setShowLabels]  = useState(true);
+  const [edgeFilter,  setEdgeFilter]  = useState<'all' | 'input'>('all');
   const [pan,   setPan]   = useState({ x: 24, y: 24 });
   const [scale, setScale] = useState(0.72);
   const [isPanning, setIsPanning] = useState(false);
@@ -287,11 +288,13 @@ export default function App() {
   }, []);
 
   // ── derived state ────────────────────────────────────────────────────────────
+  const visibleEdges = edgeFilter === 'input' ? EDGES.filter(e => e.tag === 'input') : EDGES;
+
   const connectedEdgeIds = selectedId
-    ? new Set(EDGES.filter(e => e.from === selectedId || e.to === selectedId).map(e => e.id))
+    ? new Set(visibleEdges.filter(e => e.from === selectedId || e.to === selectedId).map(e => e.id))
     : null;
   const connectedNodeIds = selectedId
-    ? new Set([selectedId, ...EDGES
+    ? new Set([selectedId, ...visibleEdges
         .filter(e => e.from === selectedId || e.to === selectedId)
         .flatMap(e => [e.from, e.to])])
     : null;
@@ -305,7 +308,7 @@ export default function App() {
     return { ph, minY, maxY, style: PHASE_STYLES[ph] };
   }).filter(Boolean) as { ph: Phase; minY: number; maxY: number; style: { bg:string; band:string; text:string } }[];
 
-  const edgePaths = EDGES.map(edge => {
+  const edgePaths = visibleEdges.map(edge => {
     const fn = NODES.find(n => n.id === edge.from)!;
     const tn = NODES.find(n => n.id === edge.to)!;
     const fp = positions[edge.from];
@@ -323,10 +326,10 @@ export default function App() {
 
   const selectedNode = selectedId ? NODES.find(n => n.id === selectedId) ?? null : null;
   const outgoing = selectedId
-    ? EDGES.filter(e => e.from === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.to)! }))
+    ? visibleEdges.filter(e => e.from === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.to)! }))
     : [];
   const incoming = selectedId
-    ? EDGES.filter(e => e.to === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.from)! }))
+    ? visibleEdges.filter(e => e.to === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.from)! }))
     : [];
 
   // ── render ───────────────────────────────────────────────────────────────────
@@ -370,13 +373,25 @@ export default function App() {
           );
         })}
         <Divider/>
+        <select
+          value={edgeFilter}
+          onChange={e => setEdgeFilter(e.target.value as 'all' | 'input')}
+          style={{
+            background:'#334155', color:'#CBD5E1', border:'1px solid #475569',
+            borderRadius:5, padding:'3px 8px', fontSize:11,
+            cursor:'pointer', fontFamily:'inherit',
+          }}
+        >
+          <option value="all">All edges</option>
+          <option value="input">Input flows</option>
+        </select>
         <label style={{ display:'flex', alignItems:'center', gap:5, fontSize:11, cursor:'pointer', color:'#94A3B8' }}>
           <input type="checkbox" checked={showLabels} onChange={e => setShowLabels(e.target.checked)}
             style={{ accentColor:'#7F77DD', cursor:'pointer' }}/>
           Edge labels
         </label>
         <span style={{ marginLeft:'auto', fontSize:10, color:'#475569' }}>
-          {NODES.length} nodes · {EDGES.length} edges · scroll = zoom · drag canvas = pan
+          {NODES.length} nodes · {visibleEdges.length} edges · scroll = zoom · drag canvas = pan
         </span>
       </div>
 
