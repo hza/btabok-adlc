@@ -15,7 +15,6 @@ import type { Phase, NodeData, EdgeData } from './model';
 // ─── constants ────────────────────────────────────────────────────────────────
 const NODE_W   = 162;
 const SNAP     = 20;
-const CANVAS_W = 1440;
 const CANVAS_H = 1600;
 
 function snapV(v: number) { return Math.round(v / SNAP) * SNAP; }
@@ -311,6 +310,7 @@ export default function App() {
   }, []);
 
   // ── derived state ────────────────────────────────────────────────────────────
+  const canvasW = Math.max(...Object.values(positions).map(p => p.x)) + NODE_W + 80;
   const visibleEdges = edgeFilter === 'input' ? EDGES.filter(e => e.tag === 'input') : EDGES;
 
   const connectedEdgeIds = selectedId
@@ -435,7 +435,7 @@ export default function App() {
             transform:`translate(${pan.x}px,${pan.y}px) scale(${scale})`,
           }}>
             {/* SVG layer: grid, bands, edges */}
-            <svg width={CANVAS_W} height={CANVAS_H}
+            <svg width={canvasW} height={CANVAS_H}
               style={{ position:'absolute', top:0, left:0, pointerEvents:'none' }}>
               <defs>
                 <pattern id="g20" width={SNAP} height={SNAP} patternUnits="userSpaceOnUse">
@@ -453,7 +453,7 @@ export default function App() {
                 </marker>
               </defs>
 
-              <rect width={CANVAS_W} height={CANVAS_H} fill="url(#g100)"/>
+              <rect width={canvasW} height={CANVAS_H} fill="url(#g100)"/>
 
               {/* phase swim-lanes */}
               {phaseBands.map(({ ph, minX, maxX, style }) => (
