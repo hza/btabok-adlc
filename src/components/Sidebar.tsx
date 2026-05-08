@@ -8,6 +8,12 @@ import type { NodeData, EdgeData } from '../model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
 
+const IMPORTANCY_LABEL: Record<NodeData['importancy'], string> = {
+  1: 'High',
+  2: 'Avg',
+  3: 'Low',
+};
+
 interface SelectedPanelProps {
   node: NodeData;
   outgoing: { e: EdgeData; n: NodeData }[];
@@ -41,6 +47,8 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
       )}
       <div style={{ fontSize: 13, color: '#64748B', marginBottom: 14 }}>
         Phase:&nbsp;<strong style={{ color: '#1E293B' }}>{PHASE_LABEL[node.phase]}</strong>
+        <br/>
+        Importancy:&nbsp;<strong style={{ color: '#1E293B' }}>{IMPORTANCY_LABEL[node.importancy]}</strong>
         {node.recurring && <span style={{ marginLeft: 8, color: BADGE_COLORS.gray }}>● Multiple</span>}
         {node.external  && <span style={{ marginLeft: 8, color: BADGE_COLORS.amber }}>● External</span>}
       </div>
@@ -106,6 +114,15 @@ export function LegendPanel() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
         <div style={{ width: 28, height: 14, border: `2px dashed ${BADGE_COLORS.amber}`, borderRadius: 3, flexShrink: 0 }}/>
         <span style={{ color: '#334155', fontSize: 13 }}>External (gap)</span>
+      </div>
+
+      <Hr/>
+
+      <SectionLabel>Importancy</SectionLabel>
+      <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.7 }}>
+        1 = High<br/>
+        2 = Avg<br/>
+        3 = Low
       </div>
 
       <Hr/>

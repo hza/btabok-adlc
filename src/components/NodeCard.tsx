@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { badgeColor, BADGE_COLORS } from '../model';
 import type { NodeData } from '../model';
 import { NODE_W } from '../constants';
@@ -12,15 +12,44 @@ interface CardProps {
   onHeightChange?: (id: string, height: number) => void;
 }
 
+const IMPORTANCY_BADGE: Record<NodeData['importancy'], { label: string; color: string; bg: string }> = {
+  1: { label: 'High', color: '#B91C1C', bg: '#FEE2E2' },
+  2: { label: 'Avg',  color: '#A16207', bg: '#FEF3C7' },
+  3: { label: 'Low',  color: '#475569', bg: '#F1F5F9' },
+};
+
+function GsmIcon({ level }: { level: NodeData['importancy'] }) {
+  const activeBars = 4 - level;
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'flex-end', gap: 1, height: 10, width: 13 }}>
+      {[4, 7, 10].map((height, index) => (
+        <span key={height} style={{
+          width: 3,
+          height,
+          borderRadius: 1,
+          background: 'currentColor',
+          opacity: index < activeBars ? 1 : 0.28,
+        }}/>
+      ))}
+    </span>
+  );
+}
+
 const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown, onHeightChange }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [cardHeight, setCardHeight] = useState(80);
+
   useEffect(() => {
-    if (!cardRef.current || !onHeightChange) return;
+    if (!cardRef.current) return;
     const h = cardRef.current.offsetHeight;
-    if (h > 0) onHeightChange(node.id, h);
-  });
+    if (h > 0) {
+      setCardHeight(prev => prev === h ? prev : h);
+      onHeightChange?.(node.id, h);
+    }
+  }, [node.id, onHeightChange]);
 
   const bc = badgeColor(node.badge);
+  const importancyBadge = IMPORTANCY_BADGE[node.importancy];
 
   let border: string;
   if (selected)          border = `2px solid ${bc}`;
@@ -33,7 +62,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
     left: pos.x + offset,
     top:  pos.y + offset,
     width: NODE_W,
-    height: cardRef.current?.offsetHeight ?? 80,
+    height: cardHeight,
     background: '#FFFFFF',
     borderRadius: 8,
     border: '1.5px solid #CBD5E1',
@@ -79,12 +108,24 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
           borderRadius: 4, padding: '1px 6px',
           fontSize: 13, fontWeight: 700, flexShrink: 0,
         }}>{node.num}</span>
-        <span style={{
-          background: `${bc}18`, color: bc,
-          borderRadius: 4, padding: '1px 5px',
-          fontSize: 12, fontWeight: 600, lineHeight: 1.35,
-          textAlign: 'right', maxWidth: 92,
-        }}>{node.badge}</span>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', gap: 4, minWidth: 0 }}>
+
+          <span style={{
+            background: `${bc}18`, color: bc,
+            borderRadius: 4, padding: '1px 5px',
+            fontSize: 12, fontWeight: 600, lineHeight: 1.35,
+            textAlign: 'right', maxWidth: 72,
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>{node.badge}</span>
+                    <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 3,
+            background: importancyBadge.bg, color: importancyBadge.color,
+            borderRadius: 4, padding: '1px 6px',
+            fontSize: 11, fontWeight: 700, lineHeight: 1.35,
+            textTransform: 'uppercase',
+            flexShrink: 0,
+          }}><GsmIcon level={node.importancy}/></span>
+        </div>
       </div>
 
       <div style={{ padding: '6px 9px 8px' }}>

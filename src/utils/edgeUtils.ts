@@ -129,7 +129,7 @@ export function computeEdgePaths(
     const src = getPort(edge.from, fromSide, edge.id, positions, sideGroups, heights);
     const dst = getPort(edge.to,   toSide,   edge.id, positions, sideGroups, heights);
 
-    let x1 = src.x, y1 = src.y;
+    const x1 = src.x, y1 = src.y;
     let x2 = dst.x, y2 = dst.y;
 
     if (toSide === 'left')   x2 -= G;
