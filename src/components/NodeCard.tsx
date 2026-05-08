@@ -45,11 +45,8 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
 
   const bc = badgeColor(node.badge);
 
-  let border: string;
-  if (selected)          border = `2px solid ${bc}`;
-  else if (node.external)  border = '1.5px solid #E2E8F0';
-  else if (node.recurring) border = '1.5px solid #E2E8F0';
-  else                     border = '1.5px solid #E2E8F0';
+  const border = '2px solid #E2E8F0';
+  const outline = selected ? `2px solid ${bc}` : 'none';
 
   const stackLayer = (offset: number) => ({
     position: 'absolute' as const,
@@ -82,6 +79,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
         background: '#FFFFFF',
         borderRadius: 8,
         border,
+        outline,
         boxShadow: selected
           ? `0 0 0 3px ${bc}33, 0 6px 20px rgba(0,0,0,0.16)`
           : '0 2px 8px rgba(0,0,0,0.08)',
