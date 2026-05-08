@@ -18,11 +18,11 @@ export const BADGE_LABELS: Record<string, string> = {
 };
 
 export const PHASE_STYLES: Record<string, { bg: string; band: string; text: string }> = {
-  innovation:     { bg: '#FFF8F0', band: '#FFDEAA', text: '#92400E' },
-  strategy:       { bg: '#F0FAF4', band: '#86EFAC', text: '#14532D' },
-  planning:       { bg: '#EFF6FF', band: '#93C5FD', text: '#1E3A8A' },
-  transformation: { bg: '#FFF0F4', band: '#FDA4AF', text: '#881337' },
-  utilize:        { bg: '#F5F3FF', band: '#C4B5FD', text: '#4C1D95' },
+  innovation:     { bg: '#F8F9FA', band: '#FFDEAA', text: '#92400E' },
+  strategy:       { bg: '#F8F9FA', band: '#86EFAC', text: '#14532D' },
+  planning:       { bg: '#F8F9FA', band: '#93C5FD', text: '#1E3A8A' },
+  transformation: { bg: '#F8F9FA', band: '#FDA4AF', text: '#881337' },
+  utilize:        { bg: '#F8F9FA', band: '#C4B5FD', text: '#4C1D95' },
 };
 
 export const PHASES = ['innovation', 'strategy', 'planning', 'transformation', 'utilize'] as const;
