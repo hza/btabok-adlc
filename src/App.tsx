@@ -109,7 +109,7 @@ export default function App() {
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
   const [phaseFilter, setPhaseFilter] = useState<Phase | null>(null);
   const [showLabels,  setShowLabels]  = useState(true);
-  const [edgeFilter,  setEdgeFilter]  = useState<'all' | 'input'>('all');
+  const [edgeFilter,  setEdgeFilter]  = useState<'all' | 'input'>('input');
   const [pan,   setPan]   = useState({ x: 24, y: 24 });
   const [scale, setScale] = useState(0.72);
   const [isPanning, setIsPanning] = useState(false);
