@@ -51,8 +51,8 @@ export default function TopBar({
         style={{ color: showSwimlanes ? '#7F77DD' : '#94A3B8' }}>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-          <line x1="1.5" y1="6.5" x2="16.5" y2="6.5" stroke="currentColor" strokeWidth="1.5"/>
-          <line x1="1.5" y1="11.5" x2="16.5" y2="11.5" stroke="currentColor" strokeWidth="1.5"/>
+          <line x1="6.5" y1="1.5" x2="6.5" y2="16.5" stroke="currentColor" strokeWidth="1.5"/>
+          <line x1="11.5" y1="1.5" x2="11.5" y2="16.5" stroke="currentColor" strokeWidth="1.5"/>
         </svg>
       </IconBtn>
       <IconBtn onClick={() => onShowGridChange(!showGrid)} title={showGrid ? 'Hide grid' : 'Show grid'}
@@ -66,9 +66,9 @@ export default function TopBar({
       </IconBtn>
       <IconBtn onClick={onSave} title={saved ? 'Saved!' : 'Save positions'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M3 2h9.5L15 4.5V15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-          <rect x="6" y="2" width="5" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.4"/>
-          <rect x="5" y="9" width="8" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.4"/>
+          <line x1="2" y1="16" x2="2" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="2" y1="16" x2="15" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <text x="4" y="13" fontSize="7" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">XY</text>
         </svg>
       </IconBtn>
       <Divider/>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hza.github.io/btabook-adlc/sitemap.xml
