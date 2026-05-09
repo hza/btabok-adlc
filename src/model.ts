@@ -134,29 +134,62 @@ export const NODES: NodeData[] = [
 
 // ─── edge data ────────────────────────────────────────────────────────────────
 export const EDGES: EdgeData[] = [
+  // ── Business Model Canvas (n01) ───────────────────────────────────────────
   { id:'e01', from:'n01', to:'n02', label:'seeds capability hierarchy',          importance:5, btabok:true },
+
+  // ── Business Capability Canvas (n02) ─────────────────────────────────────
   { id:'e03', from:'n02', to:'n06', label:'source for principles',               importance:4, btabok:true },
+
+  // ── Power-Interest Grid (n04) ─────────────────────────────────────────────
   { id:'e06', from:'n03', to:'n04', label:'populates grid',                      importance:2 },
+
+  // ── Business Case / NABC Card (n05) ──────────────────────────────────────
   { id:'e11', from:'n05', to:'n12', label:'success criteria → definition',       importance:4 },
+  { id:'e43', from:'n05', to:'n06', label:'business constraints → principles',   importance:4, btabok:true },
+
+  // ── Architecture Principles (n06) ────────────────────────────────────────
   { id:'e12', from:'n06', to:'n12', label:'principles populate definition',       importance:4, btabok:true },
+
+  // ── Layered Roadmap Canvas (n07) ─────────────────────────────────────────
+  { id:'e45', from:'n07', to:'n08', label:'roadmap scope → system boundary',     importance:4 },
+
+  // ── Context View Card (n08) ───────────────────────────────────────────────
   { id:'e15', from:'n08', to:'n09', label:'interactions trigger ASRs',           importance:6 },
+
+  // ── ASR Card (n09) ────────────────────────────────────────────────────────
   { id:'e18', from:'n09', to:'n14', label:'ASR IDs referenced in ADR',           importance:6, btabok:true },
+  { id:'e46', from:'n09', to:'n10', label:'ASRs generate hypotheses',            importance:1 },
+
+  // ── Architecture Hypothesis Canvas (n10) ─────────────────────────────────
   { id:'e20', from:'n10', to:'n14', label:'validated hypothesis informs ADR',    importance:1 },
+
+  // ── Architecture Definition Canvas (n12) ─────────────────────────────────
   { id:'e22', from:'n12', to:'n13', label:'scope constrains design options',      importance:4 },
   { id:'e23', from:'n12', to:'n16', label:'boundary → context partitioning',      importance:3 },
+
+  // ── Solution Design Canvas (n13) ─────────────────────────────────────────
   { id:'e25', from:'n13', to:'n14', label:'options → ADR scored columns',        importance:5 },
+
+  // ── ADR Card (n14) ────────────────────────────────────────────────────────
   { id:'e27', from:'n14', to:'n15', label:'spawns cascade card',                 importance:2, btabok:true },
   { id:'e28', from:'n14', to:'n21', label:'shortcuts → loan card',               importance:2 },
+
+  // ── Architecture Decision Cascade Card (n15) ──────────────────────────────
+  { id:'e47', from:'n15', to:'n16', label:'cascade effects → context boundaries', importance:2 },
+
+  // ── Bounded Context Canvas (n16) ─────────────────────────────────────────
   { id:'e30', from:'n16', to:'n17', label:'language → service operations',       importance:4 },
+
+  // ── Service Interface Design Canvas (n17) ────────────────────────────────
   { id:'e32', from:'n17', to:'n14', label:'service choices trigger ADR',         importance:4 },
   { id:'e33', from:'n17', to:'n20', label:'operations → sequence messages',      importance:3 },
+
+  // ── Technical Loan Request Card (n21) ────────────────────────────────────
   { id:'e36', from:'n21', to:'n22', label:'debt reduces realised benefits',      importance:2, btabok:true },
+
+  // ── Benefits Realization View Canvas (n22) ───────────────────────────────
   { id:'e37', from:'n22', to:'n07', label:'outcomes reprioritise roadmap',       importance:3 },
   { id:'e40', from:'n22', to:'n01', label:'lessons open new innovation cycle',   importance:3 },
-  { id:'e43', from:'n05', to:'n06', label:'business constraints → principles',   importance:4, btabok:true },
-  { id:'e45', from:'n07', to:'n08', label:'roadmap scope → system boundary',     importance:4 },
-  { id:'e46', from:'n09', to:'n10', label:'ASRs generate hypotheses',            importance:1 },
-  { id:'e47', from:'n15', to:'n16', label:'cascade effects → context boundaries', importance:2 },
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
   { id:'e48', from:'n09', to:'n11', label:'ASRs define quality scenarios',         importance:5 },
@@ -189,7 +222,6 @@ export const EDGES: EdgeData[] = [
   { id:'e66', from:'n07', to:'n26', label:'roadmap technology lane references service blueprints', importance:3, btabok:true },
   { id:'e67', from:'n26', to:'n08', label:'service boundary → context view',        importance:3 },
   { id:'e68', from:'n26', to:'n17', label:'front-stage ops → service interface',    importance:4 },
-
 
   // ── Container / Component View (n28) ──────────────────────────────────────
   { id:'e74', from:'n08', to:'n28', label:'context boundary decomposed to containers', importance:5 },
