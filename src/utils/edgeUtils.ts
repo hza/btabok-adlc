@@ -115,7 +115,7 @@ function getPort(
 }
 
 const G = 5;   // gap between node edge and where the edge path starts/ends, to avoid visual overlap with node border
-const C = 100; // control point distance for edge paths, or how "curvy" the edges are
+const C = 120; // control point distance for edge paths, or how "curvy" the edges are
 
 export function computeEdgePaths(
   edges: EdgeData[],
