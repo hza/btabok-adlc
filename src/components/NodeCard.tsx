@@ -13,22 +13,6 @@ interface CardProps {
 }
 
 
-function GsmIcon({ level }: { level: NodeData['importancy'] }) {
-  const activeBars = 4 - level;
-  return (
-    <span style={{ display: 'inline-flex', alignItems: 'flex-end', gap: 1, height: 10, width: 13 }}>
-      {[4, 7, 10].map((height, index) => (
-        <span key={height} style={{
-          width: 3,
-          height,
-          borderRadius: 1,
-          background: 'currentColor',
-          opacity: index < activeBars ? 1 : 0.28,
-        }}/>
-      ))}
-    </span>
-  );
-}
 
 const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown, onHeightChange }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -109,11 +93,6 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
             textAlign: 'right', maxWidth: 72,
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>{node.badge}</span>
-                    <span style={{
-            display: 'inline-flex', alignItems: 'center',
-            color: '#94A3B8',
-            flexShrink: 0,
-          }}><GsmIcon level={node.importancy}/></span>
         </div>
       </div>
 

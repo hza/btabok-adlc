@@ -9,11 +9,6 @@ import type { NodeData, EdgeData, Phase } from '../model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
 
-const IMPORTANCY_LABEL: Record<NodeData['importancy'], string> = {
-  1: 'High',
-  2: 'Medium',
-};
-
 interface SelectedPanelProps {
   node: NodeData;
   outgoing: { e: EdgeData; n: NodeData }[];
@@ -45,16 +40,10 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
           {node.note}
         </div>
       )}
-      <div style={{ fontSize: 13, color: '#64748B', marginBottom: 6 }}>
-        <div style={{ marginBottom: 3 }}>Phase:&nbsp;<strong style={{ color: '#1E293B' }}>{PHASE_LABEL[node.phase]}</strong></div>
-        Importancy:&nbsp;<strong style={{ color: '#1E293B' }}>{IMPORTANCY_LABEL[node.importancy]}</strong>
-        {node.recurring && <span style={{ marginLeft: 8, color: BADGE_COLORS.gray }}>● Multiple</span>}
-        {node.external  && <span style={{ marginLeft: 8, color: BADGE_COLORS.amber }}>● External</span>}
-      </div>
-      <div style={{ fontSize: 12, color: '#64748B', fontStyle: 'italic', lineHeight: 1.5,
-        padding: '6px 10px', background: '#F8FAFC', borderRadius: 6,
-        borderLeft: '3px solid #CBD5E1', marginBottom: 14 }}>
-        {node.importancyReason}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
+        <Tag label={PHASE_LABEL[node.phase]} dot={PHASE_STYLES[node.phase].band} />
+{node.recurring && <Tag label="Multiple" dot={BADGE_COLORS.gray} />}
+        {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
       </div>
       {node.link && (
         <a href={node.link} target="_blank" rel="noreferrer" style={{
@@ -103,7 +92,6 @@ interface PhasePanelProps {
 export function PhasePanel({ phase, onClose }: PhasePanelProps) {
   const style  = PHASE_STYLES[phase];
   const nodes  = NODES.filter(n => n.phase === phase);
-  const highPriority = nodes.filter(n => n.importancy === 1);
 
   return (
     <div style={{ padding: 16 }}>
@@ -154,7 +142,7 @@ export function PhasePanel({ phase, onClose }: PhasePanelProps) {
           return (
             <div key={n.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8,
               marginBottom: 6, padding: '7px 10px', background: '#F8FAFC', borderRadius: 6,
-              borderLeft: `3px solid ${n.importancy === 1 ? bc : '#E2E8F0'}` }}>
+              borderLeft: `3px solid ${bc}` }}>
               <span style={{ color: '#94A3B8', fontWeight: 700, fontSize: 12, flexShrink: 0, paddingTop: 1 }}>
                 {n.num}
               </span>
@@ -162,21 +150,10 @@ export function PhasePanel({ phase, onClose }: PhasePanelProps) {
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#1E293B', lineHeight: 1.35 }}>{n.title}</div>
                 <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 1 }}>{n.subtitle}</div>
               </div>
-              {n.importancy === 1 && (
-                <span style={{ background: `${bc}18`, color: bc, borderRadius: 3,
-                  padding: '1px 5px', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>
-                  Core
-                </span>
-              )}
             </div>
           );
         })}
       </div>
-      {highPriority.length < nodes.length && (
-        <div style={{ fontSize: 12, color: '#94A3B8', fontStyle: 'italic', marginBottom: 8 }}>
-          {nodes.length - highPriority.length} medium-priority artifact{nodes.length - highPriority.length > 1 ? 's' : ''} not shown as core
-        </div>
-      )}
     </div>
   );
 }
@@ -237,6 +214,19 @@ export function LegendPanel() {
             Phase chips filter the view
           </div>
     </div>
+  );
+}
+
+function Tag({ label, dot }: { label: string; dot?: string }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      background: '#F1F5F9', borderRadius: 20,
+      padding: '2px 9px', fontSize: 11, color: '#334155', fontWeight: 500,
+    }}>
+      {dot && <span style={{ width: 6, height: 6, borderRadius: '50%', background: dot, flexShrink: 0 }}/>}
+      {label}
+    </span>
   );
 }
 
