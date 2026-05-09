@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# BTABoK ADLC — Interactive Reference
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive visual reference for the **BTABoK Architecture Development Life Cycle** — a structured, phase-by-phase model that guides architects from initial business opportunity through strategy, design, implementation, and outcome measurement.
 
-Currently, two official plugins are available:
+**Live app → [hza.github.io/btabook-adlc](https://hza.github.io/btabook-adlc/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Purpose
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+BTABoK defines a rich set of architecture artifacts, but understanding *how they connect* — what feeds what, what must exist before something else can begin — is hard to grasp from a list or a static diagram.
 
-## Expanding the ESLint configuration
+This tool makes those relationships explorable:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Every artifact appears as a card placed in the phase where it is produced
+- Edges between cards show dependencies and information flows
+- Clicking a card surfaces its description, phase context, and the key questions it answers
+- The edge detail slider lets you focus on the most critical relationships or reveal the full picture
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The goal is to help architects and teams orient themselves: *where are we in the cycle, what should we have produced by now, and what does it enable next?*
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## The five phases
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Phase | What happens here |
+| --- | --- |
+| **Innovation** | Explore new opportunities and establish a shared business model |
+| **Strategy** | Map capabilities, set measurable objectives, prioritise investment |
+| **Planning** | Define quality attributes, trace requirements, log architectural decisions |
+| **Transformation** | Implement, decompose, and verify the architecture across all viewpoints |
+| **Utilize** | Measure outcomes against objectives and feed learning into the next cycle |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Artifact provenance
+
+Artifacts are tagged to show which body of knowledge they come from:
+
+| Badge | Source |
+| --- | --- |
+| **BTABoK** | iasa-global BTABoK native artifact |
+| **DDD** | Domain-Driven Design |
+| **C4** | C4 model |
+| **OWASP** | OWASP |
