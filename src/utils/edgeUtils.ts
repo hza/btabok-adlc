@@ -114,7 +114,8 @@ function getPort(
   }
 }
 
-const G = 8;
+const G = 5;   // gap between node edge and where the edge path starts/ends, to avoid visual overlap with node border
+const C = 100; // control point distance for edge paths, or how "curvy" the edges are
 
 export function computeEdgePaths(
   edges: EdgeData[],
@@ -138,7 +139,8 @@ export function computeEdgePaths(
     if (toSide === 'bottom') y2 += G;
 
     const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
-    const cp = Math.max(40, (fromSide === 'left' || fromSide === 'right' ? dx : dy) * 0.42);
+    const dist = (fromSide === 'left' || fromSide === 'right') ? dx : dy;
+    const cp = Math.max(C, dist * 0.55);
     const cx1 = fromSide === 'left'   ? x1 - cp : fromSide === 'right' ? x1 + cp : x1;
     const cy1 = fromSide === 'top'    ? y1 - cp : fromSide === 'bottom' ? y1 + cp : y1;
     const cx2 = toSide   === 'left'   ? x2 - cp : toSide   === 'right'  ? x2 + cp : x2;
