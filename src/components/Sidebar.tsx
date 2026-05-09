@@ -19,18 +19,14 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
   const bc = badgeColor(node.badge);
   return (
     <div style={{ padding: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
         <span style={{ background: '#F1F5F9', color: '#475569', borderRadius: 4,
           padding: '2px 8px', fontWeight: 700, fontSize: 16, flexShrink: 0 }}>
           {node.num}
         </span>
-        <span style={{ background: `${bc}18`, color: bc, borderRadius: 4,
-          padding: '2px 8px', fontSize: 12, fontWeight: 600, lineHeight: 1.4 }}>
-          {node.badge}
+        <span style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', lineHeight: 1.35 }}>
+          {node.title}
         </span>
-      </div>
-      <div style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', lineHeight: 1.35, marginBottom: 5 }}>
-        {node.title}
       </div>
       <div style={{ color: '#64748B', lineHeight: 1.5, marginBottom: 8 }}>{node.subtitle}</div>
       {node.note && (
@@ -43,6 +39,10 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
         <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} />
         {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
+        <span style={{ background: `${bc}18`, color: bc, borderRadius: 4,
+          padding: '1px 6px', fontSize: 10, fontWeight: 600, lineHeight: 1.4, alignSelf: 'center' }}>
+          {node.badge}
+        </span>
       </div>
       {node.link && (
         <a href={node.link} target="_blank" rel="noreferrer" style={{
