@@ -41,8 +41,7 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
         </div>
       )}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
-        <Tag label={PHASE_LABEL[node.phase]} dot={PHASE_STYLES[node.phase].band} />
-{node.recurring && <Tag label="Multiple" dot={BADGE_COLORS.gray} />}
+        <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} />
         {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
       </div>
       {node.link && (
