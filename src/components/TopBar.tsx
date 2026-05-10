@@ -2,7 +2,6 @@ import React from 'react';
 
 interface TopBarProps {
   cardImportanceLevel: 'high' | 'extra' | 'ultra';
-  showLabels: boolean;
   showSwimlanes: boolean;
   showGrid: boolean;
   showSidebar: boolean;
@@ -11,16 +10,15 @@ interface TopBarProps {
   onFit: () => void;
   onSave: () => void;
   onCardImportanceLevelChange: (v: 'high' | 'extra' | 'ultra') => void;
-  onShowLabelsChange: (v: boolean) => void;
   onShowSwimlanesChange: (v: boolean) => void;
   onShowGridChange: (v: boolean) => void;
   onToggleSidebar: () => void;
 }
 
 const TopBar = React.memo(function TopBar({
-  cardImportanceLevel, showLabels, showSwimlanes, showGrid, showSidebar, saved,
+  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved,
   onReset, onFit, onSave,
-  onCardImportanceLevelChange, onShowLabelsChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
+  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
 }: TopBarProps) {
   return (
     <div style={{
@@ -49,12 +47,7 @@ const TopBar = React.memo(function TopBar({
           {cardImportanceLevel === 'ultra' ? 'ultra' : cardImportanceLevel === 'extra' ? 'ultra & extra' : 'all cards'}
         </span> */}
       </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, cursor: 'pointer', color: '#94A3B8' }}>
-        <input type="checkbox" checked={showLabels} onChange={e => onShowLabelsChange(e.target.checked)}
-          style={{ accentColor: '#7F77DD', cursor: 'pointer' }}/>
-        Edge labels
-      </label>
-      <IconBtn onClick={() => onShowSwimlanesChange(!showSwimlanes)} title={showSwimlanes ? 'Hide swimlanes' : 'Show swimlanes'}
+<IconBtn onClick={() => onShowSwimlanesChange(!showSwimlanes)} title={showSwimlanes ? 'Hide swimlanes' : 'Show swimlanes'}
         style={{ color: showSwimlanes ? '#7F77DD' : '#94A3B8' }}>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" strokeWidth="1.5"/>

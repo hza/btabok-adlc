@@ -24,7 +24,6 @@ export default function App() {
 
   const [selectedId,    setSelectedId]    = useState<string | null>(null);
   const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
-  const [showLabels,  setShowLabels]  = useState(true);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(true);
@@ -121,13 +120,17 @@ export default function App() {
     };
   }, [pan.x, pan.y, scale]);
 
-  const visibleEdges = EDGES;
-
   const IMPORTANCE_ORDER = { ultra: 3, extra: 2, high: 1 } as const;
   const [cardImportanceLevel, setCardImportanceLevel] = useState<'high' | 'extra' | 'ultra'>('high');
   const visibleNodes = useMemo(
     () => NODES.filter(n => !n.importance || IMPORTANCE_ORDER[n.importance] >= IMPORTANCE_ORDER[cardImportanceLevel]),
     [cardImportanceLevel],
+  );
+
+  const visibleNodeIds = useMemo(() => new Set(visibleNodes.map(n => n.id)), [visibleNodes]);
+  const visibleEdges = useMemo(
+    () => EDGES.filter(e => visibleNodeIds.has(e.from) && visibleNodeIds.has(e.to)),
+    [visibleNodeIds],
   );
 
   const { connectedEdgeIds, connectedNodeIds } = useMemo(() => {
@@ -182,7 +185,6 @@ export default function App() {
         </div>
       )}
       <TopBar
-        showLabels={showLabels}
         showSwimlanes={showSwimlanes}
         showGrid={showGrid}
         showSidebar={showLegend}
@@ -192,7 +194,6 @@ export default function App() {
         onSave={handleSave}
         cardImportanceLevel={cardImportanceLevel}
         onCardImportanceLevelChange={setCardImportanceLevel}
-        onShowLabelsChange={setShowLabels}
         onShowSwimlanesChange={setShowSwimlanes}
         onShowGridChange={setShowGrid}
         onToggleSidebar={() => setShowLegend(v => !v)}
@@ -256,7 +257,7 @@ export default function App() {
                       stroke={stroke}
                       strokeWidth={sw}
                       markerEnd={`url(#${hi ? 'mHi' : edge.btabok ? 'mBtabok' : 'mLo'})`}/>
-                    {showLabels && (
+                    {(
                       <text x={edge.mx} y={edge.my - 5}
                         textAnchor="middle" fontSize={12} fontFamily="system-ui"
                         fill={hi ? '#7F77DD' : edge.btabok ? '#111827' : '#1D4ED8'}
