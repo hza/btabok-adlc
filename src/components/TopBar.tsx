@@ -64,7 +64,7 @@ const TopBar = React.memo(function TopBar({
           <line x1="1.5" y1="12" x2="16.5" y2="12" stroke="currentColor" strokeWidth="1.5"/>
         </svg>
       </IconBtn>
-      <IconBtn onClick={onSave} title={saved ? 'Saved!' : 'Save positions'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
+      <IconBtn onClick={onSave} title={saved ? 'Copied!' : 'Copy positions to clipboard'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <line x1="2" y1="16" x2="2" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           <line x1="2" y1="16" x2="15" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>

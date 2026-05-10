@@ -1,14 +1,17 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { NODES, PHASES } from '../btabok-adlc-model';
-import { NODE_W, SNAP, BAND_PADDING, snapV } from '../constants';
+import { NODE_W, SNAP, BAND_PADDING, DEFAULT_SCALE, snapV } from '../constants';
 import { NODE_POSITIONS } from '../positions';
 
 export function useCanvasInteraction() {
   const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(
     () => Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]))
   );
+  // Pan and zoom state. We keep these separate from positions since they don't affect the actual node positions and we want to avoid unnecessary re-renders of nodes when panning/zooming.
   const [pan,   setPan]   = useState({ x: 24, y: 24 });
-  const [scale, setScale] = useState(0.72);
+  // Zoom level (1 = 100%). We limit zooming out to 18% since the grid becomes too sparse and nodes can get lost.
+  const [scale, setScale] = useState(DEFAULT_SCALE);
+
   const [isPanning, setIsPanning] = useState(false);
 
   const posRef   = useRef(positions);
@@ -87,7 +90,7 @@ export function useCanvasInteraction() {
 
   const resetPositions = useCallback(() => {
     setPositions(Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }])));
-    setScale(1);
+    setScale(DEFAULT_SCALE);
     setPan({ x: 24, y: 24 });
   }, []);
 
