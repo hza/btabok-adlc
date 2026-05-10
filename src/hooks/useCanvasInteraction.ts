@@ -8,7 +8,12 @@ export function useCanvasInteraction() {
     () => Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]))
   );
   // Pan and zoom state. We keep these separate from positions since they don't affect the actual node positions and we want to avoid unnecessary re-renders of nodes when panning/zooming.
-  const [pan,   setPan]   = useState({ x: 24, y: 24 });
+  const [pan,   setPan]   = useState(() => {
+    const xs = NODES.map(n => NODE_POSITIONS[n.id].x);
+    const ys = NODES.map(n => NODE_POSITIONS[n.id].y);
+    const minX = Math.min(...xs), minY = Math.min(...ys);
+    return { x: 72 - minX * DEFAULT_SCALE, y: 86 - minY * DEFAULT_SCALE };
+  });
   // Zoom level (1 = 100%). We limit zooming out to 18% since the grid becomes too sparse and nodes can get lost.
   const [scale, setScale] = useState(DEFAULT_SCALE);
 
@@ -89,9 +94,12 @@ export function useCanvasInteraction() {
   }, []);
 
   const resetPositions = useCallback(() => {
-    setPositions(Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }])));
+    const defaultPos = Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]));
+    setPositions(defaultPos);
     setScale(DEFAULT_SCALE);
-    setPan({ x: 24, y: 24 });
+    const minX = Math.min(...Object.values(defaultPos).map(p => p.x));
+    const minY = Math.min(...Object.values(defaultPos).map(p => p.y));
+    setPan({ x: 72 - minX * DEFAULT_SCALE, y: 86 - minY * DEFAULT_SCALE });
   }, []);
 
   const fitToScreen = useCallback((containerEl: HTMLElement) => {
