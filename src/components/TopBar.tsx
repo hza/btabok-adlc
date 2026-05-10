@@ -29,7 +29,28 @@ const TopBar = React.memo(function TopBar({
       gap: 10, flexShrink: 0, boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
       flexWrap: 'wrap',
     }}>
-      <span style={{ fontWeight: 800, fontSize: 16, fontFamily: 'sans-serif', letterSpacing: '-0.5px', marginRight: 4 }}>
+      <span style={{ fontWeight: 800, fontSize: 16, fontFamily: 'sans-serif', letterSpacing: '-0.5px', marginRight: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <svg width="22" height="22" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* 5-phase BTABoK ADLC cycle — nodes at 72° intervals, clockwise from top */}
+          {/* Connecting arcs between nodes */}
+          <path d="M22 5 A17 17 0 0 1 38.17 18.23" stroke="#94A3B8" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          <path d="M38.17 18.23 A17 17 0 0 1 31.37 38.14" stroke="#94A3B8" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          <path d="M31.37 38.14 A17 17 0 0 1 12.63 38.14" stroke="#94A3B8" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          <path d="M12.63 38.14 A17 17 0 0 1 5.83 18.23" stroke="#94A3B8" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          <path d="M5.83 18.23 A17 17 0 0 1 22 5" stroke="#94A3B8" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          {/* Arrowheads — small triangles along each arc */}
+          <polygon points="38.17,18.23 35.5,15.2 39.6,14.8" fill="#94A3B8"/>
+          <polygon points="31.37,38.14 28.0,37.5 30.5,40.8" fill="#94A3B8"/>
+          <polygon points="12.63,38.14 13.5,40.9 10.1,37.6" fill="#94A3B8"/>
+          <polygon points="5.83,18.23 4.3,21.5 3.0,17.4"   fill="#94A3B8"/>
+          <polygon points="22,5 19.0,7.2 24.8,7.4"          fill="#94A3B8"/>
+          {/* Phase nodes — colored dots */}
+          <circle cx="22"    cy="5"     r="3.5" fill="#7F77DD"/>  {/* Innovation */}
+          <circle cx="38.17" cy="18.23" r="3.5" fill="#60A5FA"/>  {/* Strategy */}
+          <circle cx="31.37" cy="38.14" r="3.5" fill="#34D399"/>  {/* Planning */}
+          <circle cx="12.63" cy="38.14" r="3.5" fill="#FBBF24"/>  {/* Transformation */}
+          <circle cx="5.83"  cy="18.23" r="3.5" fill="#F87171"/>  {/* Utilize & Measure */}
+        </svg>
         BTABoK Architecture Development Life Cycle
       </span>
       <span style={{ marginLeft: 'auto' }}/>
