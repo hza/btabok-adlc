@@ -19,7 +19,7 @@ export default function App() {
     positions, pan, scale, isPanning,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
-    resetPositions, fitToScreen,
+    resetPositions, fitToScreen, zoomIn, zoomOut,
   } = useCanvasInteraction();
 
   const [selectedId,    setSelectedId]    = useState<string | null>(null);
@@ -196,6 +196,8 @@ export default function App() {
         onCardImportanceLevelChange={setCardImportanceLevel}
         onShowSwimlanesChange={setShowSwimlanes}
         onShowGridChange={setShowGrid}
+        onZoomIn={zoomIn}
+        onZoomOut={zoomOut}
         onToggleSidebar={() => setShowLegend(v => !v)}
       />
 

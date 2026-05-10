@@ -123,5 +123,7 @@ export function useCanvasInteraction() {
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen,
+    zoomIn:  () => setScale(s => Math.min(3,    Math.round(s * 10 + 1) / 10)),
+    zoomOut: () => setScale(s => Math.max(0.18, Math.round(s * 10 - 1) / 10)),
   };
 }

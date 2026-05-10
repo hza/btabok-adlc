@@ -8,6 +8,8 @@ interface TopBarProps {
   saved: boolean;
   onReset: () => void;
   onFit: () => void;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
   onSave: () => void;
   onCardImportanceLevelChange: (v: 'high' | 'extra' | 'ultra') => void;
   onShowSwimlanesChange: (v: boolean) => void;
@@ -17,7 +19,7 @@ interface TopBarProps {
 
 const TopBar = React.memo(function TopBar({
   cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved,
-  onReset, onFit, onSave,
+  onReset, onFit, onSave, onZoomIn, onZoomOut,
   onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
 }: TopBarProps) {
   return (
@@ -72,8 +74,23 @@ const TopBar = React.memo(function TopBar({
         </svg>
       </IconBtn>
       <Divider/>
+      <IconBtn onClick={onZoomOut} title="Zoom out">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
+          <line x1="5.5" y1="8" x2="10.5" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="12.5" y1="12.5" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+      </IconBtn>
       <IconBtn onClick={onReset} title="Reset zoom to 100%">
         <span style={{ fontSize: 12, fontWeight: 700, color: '#94A3B8', letterSpacing: '-0.5px' }}>100%</span>
+      </IconBtn>
+      <IconBtn onClick={onZoomIn} title="Zoom in">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
+          <line x1="8" y1="5.5" x2="8" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="5.5" y1="8" x2="10.5" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="12.5" y1="12.5" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
       </IconBtn>
       <IconBtn onClick={onFit} title="Fit to screen">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
