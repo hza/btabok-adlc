@@ -29,7 +29,7 @@ const TopBar = React.memo(function TopBar({
       gap: 10, flexShrink: 0, boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
       flexWrap: 'wrap',
     }}>
-      <span style={{ fontWeight: 800, fontSize: 15, letterSpacing: '0.03em', marginRight: 4 }}>
+      <span style={{ fontWeight: 800, fontSize: 16, fontFamily: 'sans-serif', letterSpacing: '-0.5px', marginRight: 4 }}>
         BTABoK Architecture Development Life Cycle
       </span>
       <span style={{ marginLeft: 'auto' }}/>
