@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface TopBarProps {
-  minImportance: number;
+  cardImportanceLevel: 'high' | 'extra' | 'ultra';
   showLabels: boolean;
   showSwimlanes: boolean;
   showGrid: boolean;
@@ -10,7 +10,7 @@ interface TopBarProps {
   onReset: () => void;
   onFit: () => void;
   onSave: () => void;
-  onMinImportanceChange: (v: number) => void;
+  onCardImportanceLevelChange: (v: 'high' | 'extra' | 'ultra') => void;
   onShowLabelsChange: (v: boolean) => void;
   onShowSwimlanesChange: (v: boolean) => void;
   onShowGridChange: (v: boolean) => void;
@@ -18,9 +18,9 @@ interface TopBarProps {
 }
 
 const TopBar = React.memo(function TopBar({
-  minImportance, showLabels, showSwimlanes, showGrid, showSidebar, saved,
+  cardImportanceLevel, showLabels, showSwimlanes, showGrid, showSidebar, saved,
   onReset, onFit, onSave,
-  onMinImportanceChange, onShowLabelsChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
+  onCardImportanceLevelChange, onShowLabelsChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
 }: TopBarProps) {
   return (
     <div style={{
@@ -35,12 +35,19 @@ const TopBar = React.memo(function TopBar({
       <span style={{ marginLeft: 'auto' }}/>
       <Divider/>
       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
-        Edge details:
+        Importance:
         <input
-          type="range" min={1} max={6} value={7 - minImportance}
-          onChange={e => onMinImportanceChange(7 - Number(e.target.value))}
+          type="range" min={1} max={3}
+          value={cardImportanceLevel === 'ultra' ? 1 : cardImportanceLevel === 'extra' ? 2 : 3}
+          onChange={e => {
+            const v = Number(e.target.value);
+            onCardImportanceLevelChange(v === 1 ? 'ultra' : v === 2 ? 'extra' : 'high');
+          }}
           style={{ accentColor: '#7F77DD', width: 80, cursor: 'pointer' }}
         />
+        {/* <span style={{ fontSize: 12, color: '#CBD5E1', minWidth: 90 }}>
+          {cardImportanceLevel === 'ultra' ? 'ultra' : cardImportanceLevel === 'extra' ? 'ultra & extra' : 'all cards'}
+        </span> */}
       </label>
       <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, cursor: 'pointer', color: '#94A3B8' }}>
         <input type="checkbox" checked={showLabels} onChange={e => onShowLabelsChange(e.target.checked)}

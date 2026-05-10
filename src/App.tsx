@@ -11,18 +11,6 @@ import NodeCard from './components/NodeCard';
 import TopBar from './components/TopBar';
 import { SelectedPanel, LegendPanel, PhasePanel } from './components/Sidebar';
 
-const EDGE_GREY_COLORS: Record<number, string> = {
-  1: 'rgba(30,30,30,0.30)',
-  2: 'rgba(30,30,30,0.36)',
-  3: 'rgba(30,30,30,0.40)',
-  4: 'rgba(30,30,30,0.52)',
-  5: 'rgba(30,30,30,0.68)',
-  6: 'rgba(30,30,30,0.95)',
-};
-
-function edgeGreyColor(importance: number): string {
-  return EDGE_GREY_COLORS[importance] ?? EDGE_GREY_COLORS[6];
-}
 
 const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
 
@@ -40,7 +28,6 @@ export default function App() {
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(true);
-  const [minImportance, setMinImportance] = useState(1);
   const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -134,9 +121,13 @@ export default function App() {
     };
   }, [pan.x, pan.y, scale]);
 
-  const visibleEdges = useMemo(
-    () => EDGES.filter(e => e.importance >= minImportance),
-    [minImportance],
+  const visibleEdges = EDGES;
+
+  const IMPORTANCE_ORDER = { ultra: 3, extra: 2, high: 1 } as const;
+  const [cardImportanceLevel, setCardImportanceLevel] = useState<'high' | 'extra' | 'ultra'>('high');
+  const visibleNodes = useMemo(
+    () => NODES.filter(n => !n.importance || IMPORTANCE_ORDER[n.importance] >= IMPORTANCE_ORDER[cardImportanceLevel]),
+    [cardImportanceLevel],
   );
 
   const { connectedEdgeIds, connectedNodeIds } = useMemo(() => {
@@ -199,8 +190,8 @@ export default function App() {
         onReset={resetPositions}
         onFit={() => containerRef.current && fitToScreen(containerRef.current)}
         onSave={handleSave}
-        minImportance={minImportance}
-        onMinImportanceChange={setMinImportance}
+        cardImportanceLevel={cardImportanceLevel}
+        onCardImportanceLevelChange={setCardImportanceLevel}
         onShowLabelsChange={setShowLabels}
         onShowSwimlanesChange={setShowSwimlanes}
         onShowGridChange={setShowGrid}
@@ -257,7 +248,7 @@ export default function App() {
                 const hi   = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
                 const dimS = connectedEdgeIds ? !hi : false;
                 const opacity = dimS ? 0.18 : hi ? 1 : edge.btabok ? 0.72 : 0.52;
-                const stroke  = hi ? '#7F77DD' : edge.btabok ? '#F5A44A' : edgeGreyColor(edge.importance);
+                const stroke  = hi ? '#7F77DD' : edge.btabok ? '#F5A44A' : 'rgba(30,30,30,0.45)';
                 const sw      = hi ? 2.2 : edge.btabok ? 1.8 : 1.4;
                 return (
                   <g key={edge.id} opacity={opacity}>
@@ -278,7 +269,7 @@ export default function App() {
               })}
             </svg>
 
-            {NODES.map(node => {
+            {visibleNodes.map(node => {
               const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
               return (
                 <NodeCard key={node.id} node={node} pos={positions[node.id]}
