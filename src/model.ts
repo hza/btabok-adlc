@@ -31,7 +31,7 @@ export const PHASE_LABEL: Record<Phase, string> = {
   strategy:       'Strategy',
   planning:       'Planning',
   transformation: 'Transformation',
-  utilize:        'Utilize',
+  utilize:        'Utilize / Operate',
 };
 
 export const PHASE_DESCRIPTION: Record<Phase, string> = {

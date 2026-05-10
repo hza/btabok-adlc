@@ -13,9 +13,10 @@ interface SelectedPanelProps {
   node: NodeData;
   outgoing: { e: EdgeData; n: NodeData }[];
   incoming: { e: EdgeData; n: NodeData }[];
+  onPhaseClick: (ph: Phase) => void;
 }
 
-export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) {
+export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing, incoming, onPhaseClick }: SelectedPanelProps) {
   const bc = badgeColor(node.badge);
   return (
     <div style={{ padding: 16 }}>
@@ -37,7 +38,7 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
         </div>
       )}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
-        <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} />
+        <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} onClick={() => onPhaseClick(node.phase)} />
         {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
         <span style={{ background: `${bc}18`, color: bc, borderRadius: 4,
           padding: '1px 6px', fontSize: 10, fontWeight: 600, lineHeight: 1.4, alignSelf: 'center' }}>
@@ -216,12 +217,13 @@ export const LegendPanel = React.memo(function LegendPanel() {
   );
 });
 
-function Tag({ label, dot }: { label: string; dot?: string }) {
+function Tag({ label, dot, onClick }: { label: string; dot?: string; onClick?: () => void }) {
   return (
-    <span style={{
+    <span onClick={onClick} style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,
       background: '#F1F5F9', borderRadius: 20,
       padding: '2px 9px', fontSize: 11, color: '#334155', fontWeight: 500,
+      ...(onClick && { cursor: 'pointer' }),
     }}>
       {dot && <span style={{ width: 6, height: 6, borderRadius: '50%', background: dot, flexShrink: 0 }}/>}
       {label}

@@ -239,10 +239,7 @@ export default function App() {
               </defs>
 
               {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
-                <g key={ph} style={{ cursor: 'pointer' }} onClick={() => {
-                  setSelectedId(null);
-                  setSelectedPhase(p => p === ph ? null : ph);
-                }}>
+                <g key={ph}>
                   <rect x={minX} y={0} width={maxX - minX} height={canvasH}
                     fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
                   <rect x={minX} y={0} width={maxX - minX} height={24}
@@ -301,7 +298,7 @@ export default function App() {
           overflowY: 'auto', flexShrink: 0, fontSize: 14, color: '#334155',
         }}>
           {selectedNode
-            ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming}/>
+            ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => { setSelectedId(null); setSelectedPhase(ph); }}/>
             : selectedPhase
               ? <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>
               : <LegendPanel/>}
