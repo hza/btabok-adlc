@@ -17,7 +17,7 @@ interface TopBarProps {
   onToggleSidebar: () => void;
 }
 
-export default function TopBar({
+const TopBar = React.memo(function TopBar({
   minImportance, showLabels, showSwimlanes, showGrid, showSidebar, saved,
   onReset, onFit, onSave,
   onMinImportanceChange, onShowLabelsChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
@@ -109,7 +109,9 @@ export default function TopBar({
       </IconBtn>
     </div>
   );
-}
+});
+
+export default TopBar;
 
 function Divider() {
   return <div style={{ width: 1, height: 20, background: '#334155', flexShrink: 0 }}/>;

@@ -15,7 +15,7 @@ interface SelectedPanelProps {
   incoming: { e: EdgeData; n: NodeData }[];
 }
 
-export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) {
+export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) {
   const bc = badgeColor(node.badge);
   return (
     <div style={{ padding: 16 }}>
@@ -59,7 +59,7 @@ export function SelectedPanel({ node, outgoing, incoming }: SelectedPanelProps) 
       {incoming.length > 0 && <ConnList title={`← Incoming (${incoming.length})`} items={incoming} accent="#1D9E75"/>}
     </div>
   );
-}
+});
 
 function ConnList({ title, items, accent }: {
   title: string;
@@ -88,7 +88,7 @@ interface PhasePanelProps {
   onClose: () => void;
 }
 
-export function PhasePanel({ phase, onClose }: PhasePanelProps) {
+export const PhasePanel = React.memo(function PhasePanel({ phase, onClose }: PhasePanelProps) {
   const style  = PHASE_STYLES[phase];
   const nodes  = NODES.filter(n => n.phase === phase);
 
@@ -155,11 +155,11 @@ export function PhasePanel({ phase, onClose }: PhasePanelProps) {
       </div>
     </div>
   );
-}
+});
 
 // ─── LegendPanel ──────────────────────────────────────────────────────────────
 
-export function LegendPanel() {
+export const LegendPanel = React.memo(function LegendPanel() {
   return (
     <div style={{ padding: 16 }}>
       <div style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', marginBottom: 12 }}>Legend</div>
@@ -214,7 +214,7 @@ export function LegendPanel() {
           </div>
     </div>
   );
-}
+});
 
 function Tag({ label, dot }: { label: string; dot?: string }) {
   return (

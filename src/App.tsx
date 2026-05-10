@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
   PHASE_STYLES, PHASES, PHASE_LABEL,
   NODES, EDGES,
@@ -24,6 +24,8 @@ function edgeGreyColor(importance: number): string {
   return EDGE_GREY_COLORS[importance] ?? EDGE_GREY_COLORS[6];
 }
 
+const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
+
 export default function App() {
   const {
     positions, pan, scale, isPanning,
@@ -34,7 +36,6 @@ export default function App() {
 
   const [selectedId,    setSelectedId]    = useState<string | null>(null);
   const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
-  const phaseFilter: Phase | null = null;
   const [showLabels,  setShowLabels]  = useState(true);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
@@ -99,63 +100,79 @@ export default function App() {
 
 
   // ── derived ──────────────────────────────────────────────────────────────────
-  const canvasW = Math.max(...Object.values(positions).map(p => p.x)) + NODE_W + 80;
-  const canvasH = Math.max(...Object.values(positions).map(p => p.y)) + 200 + 80;
+  const canvasW = useMemo(
+    () => Math.max(...Object.values(positions).map(p => p.x)) + NODE_W + 80,
+    [positions],
+  );
+  const canvasH = useMemo(
+    () => Math.max(...Object.values(positions).map(p => p.y)) + 200 + 80,
+    [positions],
+  );
 
-  const gridStep20  = 20 * scale;
-  const gridStep100 = 100 * scale;
-  const gridOffX20  = ((pan.x % gridStep20)  + gridStep20)  % gridStep20;
-  const gridOffY20  = ((pan.y % gridStep20)  + gridStep20)  % gridStep20;
-  const gridOffX100 = ((pan.x % gridStep100) + gridStep100) % gridStep100;
-  const gridOffY100 = ((pan.y % gridStep100) + gridStep100) % gridStep100;
+  const infiniteGridStyle = useMemo(() => {
+    const gridStep20  = 20 * scale;
+    const gridStep100 = 100 * scale;
+    const gridOffX20  = ((pan.x % gridStep20)  + gridStep20)  % gridStep20;
+    const gridOffY20  = ((pan.y % gridStep20)  + gridStep20)  % gridStep20;
+    const gridOffX100 = ((pan.x % gridStep100) + gridStep100) % gridStep100;
+    const gridOffY100 = ((pan.y % gridStep100) + gridStep100) % gridStep100;
+    return {
+      backgroundImage: [
+        'linear-gradient(rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
+        'linear-gradient(90deg, rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
+        'linear-gradient(rgba(148,163,184,0.12) 0.6px, transparent 0.6px)',
+        'linear-gradient(90deg, rgba(148,163,184,0.1) 0.6px, transparent 0.6px)',
+      ].join(','),
+      backgroundSize: [
+        `${gridStep20}px ${gridStep20}px`, `${gridStep20}px ${gridStep20}px`,
+        `${gridStep100}px ${gridStep100}px`, `${gridStep100}px ${gridStep100}px`,
+      ].join(','),
+      backgroundPosition: [
+        `${gridOffX20}px ${gridOffY20}px`, `${gridOffX20}px ${gridOffY20}px`,
+        `${gridOffX100}px ${gridOffY100}px`, `${gridOffX100}px ${gridOffY100}px`,
+      ].join(','),
+    };
+  }, [pan.x, pan.y, scale]);
 
-  const infiniteGridStyle = {
-    backgroundImage: [
-      'linear-gradient(rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
-      'linear-gradient(90deg, rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
-      'linear-gradient(rgba(148,163,184,0.12) 0.6px, transparent 0.6px)',
-      'linear-gradient(90deg, rgba(148,163,184,0.1) 0.6px, transparent 0.6px)',
-    ].join(','),
-    backgroundSize: [
-      `${gridStep20}px ${gridStep20}px`, `${gridStep20}px ${gridStep20}px`,
-      `${gridStep100}px ${gridStep100}px`, `${gridStep100}px ${gridStep100}px`,
-    ].join(','),
-    backgroundPosition: [
-      `${gridOffX20}px ${gridOffY20}px`, `${gridOffX20}px ${gridOffY20}px`,
-      `${gridOffX100}px ${gridOffY100}px`, `${gridOffX100}px ${gridOffY100}px`,
-    ].join(','),
-  };
+  const visibleEdges = useMemo(
+    () => EDGES.filter(e => e.importance >= minImportance),
+    [minImportance],
+  );
 
-  const visibleEdges = EDGES
-    .filter(e => e.importance >= minImportance);
+  const { connectedEdgeIds, connectedNodeIds } = useMemo(() => {
+    if (!selectedId) return { connectedEdgeIds: null, connectedNodeIds: null };
+    const connEdges = visibleEdges.filter(e => e.from === selectedId || e.to === selectedId);
+    return {
+      connectedEdgeIds: new Set(connEdges.map(e => e.id)),
+      connectedNodeIds: new Set([selectedId, ...connEdges.flatMap(e => [e.from, e.to])]),
+    };
+  }, [selectedId, visibleEdges]);
 
-  const connectedEdgeIds = selectedId
-    ? new Set(visibleEdges.filter(e => e.from === selectedId || e.to === selectedId).map(e => e.id))
-    : null;
-  const connectedNodeIds = selectedId
-    ? new Set([selectedId, ...visibleEdges
-        .filter(e => e.from === selectedId || e.to === selectedId)
-        .flatMap(e => [e.from, e.to])])
-    : null;
+  const phaseBands = useMemo(
+    () => PHASES.map(ph => {
+      const ns = NODES.filter(n => n.phase === ph);
+      if (!ns.length) return null;
+      const xs   = ns.map(n => positions[n.id].x);
+      const minX = Math.min(...xs) - BAND_PADDING;
+      const maxX = Math.max(...xs) + NODE_W + BAND_PADDING;
+      return { ph, minX, maxX, style: PHASE_STYLES[ph] };
+    }).filter(Boolean) as { ph: Phase; minX: number; maxX: number; style: { bg:string; band:string; text:string } }[],
+    [positions],
+  );
 
-  const phaseBands = PHASES.map(ph => {
-    const ns = NODES.filter(n => n.phase === ph);
-    if (!ns.length) return null;
-    const xs   = ns.map(n => positions[n.id].x);
-    const minX = Math.min(...xs) - BAND_PADDING;
-    const maxX = Math.max(...xs) + NODE_W + BAND_PADDING;
-    return { ph, minX, maxX, style: PHASE_STYLES[ph] };
-  }).filter(Boolean) as { ph: Phase; minX: number; maxX: number; style: { bg:string; band:string; text:string } }[];
+  const edgePaths = useMemo(
+    () => computeEdgePaths(visibleEdges, positions, nodeHeights, NODE_MAP),
+    [visibleEdges, positions, nodeHeights],
+  );
 
-  const edgePaths = computeEdgePaths(visibleEdges, positions, nodeHeights);
-
-  const selectedNode = selectedId ? NODES.find(n => n.id === selectedId) ?? null : null;
-  const outgoing = selectedId
-    ? visibleEdges.filter(e => e.from === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.to)! }))
-    : [];
-  const incoming = selectedId
-    ? visibleEdges.filter(e => e.to === selectedId).map(e => ({ e, n: NODES.find(n => n.id === e.from)! }))
-    : [];
+  const { selectedNode, outgoing, incoming } = useMemo(() => {
+    if (!selectedId) return { selectedNode: null, outgoing: [], incoming: [] };
+    return {
+      selectedNode: NODE_MAP.get(selectedId) ?? null,
+      outgoing: visibleEdges.filter(e => e.from === selectedId).map(e => ({ e, n: NODE_MAP.get(e.to)! })),
+      incoming: visibleEdges.filter(e => e.to === selectedId).map(e => ({ e, n: NODE_MAP.get(e.from)! })),
+    };
+  }, [selectedId, visibleEdges]);
 
   // ── render ───────────────────────────────────────────────────────────────────
   return (
@@ -242,11 +259,7 @@ export default function App() {
               {edgePaths.map(edge => {
                 const hi   = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
                 const dimS = connectedEdgeIds ? !hi : false;
-                const dimP = phaseFilter
-                  ? !(NODES.find(n => n.id === edge.from)?.phase === phaseFilter ||
-                      NODES.find(n => n.id === edge.to)?.phase === phaseFilter)
-                  : false;
-                const opacity = dimS || dimP ? 0.18 : hi ? 1 : edge.btabok ? 0.72 : 0.52;
+                const opacity = dimS ? 0.18 : hi ? 1 : edge.btabok ? 0.72 : 0.52;
                 const stroke  = hi ? '#7F77DD' : edge.btabok ? '#F5A44A' : edgeGreyColor(edge.importance);
                 const sw      = hi ? 2.2 : edge.btabok ? 1.8 : 1.4;
                 return (
@@ -269,12 +282,11 @@ export default function App() {
             </svg>
 
             {NODES.map(node => {
-              const dimSel   = connectedNodeIds && !connectedNodeIds.has(node.id);
-              const dimPhase = phaseFilter && node.phase !== phaseFilter;
+              const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
               return (
                 <NodeCard key={node.id} node={node} pos={positions[node.id]}
                   selected={node.id === selectedId}
-                  dimmed={!!(dimSel || dimPhase)}
+                  dimmed={dimmed}
                   onMouseDown={e => handleNodeDown(e, node.id)}
                   onHeightChange={handleHeightChange}/>
               );

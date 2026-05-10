@@ -1,5 +1,4 @@
-import { NODES } from '../model';
-import type { EdgeData } from '../model';
+import type { EdgeData, NodeData } from '../model';
 import { NODE_W, nodeH } from '../constants';
 
 type Side = 'left' | 'right' | 'top' | 'bottom';
@@ -14,8 +13,9 @@ function nodeCenterY(
   nodeId: string,
   positions: Record<string, { x: number; y: number }>,
   heights: Record<string, number>,
+  nodeMap: Map<string, NodeData>,
 ) {
-  const node = NODES.find(n => n.id === nodeId)!;
+  const node = nodeMap.get(nodeId)!;
   return positions[nodeId].y + (heights[nodeId] ?? nodeH(node)) / 2;
 }
 
@@ -27,6 +27,7 @@ function buildSideGroups(
   edgeSideInfo: ReturnType<typeof computeEdgeSideInfo>,
   positions: Record<string, { x: number; y: number }>,
   heights: Record<string, number>,
+  nodeMap: Map<string, NodeData>,
 ) {
   const sideGroups = new Map<string, string[]>();
   for (const { edgeId, fromId, fromSide, toId, toSide } of edgeSideInfo) {
@@ -53,7 +54,7 @@ function buildSideGroups(
       const otherA = infoA.toId === nodeId ? infoA.fromId : infoA.toId;
       const otherB = infoB.toId === nodeId ? infoB.fromId : infoB.toId;
       return horizontal
-        ? nodeCenterY(otherA, positions, heights) - nodeCenterY(otherB, positions, heights)
+        ? nodeCenterY(otherA, positions, heights, nodeMap) - nodeCenterY(otherB, positions, heights, nodeMap)
         : nodeCenterX(otherA, positions) - nodeCenterX(otherB, positions);
     });
   }
@@ -65,10 +66,11 @@ function computeEdgeSideInfo(
   edges: EdgeData[],
   positions: Record<string, { x: number; y: number }>,
   heights: Record<string, number>,
+  nodeMap: Map<string, NodeData>,
 ) {
   return edges.map(edge => {
-    const fn = NODES.find(n => n.id === edge.from)!;
-    const tn = NODES.find(n => n.id === edge.to)!;
+    const fn = nodeMap.get(edge.from)!;
+    const tn = nodeMap.get(edge.to)!;
     const fp = positions[edge.from], tp = positions[edge.to];
     const fh = heights[edge.from] ?? nodeH(fn), th = heights[edge.to] ?? nodeH(tn);
     const fcx = fp.x + NODE_W / 2, fcy = fp.y + fh / 2;
@@ -93,8 +95,9 @@ function getPort(
   positions: Record<string, { x: number; y: number }>,
   sideGroups: Map<string, string[]>,
   heights: Record<string, number>,
+  nodeMap: Map<string, NodeData>,
 ): { x: number; y: number } {
-  const node = NODES.find(n => n.id === nodeId)!;
+  const node = nodeMap.get(nodeId)!;
   const pos  = positions[nodeId];
   const h    = heights[nodeId] ?? nodeH(node);
   const key  = `${nodeId}:${side}`;
@@ -121,14 +124,15 @@ export function computeEdgePaths(
   edges: EdgeData[],
   positions: Record<string, { x: number; y: number }>,
   heights: Record<string, number> = {},
+  nodeMap: Map<string, NodeData>,
 ): EdgePath[] {
-  const edgeSideInfo = computeEdgeSideInfo(edges, positions, heights);
-  const sideGroups   = buildSideGroups(edgeSideInfo, positions, heights);
+  const edgeSideInfo = computeEdgeSideInfo(edges, positions, heights, nodeMap);
+  const sideGroups   = buildSideGroups(edgeSideInfo, positions, heights, nodeMap);
 
   return edges.map((edge, i) => {
     const { fromSide, toSide } = edgeSideInfo[i];
-    const src = getPort(edge.from, fromSide, edge.id, positions, sideGroups, heights);
-    const dst = getPort(edge.to,   toSide,   edge.id, positions, sideGroups, heights);
+    const src = getPort(edge.from, fromSide, edge.id, positions, sideGroups, heights, nodeMap);
+    const dst = getPort(edge.to,   toSide,   edge.id, positions, sideGroups, heights, nodeMap);
 
     const x1 = src.x, y1 = src.y;
     let x2 = dst.x, y2 = dst.y;
