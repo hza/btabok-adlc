@@ -63,6 +63,13 @@ export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
   utilize:        ['Did the architecture deliver the promised business outcomes?', 'What debt was incurred and how will it be repaid?', 'What should the next innovation cycle learn from this one?'],
 };
 
+// ─── importance ───────────────────────────────────────────────────────────────
+export const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string; rationale: string }> = {
+  ultra: { label: 'Ultra', color: '#B91C1C', bg: '#FEE2E2', rationale: 'Non-negotiable core. Without it the architecture lacks justification, scope, requirements, decisions, or structural verifiability.' },
+  extra: { label: 'Extra', color: '#C2410C', bg: '#FFEDD5', rationale: 'Strongly recommended; skipping it leaves a significant blind spot in strategy, traceability, or governance.' },
+  high:  { label: 'High',  color: '#854D0E', bg: '#FEF9C3', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
+};
+
 // ─── data types ───────────────────────────────────────────────────────────────
 export interface NodeData {
   id: string; phase: Phase; num: string; title: string; subtitle: string;

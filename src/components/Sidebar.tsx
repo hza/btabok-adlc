@@ -3,7 +3,7 @@ import {
   badgeColor, BADGE_COLORS, BADGE_TYPES,
   PHASE_STYLES, PHASES, PHASE_LABEL,
   PHASE_DESCRIPTION, PHASE_GOAL, PHASE_KEY_QUESTIONS,
-  NODES,
+  NODES, IMPORTANCE_STYLES,
 } from '../btabok-adlc-model';
 import type { NodeData, EdgeData, Phase } from '../btabok-adlc-model';
 
@@ -37,7 +37,7 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
           {node.note}
         </div>
       )}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: node.importance ? 6 : 8 }}>
         <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} onClick={() => onPhaseClick(node.phase)} />
         {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
         {node.importance && <ImportanceTag importance={node.importance} />}
@@ -46,6 +46,13 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
           {node.badge}
         </span>
       </div>
+      {node.importance && (
+        <div style={{ fontSize: 12, color: '#64748B', lineHeight: 1.5, marginBottom: 10,
+          padding: '6px 10px', background: `${IMPORTANCE_STYLES[node.importance].bg}99`,
+          borderRadius: 6, borderLeft: `3px solid ${IMPORTANCE_STYLES[node.importance].color}` }}>
+          {IMPORTANCE_STYLES[node.importance].rationale}
+        </div>
+      )}
       {node.link && (
         <a href={node.link} target="_blank" rel="noreferrer" style={{
           display: 'block', marginBottom: 14,
@@ -206,6 +213,20 @@ export const LegendPanel = React.memo(function LegendPanel() {
 
           <Hr/>
 
+          <SectionLabel>Importance levels</SectionLabel>
+          {(Object.entries(IMPORTANCE_STYLES) as [string, { label: string; color: string; bg: string; rationale: string }][]).map(([key, s]) => (
+            <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 3,
+                background: s.bg, borderRadius: 20, flexShrink: 0,
+                padding: '2px 8px', fontSize: 11, color: s.color, fontWeight: 600,
+              }}>★ {s.label}</span>
+              <span style={{ color: '#475569', fontSize: 12, lineHeight: 1.5 }}>{s.rationale}</span>
+            </div>
+          ))}
+
+          <Hr/>
+
           <div style={{ marginTop: 12, background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
             fontSize: 12, color: '#94A3B8', lineHeight: 1.7 }}>
             <strong style={{ color: '#475569', display: 'block', marginBottom: 4 }}>Interactions</strong>
@@ -217,12 +238,6 @@ export const LegendPanel = React.memo(function LegendPanel() {
     </div>
   );
 });
-
-const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string }> = {
-  high:  { label: 'High',  color: '#7C3AED', bg: '#EDE9FE' },
-  extra: { label: 'Extra', color: '#D97706', bg: '#FEF3C7' },
-  ultra: { label: 'Ultra', color: '#DC2626', bg: '#FEE2E2' },
-};
 
 function ImportanceTag({ importance }: { importance: 'high' | 'extra' | 'ultra' }) {
   const s = IMPORTANCE_STYLES[importance];
