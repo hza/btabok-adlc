@@ -40,6 +40,7 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
         <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} onClick={() => onPhaseClick(node.phase)} />
         {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
+        {node.importance && <ImportanceTag importance={node.importance} />}
         <span style={{ background: `${bc}18`, color: bc, borderRadius: 4,
           padding: '1px 6px', fontSize: 10, fontWeight: 600, lineHeight: 1.4, alignSelf: 'center' }}>
           {node.badge}
@@ -216,6 +217,25 @@ export const LegendPanel = React.memo(function LegendPanel() {
     </div>
   );
 });
+
+const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string }> = {
+  high:  { label: 'High',  color: '#7C3AED', bg: '#EDE9FE' },
+  extra: { label: 'Extra', color: '#D97706', bg: '#FEF3C7' },
+  ultra: { label: 'Ultra', color: '#DC2626', bg: '#FEE2E2' },
+};
+
+function ImportanceTag({ importance }: { importance: 'high' | 'extra' | 'ultra' }) {
+  const s = IMPORTANCE_STYLES[importance];
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      background: s.bg, borderRadius: 20,
+      padding: '2px 9px', fontSize: 11, color: s.color, fontWeight: 600,
+    }}>
+      ★ {s.label}
+    </span>
+  );
+}
 
 function Tag({ label, dot, onClick }: { label: string; dot?: string; onClick?: () => void }) {
   return (
