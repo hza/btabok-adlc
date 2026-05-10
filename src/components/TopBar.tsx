@@ -33,7 +33,7 @@ const TopBar = React.memo(function TopBar({
       <span style={{ marginLeft: 'auto' }}/>
       <Divider/>
       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
-        Importance:
+        LOD:
         <input
           type="range" min={1} max={3}
           value={cardImportanceLevel === 'ultra' ? 1 : cardImportanceLevel === 'extra' ? 2 : 3}
