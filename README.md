@@ -29,7 +29,7 @@ The goal is to help architects and teams orient themselves: *where are we in the
 | **Strategy** | Map capabilities, set measurable objectives, prioritise investment |
 | **Planning** | Define quality attributes, trace requirements, log architectural decisions |
 | **Transformation** | Implement, decompose, and verify the architecture across all viewpoints |
-| **Utilize** | Measure outcomes against objectives and feed learning into the next cycle |
+| **Utilize and Measure** | Measure outcomes against objectives and feed learning into the next cycle |
 
 ---
 
