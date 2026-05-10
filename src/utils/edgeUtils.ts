@@ -1,4 +1,4 @@
-import type { EdgeData, NodeData } from '../model';
+import type { EdgeData, NodeData } from '../btabok-adlc-model';
 import { NODE_W, nodeH } from '../constants';
 
 type Side = 'left' | 'right' | 'top' | 'bottom';

@@ -4,8 +4,8 @@ import {
   PHASE_STYLES, PHASES, PHASE_LABEL,
   PHASE_DESCRIPTION, PHASE_GOAL, PHASE_KEY_QUESTIONS,
   NODES,
-} from '../model';
-import type { NodeData, EdgeData, Phase } from '../model';
+} from '../btabok-adlc-model';
+import type { NodeData, EdgeData, Phase } from '../btabok-adlc-model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
 

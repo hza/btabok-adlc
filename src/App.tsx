@@ -2,8 +2,8 @@ import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import {
   PHASE_STYLES, PHASES, PHASE_LABEL,
   NODES, EDGES,
-} from './model';
-import type { Phase } from './model';
+} from './btabok-adlc-model';
+import type { Phase } from './btabok-adlc-model';
 import { NODE_W, BAND_PADDING } from './constants';
 import { computeEdgePaths } from './utils/edgeUtils';
 import { useCanvasInteraction } from './hooks/useCanvasInteraction';

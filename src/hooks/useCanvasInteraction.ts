@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { NODES, PHASES } from '../model';
+import { NODES, PHASES } from '../btabok-adlc-model';
 import { NODE_W, SNAP, BAND_PADDING, snapV } from '../constants';
 import { NODE_POSITIONS } from '../positions';
 

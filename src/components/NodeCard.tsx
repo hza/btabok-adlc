@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { badgeColor } from '../model';
-import type { NodeData } from '../model';
+import { badgeColor } from '../btabok-adlc-model';
+import type { NodeData } from '../btabok-adlc-model';
 import { NODE_W } from '../constants';
 
 interface CardProps {
