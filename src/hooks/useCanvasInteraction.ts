@@ -29,16 +29,9 @@ export function useCanvasInteraction() {
   useEffect(() => { panRef.current   = pan;        }, [pan]);
   useEffect(() => { scaleRef.current = scale;      }, [scale]);
 
-  const handleWheel = useCallback((e: WheelEvent, containerEl: HTMLElement) => {
+  const handleWheel = useCallback((e: WheelEvent, _containerEl: HTMLElement) => {
     e.preventDefault();
-    const rect   = containerEl.getBoundingClientRect();
-    const mx     = e.clientX - rect.left;
-    const my     = e.clientY - rect.top;
-    const factor = e.deltaY > 0 ? 0.9 : 1.11;
-    const ns     = Math.max(0.18, Math.min(3, scaleRef.current * factor));
-    const ratio  = ns / scaleRef.current;
-    setPan(p => ({ x: mx - (mx - p.x) * ratio, y: my - (my - p.y) * ratio }));
-    setScale(ns);
+    setPan(p => ({ x: p.x - e.deltaX, y: p.y - e.deltaY }));
   }, []);
 
   const startNodeDrag = useCallback((e: React.MouseEvent, id: string) => {
