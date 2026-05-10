@@ -110,26 +110,26 @@ export default function App() {
   );
 
   const infiniteGridStyle = useMemo(() => {
-    const gridStep20  = 20 * scale;
-    const gridStep100 = 100 * scale;
-    const gridOffX20  = ((pan.x % gridStep20)  + gridStep20)  % gridStep20;
-    const gridOffY20  = ((pan.y % gridStep20)  + gridStep20)  % gridStep20;
-    const gridOffX100 = ((pan.x % gridStep100) + gridStep100) % gridStep100;
-    const gridOffY100 = ((pan.y % gridStep100) + gridStep100) % gridStep100;
+    const minor = 25 * scale;
+    const major = 100 * scale;
+    const offXMinor = ((pan.x % minor) + minor) % minor;
+    const offYMinor = ((pan.y % minor) + minor) % minor;
+    const offXMajor = ((pan.x % major) + major) % major;
+    const offYMajor = ((pan.y % major) + major) % major;
     return {
       backgroundImage: [
-        'linear-gradient(rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
-        'linear-gradient(90deg, rgba(203,213,225,0.35) 0.35px, transparent 0.35px)',
-        'linear-gradient(rgba(148,163,184,0.12) 0.6px, transparent 0.6px)',
-        'linear-gradient(90deg, rgba(148,163,184,0.1) 0.6px, transparent 0.6px)',
+        'linear-gradient(rgba(140,150,170,0.55) 1px, transparent 1px)',
+        'linear-gradient(90deg, rgba(140,150,170,0.55) 1px, transparent 1px)',
+        'linear-gradient(rgba(200,210,225,0.4) 1px, transparent 1px)',
+        'linear-gradient(90deg, rgba(200,210,225,0.4) 1px, transparent 1px)',
       ].join(','),
       backgroundSize: [
-        `${gridStep20}px ${gridStep20}px`, `${gridStep20}px ${gridStep20}px`,
-        `${gridStep100}px ${gridStep100}px`, `${gridStep100}px ${gridStep100}px`,
+        `${major}px ${major}px`, `${major}px ${major}px`,
+        `${minor}px ${minor}px`, `${minor}px ${minor}px`,
       ].join(','),
       backgroundPosition: [
-        `${gridOffX20}px ${gridOffY20}px`, `${gridOffX20}px ${gridOffY20}px`,
-        `${gridOffX100}px ${gridOffY100}px`, `${gridOffX100}px ${gridOffY100}px`,
+        `${offXMajor}px ${offYMajor}px`, `${offXMajor}px ${offYMajor}px`,
+        `${offXMinor}px ${offYMinor}px`, `${offXMinor}px ${offYMinor}px`,
       ].join(','),
     };
   }, [pan.x, pan.y, scale]);
