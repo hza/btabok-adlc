@@ -232,7 +232,7 @@ export const LegendPanel = React.memo(function LegendPanel() {
             <strong style={{ color: '#475569', display: 'block', marginBottom: 4 }}>Interactions</strong>
             Click a node to explore connections<br/>
             Drag nodes to rearrange<br/>
-            Scroll to zoom · Drag canvas to pan<br/>
+            Scroll or drag canvas to pan<br/>
             Phase chips filter the view
           </div>
     </div>
