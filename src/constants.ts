@@ -1,6 +1,6 @@
 import type { NodeData } from './model';
 
-export const NODE_W        = 210;
+export const NODE_W        = 220; // includes 10px padding on each side
 export const SNAP          = 40;
 export const BAND_PADDING  = 60;
 

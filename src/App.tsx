@@ -110,18 +110,18 @@ export default function App() {
   );
 
   const infiniteGridStyle = useMemo(() => {
-    const minor = 25 * scale;
-    const major = 100 * scale;
+    const minor = 20 * scale;
+    const major = 4 * minor;
     const offXMinor = ((pan.x % minor) + minor) % minor;
     const offYMinor = ((pan.y % minor) + minor) % minor;
     const offXMajor = ((pan.x % major) + major) % major;
     const offYMajor = ((pan.y % major) + major) % major;
     return {
       backgroundImage: [
-        'linear-gradient(rgba(140,150,170,0.55) 1px, transparent 1px)',
-        'linear-gradient(90deg, rgba(140,150,170,0.55) 1px, transparent 1px)',
-        'linear-gradient(rgba(200,210,225,0.4) 1px, transparent 1px)',
-        'linear-gradient(90deg, rgba(200,210,225,0.4) 1px, transparent 1px)',
+        'linear-gradient(rgba(203,213,225,0.3) 1px, transparent 1px)',
+        'linear-gradient(90deg, rgba(203,213,225,0.3) 1px, transparent 1px)',
+        'linear-gradient(rgba(203,213,225,0.2) 1px, transparent 1px)',
+        'linear-gradient(90deg, rgba(203,213,225,0.2) 1px, transparent 1px)',
       ].join(','),
       backgroundSize: [
         `${major}px ${major}px`, `${major}px ${major}px`,
