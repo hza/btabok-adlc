@@ -186,18 +186,6 @@ export const LegendPanel = React.memo(function LegendPanel() {
 
           <Hr/>
 
-          <SectionLabel>Border styles</SectionLabel>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
-            <div style={{ width: 28, height: 14, border: '2px dashed #888780', borderRadius: 3, flexShrink: 0 }}/>
-            <span style={{ color: '#334155', fontSize: 13 }}>Multiple artifact</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-            <div style={{ width: 28, height: 14, border: `2px dashed ${BADGE_COLORS.amber}`, borderRadius: 3, flexShrink: 0 }}/>
-            <span style={{ color: '#334155', fontSize: 13 }}>External (gap)</span>
-          </div>
-
-          <Hr/>
-
           <SectionLabel>Phases</SectionLabel>
           {PHASES.map(ph => {
             const s = PHASE_STYLES[ph];
