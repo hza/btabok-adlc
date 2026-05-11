@@ -10,9 +10,9 @@ export const BADGE_COLORS: Record<string, string> = {
 
 export const BADGE_TYPES: { badge: string; color: string; description: string }[] = [
   { badge: 'BTABoK', color: '#7F77DD', description: 'BTABoK native artifact' },
-  { badge: 'DDD',    color: '#888780', description: 'Domain-Driven Design artifact' },
-  { badge: 'C4',     color: '#BA7517', description: 'C4 model artifact' },
-  { badge: 'OWASP',  color: '#BA7517', description: 'OWASP artifact' },
+  { badge: 'DDD',    color: '#B5451B', description: 'Domain-Driven Design artifact' },
+  { badge: 'C4',     color: '#1D6FA4', description: 'C4 model artifact' },
+  { badge: 'OWASP',  color: '#2E7D32', description: 'OWASP artifact' },
 ];
 
 export const PHASE_STYLES: Record<string, { bg: string; band: string; text: string }> = {
