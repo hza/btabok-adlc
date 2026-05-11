@@ -67,9 +67,8 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
       )}
 
       {/* header background — two rects to square off bottom corners */}
-      <rect x={0} y={0} width={NODE_W} height={HEADER_H} rx={8} fill="#FFFFFF"/>
-      <rect x={0} y={HEADER_H / 2} width={NODE_W} height={HEADER_H / 2} fill="#FFFFFF"/>
-      <line x1={0} y1={HEADER_H} x2={NODE_W} y2={HEADER_H} stroke="#F1F5F9" strokeWidth="1"/>
+      <rect x={2} y={2} width={NODE_W - 4} height={HEADER_H - 2} rx={6} fill="#FFFFFF"/>
+      <rect x={2} y={HEADER_H / 2} width={NODE_W - 4} height={HEADER_H / 2} fill="#FFFFFF"/>
 
       {/* num badge */}
       <rect x={8} y={5} width={28} height={18} rx={4} fill="#F1F5F9"/>
