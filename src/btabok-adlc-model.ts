@@ -34,9 +34,10 @@ export const PHASE_STYLES: Record<string, { bg: string; band: string; text: stri
   planning:       { bg: '#F9FAFB', band: '#D1D5DB', text: '#111827' },
   transformation: { bg: '#F3F4F6', band: '#9CA3AF', text: '#111827' },
   utilize:        { bg: '#F9FAFB', band: '#D1D5DB', text: '#111827' },
+  decommission:   { bg: '#F3F4F6', band: '#9CA3AF', text: '#111827' },
 };
 
-export const PHASES = ['innovation', 'strategy', 'planning', 'transformation', 'utilize'] as const;
+export const PHASES = ['innovation', 'strategy', 'planning', 'transformation', 'utilize', 'decommission'] as const;
 
 export type Phase = typeof PHASES[number];
 
@@ -46,6 +47,7 @@ export const PHASE_LABEL: Record<Phase, string> = {
   planning:       'Planning',
   transformation: 'Transformation',
   utilize:        'Utilize and Measure',
+  decommission:   'Decommission',
 };
 
 export const PHASE_DESCRIPTION: Record<Phase, string> = {
@@ -59,6 +61,8 @@ export const PHASE_DESCRIPTION: Record<Phase, string> = {
     'Design is realised as working software and infrastructure. Bounded contexts drive service decomposition, interfaces are contractually defined, and all structural, deployment, security, and dynamic views are produced to make the architecture verifiable.',
   utilize:
     'The cycle closes here. Deployed architecture is measured against the OKRs set in Strategy, benefits are realised and attributed to decisions, technical debt is tracked, and lessons feed back into the next Innovation cycle.',
+  decommission:
+    'The deliberate end-of-life stage. Systems are retired safely by resolving outstanding technical debt, migrating or archiving data, severing dependencies, transferring knowledge, and ensuring no business capability is left uncovered.',
 };
 
 export const PHASE_GOAL: Record<Phase, string> = {
@@ -67,6 +71,7 @@ export const PHASE_GOAL: Record<Phase, string> = {
   planning:       'Define, trace, and formally decide the architecture before build',
   transformation: 'Implement, decompose, and verify the architecture across all key viewpoints',
   utilize:        'Measure outcomes, close the loop, and seed the next cycle',
+  decommission:   'Retire safely, preserve knowledge, and ensure no capability gap is left behind',
 };
 
 export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
@@ -75,6 +80,7 @@ export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
   planning:       ['What is the system boundary?', 'What quality attributes are non-negotiable?', 'What decisions must be made and documented before build begins?'],
   transformation: ['How do bounded contexts map to services?', 'What are the explicit contracts between components?', 'Are all architectural viewpoints covered and verified?'],
   utilize:        ['Did the architecture deliver the promised business outcomes?', 'What debt was incurred and how will it be repaid?', 'What should the next innovation cycle learn from this one?'],
+  decommission:   ['Is every dependent system and consumer accounted for?', 'Where does the data go and is it accessible after shutdown?', 'What capabilities must survive and how will they be covered?'],
 };
 
 // ─── data types ───────────────────────────────────────────────────────────────
@@ -140,6 +146,9 @@ export const NODES: NodeData[] = (([
 
   // BTABoK Utilize phase artifacts
   { id:'n22', phase:'utilize', title:'Benefits Realization View Canvas',     subtitle:'Architecture investments mapped to measurable business benefits, costs, and technical debt',          link:'https://iasa-global.github.io/btabok/benefits_realization_view_canvas.html', badge:'BTABoK', importance:2 },
+
+  // Decommission phase artifacts
+  { id:'n36', phase:'decommission', title:'Lifecycle Planning Canvas',         subtitle:'End-of-life planning for systems and capabilities: retirement triggers, transition timelines, dependency resolution, data archival, and knowledge transfer',  link:'https://iasa-global.github.io/btabok/lifecycle_planning_canvas.html',        badge:'BTABoK', importance:3 },
 ] as Omit<NodeData,'num'>[]).map((n, i) => ({ ...n, num: String(i + 1).padStart(2, '0') } as NodeData)));
 
 // ─── edge data ────────────────────────────────────────────────────────────────
@@ -265,5 +274,8 @@ export const EDGES: EdgeData[] = [
 
   // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
   { id:'e104', from:'n35', to:'n32', label:'empathy insights enrich journey touchpoints',   importance:2, btabok:true },
+
+  // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
+  { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3, btabok:true },
 
 ];

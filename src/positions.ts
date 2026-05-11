@@ -32,4 +32,6 @@ export const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   n20: { x:4520, y:960 },
   n21: { x:4560, y:240 },
   n22: { x:5200, y:80 },
+  n36: { x:6000, y:200 },
+  n37: { x:5600, y:600 },
 };

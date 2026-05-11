@@ -1,6 +1,6 @@
 # BTABoK ADLC — Interactive Reference
 
-An interactive visual reference for the **BTABoK Architecture Development Life Cycle** — a structured, phase-by-phase model that guides architects from initial business opportunity through strategy, design, implementation, and outcome measurement.
+An interactive visual reference for the **BTABoK Architecture Development Life Cycle** — a structured, phase-by-phase model that guides architects from initial business opportunity through strategy, design, implementation, outcome measurement, and deliberate decommission.
 
 **Live app → [hza.github.io/btabok-adlc](https://hza.github.io/btabok-adlc/)**
 
@@ -21,7 +21,7 @@ The goal is to help architects and teams orient themselves: *where are we in the
 
 ---
 
-## The five phases
+## The six phases
 
 | Phase | What happens here |
 | --- | --- |
@@ -30,6 +30,19 @@ The goal is to help architects and teams orient themselves: *where are we in the
 | **Planning** | Define quality attributes, trace requirements, log architectural decisions |
 | **Transformation** | Implement, decompose, and verify the architecture across all viewpoints |
 | **Utilize and Measure** | Measure outcomes against objectives and feed learning into the next cycle |
+| **Decommission** | Retire systems safely, resolve technical debt, and preserve capability coverage |
+
+---
+
+## License
+
+This project is released under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt the material for any purpose, provided appropriate credit is given.
+
+---
+
+## Disclaimer
+
+This is an independent reference tool and is **not an official IASA or BTABoK publication**. The artifact descriptions, edge relationships, and phase mappings reflect the author's interpretation of the BTABoK material and may not match the official documentation exactly. For authoritative content, refer to the official BTABoK at [iasa-global.github.io/btabok](https://iasa-global.github.io/btabok/).
 
 ---
 
