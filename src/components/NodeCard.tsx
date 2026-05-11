@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useLayoutEffect, useState } from 'react';
 import { badgeColor } from '../btabok-adlc-model';
 import type { NodeData } from '../btabok-adlc-model';
 import { NODE_W } from '../constants';
@@ -18,7 +18,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState(80);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!cardRef.current) return;
     const h = cardRef.current.offsetHeight;
     if (h > 0) {
