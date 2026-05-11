@@ -65,9 +65,9 @@ export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
 
 // ─── importance ───────────────────────────────────────────────────────────────
 export const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string; rationale: string }> = {
-  ultra: { label: 'Ultra', color: '#B91C1C', bg: '#FEE2E2', rationale: 'Non-negotiable core. Without it the architecture lacks justification, scope, requirements, decisions, or structural verifiability.' },
-  extra: { label: 'Extra', color: '#C2410C', bg: '#FFEDD5', rationale: 'Strongly recommended; skipping it leaves a significant blind spot in strategy, traceability, or governance.' },
-  high:  { label: 'High',  color: '#854D0E', bg: '#FEF9C3', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
+  ultra: { label: 'Max',       color: '#B91C1C', bg: '#FEE2E2', rationale: 'Non-negotiable core. Without it the architecture lacks justification, scope, requirements, decisions, or structural verifiability.' },
+  extra: { label: 'High',      color: '#C2410C', bg: '#FFEDD5', rationale: 'Strongly recommended; skipping it leaves a significant blind spot in strategy, traceability, or governance.' },
+  high:  { label: 'Normal',     color: '#854D0E', bg: '#FEF9C3', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
 };
 
 // ─── data types ───────────────────────────────────────────────────────────────
@@ -141,10 +141,10 @@ export const NODES: NodeData[] = [
 ];
 
 // ─── edge data ────────────────────────────────────────────────────────────────
-// importance: 1=high  2=extra high  3=ultra high
+// importance: 1=extra high  2=ultra high  3=non-negotiable
 export const EDGES: EdgeData[] = [
   // ── Business Model Canvas (n01) ───────────────────────────────────────────
-  { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:2, btabok:true },
+  { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:3, btabok:true },
 
   // ── Business Capability Canvas (n02) ─────────────────────────────────────
   { id:'e03',  from:'n02', to:'n06', label:'capability gaps source principles',              importance:2, btabok:true },
@@ -154,10 +154,10 @@ export const EDGES: EdgeData[] = [
 
   // ── Business Case / NABC Card (n05) ──────────────────────────────────────
   { id:'e43',  from:'n05', to:'n06', label:'business constraints → principles',              importance:2, btabok:true },
-  { id:'e11',  from:'n05', to:'n12', label:'success criteria inform architecture definition', importance:1, btabok:true },
+  { id:'e11',  from:'n05', to:'n12', label:'success criteria inform architecture definition', importance:2, btabok:true },
 
   // ── Architecture Principles (n06) ────────────────────────────────────────
-  { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:2, btabok:true },
+  { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3, btabok:true },
 
   // ── Layered Roadmap Canvas (n07) ─────────────────────────────────────────
   { id:'e45',  from:'n07', to:'n08', label:'roadmap scope → system boundary',               importance:1 },
@@ -186,15 +186,15 @@ export const EDGES: EdgeData[] = [
   { id:'e30',  from:'n16', to:'n17', label:'ubiquitous language → service operations',       importance:2 },
 
   // ── Service Interface Design Canvas (n17) ────────────────────────────────
-  { id:'e32',  from:'n17', to:'n14', label:'interface decisions trigger ADR',                importance:2, btabok:true },
-  { id:'e33',  from:'n17', to:'n20', label:'operations → sequence messages',                 importance:2 },
+  { id:'e32',  from:'n17', to:'n14', label:'interface decisions trigger ADR',                importance:3, btabok:true },
+  { id:'e33',  from:'n17', to:'n20', label:'operations → sequence messages',                 importance:1 },
 
   // ── Technical Loan Request Card (n21) ────────────────────────────────────
   { id:'e36',  from:'n21', to:'n22', label:'debt reduces realised benefits',                 importance:2, btabok:true },
 
   // ── Benefits Realization View Canvas (n22) ───────────────────────────────
-  { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:2, btabok:true },
-  { id:'e40',  from:'n22', to:'n01', label:'lessons open new innovation cycle',              importance:2, btabok:true },
+  { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:3, btabok:true },
+  { id:'e40',  from:'n22', to:'n01', label:'lessons open new innovation cycle',              importance:3, btabok:true },
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
   { id:'e48',  from:'n09', to:'n11', label:'ASRs define quality scenarios',                  importance:3, btabok:true },
@@ -204,12 +204,12 @@ export const EDGES: EdgeData[] = [
   // ── Strategic Roadmap Canvas (n30) ───────────────────────────────────────
   { id:'e82',  from:'n02', to:'n30', label:'capabilities anchor strategic IT initiatives',   importance:2, btabok:true },
   { id:'e83',  from:'n05', to:'n30', label:'business case defines initiative scope',         importance:2, btabok:true },
-  { id:'e84',  from:'n06', to:'n30', label:'principles constrain strategic initiatives',     importance:2, btabok:true },
+  { id:'e84',  from:'n06', to:'n30', label:'principles constrain strategic initiatives',     importance:3, btabok:true },
   { id:'e85',  from:'n23', to:'n30', label:'OKRs align strategic IT direction',              importance:3, btabok:true },
   { id:'e86',  from:'n30', to:'n07', label:'strategic IT direction → phased delivery',       importance:3, btabok:true },
 
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
-  { id:'e51',  from:'n05', to:'n23', label:'business case seeds OKR objectives',             importance:2, btabok:true },
+  { id:'e51',  from:'n05', to:'n23', label:'business case seeds OKR objectives',             importance:3, btabok:true },
   { id:'e53',  from:'n23', to:'n07', label:'objectives set roadmap goals',                   importance:3, btabok:true },
   { id:'e54',  from:'n22', to:'n23', label:'realized benefits validate OKRs',               importance:2, btabok:true },
 
@@ -219,7 +219,7 @@ export const EDGES: EdgeData[] = [
   { id:'e58',  from:'n24', to:'n25', label:'weak capabilities expose risks',                 importance:2, btabok:true },
 
   // ── Risk Methods Cards (n25) ──────────────────────────────────────────────
-  { id:'e61',  from:'n25', to:'n14', label:'risks trigger ADRs',                             importance:2, btabok:true },
+  { id:'e61',  from:'n25', to:'n14', label:'risks trigger ADRs',                             importance:3, btabok:true },
   { id:'e62',  from:'n25', to:'n09', label:'risks become ASRs',                              importance:3, btabok:true },
   { id:'e63',  from:'n25', to:'n29', label:'risk exposure → security requirements',          importance:2 },
 
