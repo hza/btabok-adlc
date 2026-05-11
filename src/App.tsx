@@ -3,6 +3,12 @@ import {
   PHASE_STYLES, PHASES, PHASE_LABEL,
   NODES, EDGES,
 } from './btabok-adlc-model';
+
+const IMP_COLOR: Record<1 | 2 | 3, string> = {
+  1: '#94A3B8',
+  2: '#94A3B8',
+  3: '#F5A44A',
+};
 import type { Phase } from './btabok-adlc-model';
 import { NODE_W, BAND_PADDING } from './constants';
 import { computeEdgePaths } from './utils/edgeUtils';
@@ -220,15 +226,14 @@ export default function App() {
             <svg width={canvasW} height={canvasH} overflow="visible"
               style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
               <defs>
-                <marker id="mLo" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                  <polygon points="0 0,7 3.5,0 7" fill="#64748B"/>
-                </marker>
                 <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
                   <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
                 </marker>
-                <marker id="mBtabok" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                  <polygon points="0 0,7 3.5,0 7" fill="#F5A44A"/>
-                </marker>
+                {([1, 2, 3] as const).map(imp => (
+                  <marker key={imp} id={`mImp${imp}`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                    <polygon points="0 0,7 3.5,0 7" fill={IMP_COLOR[imp]}/>
+                  </marker>
+                ))}
               </defs>
 
               {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
@@ -249,19 +254,20 @@ export default function App() {
               {edgePaths.map(edge => {
                 const hi   = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
                 const dimS = connectedEdgeIds ? !hi : false;
-                const opacity = dimS ? 0.18 : hi ? 1 : edge.btabok ? 0.72 : 0.52;
-                const stroke  = hi ? '#7F77DD' : edge.btabok ? '#F5A44A' : 'rgba(30,30,30,0.45)';
-                const sw      = hi ? 2.2 : edge.btabok ? 1.8 : 1.4;
+                const impColor = IMP_COLOR[edge.importance];
+                const opacity = dimS ? 0.15 : hi ? 1 : 0.55;
+                const stroke  = hi ? '#7F77DD' : impColor;
+                const sw      = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
                 return (
                   <g key={edge.id} opacity={opacity}>
                     <path d={edge.path} fill="none"
                       stroke={stroke}
                       strokeWidth={sw}
-                      markerEnd={`url(#${hi ? 'mHi' : edge.btabok ? 'mBtabok' : 'mLo'})`}/>
+                      markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
                     {(
                       <text x={edge.mx} y={edge.my - 5}
                         textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                        fill={hi ? '#7F77DD' : edge.btabok ? '#111827' : '#1D4ED8'}
+                        fill={hi ? '#7F77DD' : impColor}
                         stroke="white" strokeWidth="2.8" paintOrder="stroke">
                         {edge.label}
                       </text>
