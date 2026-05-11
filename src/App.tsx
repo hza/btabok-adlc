@@ -120,6 +120,14 @@ export default function App() {
     URL.revokeObjectURL(url);
   }, [canvasW, canvasH]);
 
+  const handleFit = useCallback(() => {
+    containerRef.current && fitToScreen(containerRef.current);
+  }, [fitToScreen]);
+
+  const handleToggleSidebar = useCallback(() => {
+    setShowLegend(v => !v);
+  }, []);
+
   const infiniteGridStyle = useMemo(() => {
     const minor = 20 * scale;
     const major = 4 * minor;
@@ -214,7 +222,7 @@ export default function App() {
         showSidebar={showLegend}
         saved={saved}
         onReset={resetPositions}
-        onFit={() => containerRef.current && fitToScreen(containerRef.current)}
+        onFit={handleFit}
         onSave={handleSave}
         cardImportanceLevel={cardImportanceLevel}
         onCardImportanceLevelChange={setCardImportanceLevel}
@@ -222,7 +230,7 @@ export default function App() {
         onShowGridChange={setShowGrid}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
-        onToggleSidebar={() => setShowLegend(v => !v)}
+        onToggleSidebar={handleToggleSidebar}
         onDownload={handleDownload}
       />
 
