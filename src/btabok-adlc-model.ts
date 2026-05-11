@@ -136,7 +136,7 @@ export const NODES: NodeData[] = (([
   // BTABoK Transformation phase artifacts
   { id:'n14', phase:'transformation', title:'ADR Card',                             subtitle:'Architectural decision record: context, options considered, rationale, consequences, status, and ASR traceability',                  link:'https://iasa-global.github.io/btabok/architecture_decision_record.html',                                                                                             badge:'BTABoK', note:'Core — new ADR for every significant decision in Planning and Transformation', recurring:true, importance:3},
   { id:'n15', phase:'transformation', title:'Architecture Decision Cascade Card',   subtitle:'Secondary decisions and downstream consequences flowing from a primary ADR',                   link:'https://iasa-global.github.io/btabok/architecture_decision_cascade_card.html', badge:'BTABoK', note:'Core — one Cascade Card per ADR, in both phases', recurring:true, importance:2},
-  { id:'n16', phase:'transformation', title:'Bounded Context Canvas',               subtitle:'DDD bounded context scope, ubiquitous language, upstream/downstream dependencies, and team ownership',                       link:'https://github.com/ddd-crew/bounded-context-canvas',                                                                 badge:'DDD', note:'One per bounded context', recurring:true, importance:2},
+  { id:'n16', phase:'transformation', title:'Bounded Context Canvas',               subtitle:'Inside-out domain partition within the system boundary: ubiquitous language, upstream/downstream dependencies, and team ownership — one per subdomain, defined after the Context View',                       link:'https://github.com/ddd-crew/bounded-context-canvas',                                                                 badge:'DDD', note:'One per bounded context', recurring:true, importance:2},
   { id:'n28', phase:'transformation', title:'Container / Component View (C4 L2-L3)',subtitle:'System decomposed into containers and components, responsibilities', link:'https://c4model.com/#ContainerDiagram',                               badge:'C4', note:'BTABoK gap: structural decomposition (Views & Viewpoints) — use C4 Container + Component Diagrams; bridges Context View to service interfaces', external:true, importance:3},
   { id:'n17', phase:'transformation', title:'Service Interface Design Canvas',      subtitle:'Outside-in service spec: value proposition, consumers, interactions, SLAs, dependencies, quality attributes, and consumption economics',                       link:'https://iasa-global.github.io/btabok/service_interface_design_canvas.html',     badge:'BTABoK', note:'One canvas per service, API, or product delivered by a team', recurring:true, importance:2},
   { id:'n18', phase:'transformation', title:'Deployment / Infrastructure View',     subtitle:'Components mapped to nodes, networks, environments',           link:'https://c4model.com/#DeploymentDiagram',                                                                             badge:'C4', note:'BTABoK gap: physical view (Views & Viewpoints) — use C4 Deployment or UML Deployment Diagram', external:true, importance:2},
@@ -174,6 +174,7 @@ export const EDGES: EdgeData[] = [
 
   // ── Context View Card (n08) ───────────────────────────────────────────────
   { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3, btabok:true },
+  { id:'e23',  from:'n08', to:'n16', label:'system boundary scopes bounded contexts',        importance:2 },
 
   // ── ASR Card (n09) ────────────────────────────────────────────────────────
   { id:'e18',  from:'n09', to:'n14', label:'ASR IDs referenced in ADR',                     importance:3, btabok:true },
@@ -183,7 +184,6 @@ export const EDGES: EdgeData[] = [
 
   // ── Architecture Definition Canvas (n12) ─────────────────────────────────
   { id:'e22',  from:'n12', to:'n13', label:'scope constrains design options',                importance:2, btabok:true },
-  { id:'e23',  from:'n12', to:'n16', label:'solution boundary → context partitioning',       importance:2 },
 
   // ── Solution Design Canvas (n13) ─────────────────────────────────────────
   { id:'e25',  from:'n13', to:'n14', label:'design options trigger ADR decisions',            importance:3, btabok:true },
@@ -193,10 +193,9 @@ export const EDGES: EdgeData[] = [
   { id:'e28',  from:'n14', to:'n21', label:'technical debt formalized as loan request',       importance:2, btabok:true },
 
   // ── Bounded Context Canvas (n16) ─────────────────────────────────────────
-  { id:'e30',  from:'n16', to:'n17', label:'ubiquitous language → service operations',       importance:2 },
+  { id:'e30',  from:'n16', to:'n17', label:'domain model drives service interface',           importance:2 },
 
   // ── Service Interface Design Canvas (n17) ────────────────────────────────
-  { id:'e32',  from:'n17', to:'n14', label:'interface decisions trigger ADR',                importance:3, btabok:true },
   { id:'e33',  from:'n17', to:'n20', label:'operations → sequence messages',                 importance:1 },
 
   // ── Technical Loan Request Card (n21) ────────────────────────────────────
