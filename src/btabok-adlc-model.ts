@@ -234,7 +234,7 @@ export const EDGES: EdgeData[] = [
   { id:'e63',  from:'n25', to:'n29', label:'risk exposure → security requirements',          importance:2 },
 
   // ── Service Blueprint (n26) ───────────────────────────────────────────────
-  { id:'e67',  from:'n26', to:'n08', label:'service boundary informs context view',          importance:2, btabok:true },
+  { id:'e67',  from:'n08', to:'n26', label:'context boundary scopes service blueprint',      importance:2, btabok:true },
   { id:'e68',  from:'n26', to:'n17', label:'front-stage operations → service interface',     importance:2, btabok:true },
 
   // ── Container / Component View (n28) ──────────────────────────────────────
@@ -268,7 +268,6 @@ export const EDGES: EdgeData[] = [
   // ── Customer Persona (n34) ────────────────────────────────────────────────
   { id:'e100', from:'n01', to:'n34', label:'customer segment in BMC grounds persona',        importance:3, btabok:true },
   { id:'e101', from:'n34', to:'n32', label:'persona behaviour shapes journey mapping',       importance:3, btabok:true },
-  { id:'e102', from:'n34', to:'n26', label:'persona needs surface service pain points',      importance:2, btabok:true },
   { id:'e103', from:'n34', to:'n35', label:'persona deepened by stakeholder empathy map',   importance:2, btabok:true },
 
   // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
