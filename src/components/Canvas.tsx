@@ -110,7 +110,7 @@ const SvgContent = memo(function SvgContent({
           const hi      = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
           const dimS    = connectedEdgeIds ? !hi : false;
           const impColor = IMP_COLOR[edge.importance];
-          const opacity = dimS ? 0.15 : hi ? 1 : 0.55;
+          const opacity = dimS ? 0.35 : hi ? 1 : 0.55;
           const stroke  = hi ? '#7F77DD' : impColor;
           const sw      = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
           return (
