@@ -18,7 +18,8 @@ const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
 
 export default function App() {
   const {
-    positions, pan, scale, isPanning, isDraggingNode,
+    positions, pan, scale, isDraggingNode,
+    transformDivRef, containerDivRef, showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen, zoomIn, zoomOut,
@@ -230,14 +231,16 @@ export default function App() {
         {/* canvas */}
         <Canvas
           containerRef={containerRef}
+          containerDivRef={containerDivRef}
+          transformDivRef={transformDivRef}
           svgRef={svgRef}
           canvasW={canvasW}
           canvasH={canvasH}
           pan={pan}
           scale={scale}
-          isPanning={isPanning}
           isDraggingNode={isDraggingNode}
           showGrid={showGrid}
+          showGridRef={showGridRef}
           infiniteGridStyle={infiniteGridStyle}
           showSwimlanes={showSwimlanes}
           phaseBands={phaseBands}
