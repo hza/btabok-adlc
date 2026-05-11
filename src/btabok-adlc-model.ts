@@ -160,18 +160,14 @@ export const EDGES: EdgeData[] = [
 
   // ── Architecture Principles (n06) ────────────────────────────────────────
   { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3, btabok:true },
-  { id:'e39',  from:'n06', to:'n21', label:'principles constrain debt decisions',            importance:2, btabok:true },
-
   // ── Layered Roadmap Canvas (n07) ─────────────────────────────────────────
   { id:'e45',  from:'n07', to:'n08', label:'roadmap components scope context view',          importance:1 },
 
   // ── Context View Card (n08) ───────────────────────────────────────────────
   { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3, btabok:true },
-  { id:'e41',  from:'n08', to:'n21', label:'context view informs debt context',              importance:1, btabok:true },
 
   // ── ASR Card (n09) ────────────────────────────────────────────────────────
   { id:'e18',  from:'n09', to:'n14', label:'ASR IDs referenced in ADR',                     importance:3, btabok:true },
-  { id:'e42',  from:'n09', to:'n21', label:'ASRs direct debt justification',                 importance:2, btabok:true },
 
   // ── Architecture Hypothesis Canvas (n10) ─────────────────────────────────
   { id:'e20',  from:'n10', to:'n14', label:'validated hypothesis informs ADR',               importance:2, btabok:true },
@@ -197,7 +193,6 @@ export const EDGES: EdgeData[] = [
   // ── Technical Loan Request Card (n21) ────────────────────────────────────
   { id:'e36',  from:'n21', to:'n22', label:'debt reduces realised benefits',                 importance:2, btabok:true },
   { id:'e38',  from:'n22', to:'n21', label:'benefits analysis surfaces new technical debt',  importance:2, btabok:true },
-  { id:'e44',  from:'n21', to:'n07', label:'debt repayment schedule feeds roadmap',          importance:2, btabok:true },
 
   // ── Benefits Realization View Canvas (n22) ───────────────────────────────
   { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:3, btabok:true },
@@ -219,7 +214,6 @@ export const EDGES: EdgeData[] = [
   { id:'e51',  from:'n05', to:'n23', label:'business case seeds OKR objectives',             importance:3, btabok:true },
   { id:'e53',  from:'n23', to:'n07', label:'objectives set roadmap goals',                   importance:3, btabok:true },
   { id:'e54',  from:'n22', to:'n23', label:'realized benefits validate OKRs',               importance:2, btabok:true },
-  { id:'e46',  from:'n23', to:'n21', label:'OKRs inform debt business justification',        importance:2, btabok:true },
 
   // ── Capability Card (n24) ─────────────────────────────────────────────────
   { id:'e55',  from:'n02', to:'n24', label:'capabilities assessed for maturity',             importance:3, btabok:true },
@@ -230,7 +224,6 @@ export const EDGES: EdgeData[] = [
   { id:'e61',  from:'n25', to:'n14', label:'risks trigger ADRs',                             importance:3, btabok:true },
   { id:'e62',  from:'n25', to:'n09', label:'risks become ASRs',                              importance:3, btabok:true },
   { id:'e63',  from:'n25', to:'n29', label:'risk exposure → security requirements',          importance:2 },
-  { id:'e47',  from:'n25', to:'n21', label:'risk analysis informs debt characteristics',     importance:2, btabok:true },
 
   // ── Service Blueprint (n26) ───────────────────────────────────────────────
   { id:'e67',  from:'n26', to:'n08', label:'service boundary informs context view',          importance:2, btabok:true },
