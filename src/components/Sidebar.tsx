@@ -1,4 +1,5 @@
 import React from 'react';
+import adlcImg from '../../public/adlc.jpg';
 import {
   badgeColor, BADGE_COLORS, BADGE_TYPES,
   PHASE_STYLES, PHASES, PHASE_LABEL,
@@ -181,8 +182,30 @@ export const PhasePanel = React.memo(function PhasePanel({ phase, onClose }: Pha
 
 export const LegendPanel = React.memo(function LegendPanel() {
   return (
-    <div style={{ padding: 16 }}>
-      <div style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', marginBottom: 12 }}>Legend</div>
+    <div>
+
+      <div style={{ padding: 16 }}>
+
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontWeight: 700, fontSize: 18, color: '#1E293B', marginBottom: 4 }}>
+            Architecture DLC
+          </div>
+          <div style={{ fontSize: 12, color: '#64748B', lineHeight: 1.6, marginBottom: 8 }}>
+            An iterative cycle guiding architecture from inception to decommissioning, enabling standardized delivery, clear status communication, and continuous governance.
+          </div>
+          <div style={{ padding: '0 16px 8px' }}>
+            <img src={adlcImg} alt="ADLC" style={{ width: '100%', display: 'block', borderRadius: 8 }} />
+          </div>
+          <a href="https://iasa-global.github.io/btabok/architecture_lifecycle.html"
+            target="_blank" rel="noreferrer"
+            style={{ fontSize: 12, color: '#6366F1', textDecoration: 'none', fontWeight: 500 }}>
+            Learn more →
+          </a>
+        </div>
+
+      <Hr/>
+
+      <div style={{ fontWeight: 700, fontSize: 15, color: '#1E293B', marginBottom: 12 }}>Legend</div>
 
       <SectionLabel>Badge types</SectionLabel>
           {BADGE_TYPES.map(({ badge, color, description }) => (
@@ -242,6 +265,7 @@ export const LegendPanel = React.memo(function LegendPanel() {
             Scroll or drag canvas to pan<br/>
             Phase chips filter the view
           </div>
+      </div>
     </div>
   );
 });
