@@ -128,14 +128,21 @@ const SvgContent = memo(function SvgContent({
                 stroke={stroke}
                 strokeWidth={sw}
                 markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
-              {edge.label && (
-                <text x={edge.mx} y={edge.my - 5}
-                  textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                  fill="#000000"
-                  stroke="white" strokeWidth="2.8" paintOrder="stroke">
-                  {edge.label}
-                </text>
-              )}
+              {edge.label && (() => {
+                const words = edge.label.split(' ');
+                const mid = Math.ceil(words.length / 2);
+                const line1 = words.slice(0, mid).join(' ');
+                const line2 = words.slice(mid).join(' ');
+                return (
+                  <text x={edge.mx} y={edge.my - 10}
+                    textAnchor="middle" fontSize={12} fontFamily="system-ui"
+                    fill={hi ? stroke : '#000000'}
+                    stroke="white" strokeWidth="2.8" paintOrder="stroke">
+                    <tspan x={edge.mx} dy="0">{line1}</tspan>
+                    {line2 && <tspan x={edge.mx} dy="15">{line2}</tspan>}
+                  </text>
+                );
+              })()}
             </g>
           );
         })}
