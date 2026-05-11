@@ -59,8 +59,8 @@ const TopBar = React.memo(function TopBar({
         LOD:
         <input
           type="range" min={1} max={3}
-          value={cardImportanceLevel}
-          onChange={e => onCardImportanceLevelChange(Number(e.target.value) as 1 | 2 | 3)}
+          value={4 - cardImportanceLevel}
+          onChange={e => onCardImportanceLevelChange((4 - Number(e.target.value)) as 1 | 2 | 3)}
           style={{ accentColor: '#7F77DD', width: 80, cursor: 'pointer' }}
         />
         {/* <span style={{ fontSize: 12, color: '#CBD5E1', minWidth: 90 }}>
