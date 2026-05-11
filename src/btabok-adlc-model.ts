@@ -77,7 +77,6 @@ export interface NodeData {
   descr?: string; note?: string; recurring?: boolean; external?: boolean;
   link?: string;
   importance?: 'high' | 'extra' | 'ultra';
-  output?: 'Canvas' | 'Card' | 'Cards' | 'Map' | 'Grid' | 'Registry' | 'Diagram' | 'View';
 }
 
 export function badgeColor(badge: string): string {
