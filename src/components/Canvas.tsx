@@ -1,14 +1,7 @@
 import React from 'react';
-import type { Phase } from '../btabok-adlc-model';
-import { PHASE_LABEL } from '../btabok-adlc-model';
-import type { NodeData } from '../btabok-adlc-model';
+import { PHASE_LABEL, IMP_COLOR } from '../btabok-adlc-model';
+import type { Phase, NodeData } from '../btabok-adlc-model';
 import NodeCardSvg from './NodeCardSvg';
-
-export const IMP_COLOR: Record<1 | 2 | 3, string> = {
-  1: '#94A3B8',
-  2: '#94A3B8',
-  3: '#F5A44A',
-};
 
 interface EdgePath {
   id: string;

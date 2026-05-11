@@ -1,4 +1,10 @@
 // ─── colour tokens ────────────────────────────────────────────────────────────
+export const IMP_COLOR: Record<1 | 2 | 3, string> = {
+  1: '#94A3B8',
+  2: '#94A3B8',
+  3: '#F5A44A',
+};
+
 export const BADGE_COLORS: Record<string, string> = {
   purple: '#7F77DD',
   teal:   '#1D9E75',
@@ -6,6 +12,13 @@ export const BADGE_COLORS: Record<string, string> = {
   green:  '#639922',
   gray:   '#888780',
   amber:  '#BA7517',
+};
+
+// ─── importance ───────────────────────────────────────────────────────────────
+export const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string; rationale: string }> = {
+  ultra: { label: 'Max',       color: '#B91C1C', bg: '#FEE2E2', rationale: 'Non-negotiable core. Without it the architecture lacks justification, scope, requirements, decisions, or structural verifiability.' },
+  extra: { label: 'High',      color: '#C2410C', bg: '#FFEDD5', rationale: 'Strongly recommended; skipping it leaves a significant blind spot in strategy, traceability, or governance.' },
+  high:  { label: 'Normal',    color: '#166534', bg: '#DCFCE7', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
 };
 
 export const BADGE_TYPES: { badge: string; color: string; description: string }[] = [
@@ -24,6 +37,7 @@ export const PHASE_STYLES: Record<string, { bg: string; band: string; text: stri
 };
 
 export const PHASES = ['innovation', 'strategy', 'planning', 'transformation', 'utilize'] as const;
+
 export type Phase = typeof PHASES[number];
 
 export const PHASE_LABEL: Record<Phase, string> = {
@@ -63,13 +77,6 @@ export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
   utilize:        ['Did the architecture deliver the promised business outcomes?', 'What debt was incurred and how will it be repaid?', 'What should the next innovation cycle learn from this one?'],
 };
 
-// ─── importance ───────────────────────────────────────────────────────────────
-export const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string; rationale: string }> = {
-  ultra: { label: 'Max',       color: '#B91C1C', bg: '#FEE2E2', rationale: 'Non-negotiable core. Without it the architecture lacks justification, scope, requirements, decisions, or structural verifiability.' },
-  extra: { label: 'High',      color: '#C2410C', bg: '#FFEDD5', rationale: 'Strongly recommended; skipping it leaves a significant blind spot in strategy, traceability, or governance.' },
-  high:  { label: 'Normal',    color: '#166534', bg: '#DCFCE7', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
-};
-
 // ─── data types ───────────────────────────────────────────────────────────────
 export interface NodeData {
   id: string; phase: Phase; num: string; title: string; subtitle: string;
@@ -92,7 +99,7 @@ export interface EdgeData {
 // ─── node data ────────────────────────────────────────────────────────────────
 export const NODES: NodeData[] = (([
   // BTABoK Innovation phase artifacts
-  { id:'n01', phase:'innovation', title:'Business Model Canvas',                subtitle:'One-page visual of how the organization creates, delivers, and captures value',                link:'https://iasa-global.github.io/btabok/business_model_canvas.html',                badge:'BTABoK', importance:2},
+  { id:'n01', phase:'innovation', title:'Business Model Canvas',              subtitle:'One-page visual of how the organization creates, delivers, and captures value',                link:'https://iasa-global.github.io/btabok/business_model_canvas.html',                badge:'BTABoK', importance:2},
   { id:'n02', phase:'innovation', title:'Business Capability Canvas',         subtitle:'Hierarchical capability map within value streams; identifies bottlenecks and guides strategic investment',                 link:'https://iasa-global.github.io/btabok/business_capability_canvas.html',  badge:'BTABoK', importance:2},
   { id:'n24', phase:'innovation', title:'Capability Card',                    subtitle:'Maturity assessment per capability: outcomes, KPIs, people/process/technology, strategic impact, and gaps',          link:'https://iasa-global.github.io/btabok/capability_card.html',  badge:'BTABoK', recurring:true, importance:1},
   { id:'n25', phase:'innovation', title:'Risk Methods Cards',                 subtitle:'SWOT analysis, Risk Register, Risk Matrix, and Controls Testing — identify, rate, and govern risks',     link:'https://iasa-global.github.io/btabok/risk_methods.html',             badge:'BTABoK', note:'Feed into ADRs and ASRs', recurring:true, importance:2},
