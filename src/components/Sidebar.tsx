@@ -5,6 +5,8 @@ import {
   PHASE_DESCRIPTION, PHASE_GOAL, PHASE_KEY_QUESTIONS,
   NODES, IMPORTANCE_STYLES,
 } from '../btabok-adlc-model';
+
+const EDGE_IMPORTANCE_KEY: Record<1 | 2 | 3, 'high' | 'extra' | 'ultra'> = { 1: 'high', 2: 'extra', 3: 'ultra' };
 import type { NodeData, EdgeData, Phase } from '../btabok-adlc-model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
@@ -82,8 +84,17 @@ function ConnList({ title, items, accent }: {
       {items.map(({ e, n }) => (
         <div key={e.id} style={{ marginBottom: 5, padding: '7px 10px',
           background: '#F8FAFC', borderRadius: 6, borderLeft: `3px solid ${accent}` }}>
-          <div style={{ fontWeight: 600, color: '#1E293B', fontSize: 14 }}>{n.num}. {n.title}</div>
-          <div style={{ color: '#94A3B8', fontSize: 12, marginTop: 2, fontStyle: 'italic' }}>{e.label}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+            <span style={{ fontWeight: 600, color: '#1E293B', fontSize: 14, flex: 1 }}>{n.num}. {n.title}</span>
+            {(() => { const s = IMPORTANCE_STYLES[EDGE_IMPORTANCE_KEY[e.importance]]; return (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3,
+                background: s.bg, borderRadius: 20, padding: '1px 7px',
+                fontSize: 10, color: s.color, fontWeight: 600, flexShrink: 0 }}>
+                ★ {s.label}
+              </span>
+            ); })()}
+          </div>
+          <div style={{ color: '#94A3B8', fontSize: 12, fontStyle: 'italic' }}>{e.label}</div>
         </div>
       ))}
     </div>
