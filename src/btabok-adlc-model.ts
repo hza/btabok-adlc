@@ -141,7 +141,7 @@ export const EDGES: EdgeData[] = [
   { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:3, btabok:true },
 
   // ── Business Capability Canvas (n02) ─────────────────────────────────────
-  { id:'e03',  from:'n02', to:'n06', label:'capability gaps source principles',              importance:2, btabok:true },
+  { id:'e03',  from:'n02', to:'n06', label:'capability gaps inform principles',               importance:2, btabok:true },
 
   // ── Architect Stakeholder Canvas (n03) ───────────────────────────────────
   { id:'e06',  from:'n03', to:'n04', label:'stakeholders populate grid',                     importance:2, btabok:true },
@@ -154,7 +154,7 @@ export const EDGES: EdgeData[] = [
   { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3, btabok:true },
 
   // ── Layered Roadmap Canvas (n07) ─────────────────────────────────────────
-  { id:'e45',  from:'n07', to:'n08', label:'roadmap scope → system boundary',               importance:1 },
+  { id:'e45',  from:'n07', to:'n08', label:'roadmap components scope context view',          importance:1 },
 
   // ── Context View Card (n08) ───────────────────────────────────────────────
   { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3, btabok:true },
@@ -170,11 +170,11 @@ export const EDGES: EdgeData[] = [
   { id:'e23',  from:'n12', to:'n16', label:'solution boundary → context partitioning',       importance:2 },
 
   // ── Solution Design Canvas (n13) ─────────────────────────────────────────
-  { id:'e25',  from:'n13', to:'n14', label:'options scored in ADR',                          importance:3, btabok:true },
+  { id:'e25',  from:'n13', to:'n14', label:'design options trigger ADR decisions',            importance:3, btabok:true },
 
   // ── ADR Card (n14) ────────────────────────────────────────────────────────
   { id:'e27',  from:'n14', to:'n15', label:'spawns cascade card',                            importance:3, btabok:true },
-  { id:'e28',  from:'n14', to:'n21', label:'accepted shortcuts → loan card',                 importance:2, btabok:true },
+  { id:'e28',  from:'n14', to:'n21', label:'technical debt formalized as loan request',       importance:2, btabok:true },
 
   // ── Bounded Context Canvas (n16) ─────────────────────────────────────────
   { id:'e30',  from:'n16', to:'n17', label:'ubiquitous language → service operations',       importance:2 },
@@ -188,7 +188,7 @@ export const EDGES: EdgeData[] = [
 
   // ── Benefits Realization View Canvas (n22) ───────────────────────────────
   { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:3, btabok:true },
-  { id:'e40',  from:'n22', to:'n01', label:'lessons open new innovation cycle',              importance:3, btabok:true },
+  { id:'e40',  from:'n22', to:'n01', label:'realized value informs business model refresh',   importance:3, btabok:true },
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
   { id:'e48',  from:'n09', to:'n11', label:'ASRs define quality scenarios',                  importance:3, btabok:true },
@@ -233,10 +233,9 @@ export const EDGES: EdgeData[] = [
 
   // ── Value Stream Map (n31) ────────────────────────────────────────────────
   { id:'e87',  from:'n02', to:'n31', label:'capabilities are building blocks of value streams', importance:3, btabok:true },
-  { id:'e88',  from:'n31', to:'n26', label:'value stream steps detailed in service blueprint',  importance:3, btabok:true },
+  { id:'e88',  from:'n31', to:'n26', label:'value stream steps surface in service blueprint',    importance:3, btabok:true },
   { id:'e89',  from:'n31', to:'n16', label:'value stream analysis drives bounded context boundaries', importance:2 },
-  { id:'e90',  from:'n31', to:'n32', label:'value stream steps drawn from customer journey',    importance:2, btabok:true },
-  { id:'e91',  from:'n23', to:'n31', label:'OKRs are key metrics for value stream performance', importance:2, btabok:true },
+  { id:'e91',  from:'n23', to:'n31', label:'OKRs set value stream performance targets',         importance:2, btabok:true },
 
   // ── Customer Journey Map (n32) ────────────────────────────────────────────
   { id:'e92',  from:'n32', to:'n26', label:'customer actions align with service blueprint',  importance:3, btabok:true },
