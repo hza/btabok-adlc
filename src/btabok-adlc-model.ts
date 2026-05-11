@@ -99,6 +99,7 @@ export const NODES: NodeData[] = (([
   { id:'n31', phase:'innovation', title:'Value Stream Map',                   subtitle:'End-to-end steps, handoffs, and wait times in value delivery; exposes waste and bottlenecks capability maps miss',                      link:'https://iasa-global.github.io/btabok/value_stream.html',             badge:'BTABoK', importance:2},
   { id:'n32', phase:'innovation', title:'Customer Journey Map',               subtitle:'Customer experience across touchpoints, channels, and emotions; surfaces pain points and unmet needs that drive architecture requirements',                      link:'https://iasa-global.github.io/btabok/customer_journey_map.html',    badge:'BTABoK', importance:1},
   { id:'n34', phase:'innovation', title:'Customer Persona',                   subtitle:'Named profile of a customer segment covering goals, frustrations, behaviours, and context to ground architecture decisions in real people', link:'https://iasa-global.github.io/btabok/persona_card.html',             badge:'BTABoK', note:'One persona per distinct customer segment or user type', recurring:true, importance:1},
+  { id:'n35', phase:'innovation', title:'Stakeholder Empathy Map',            subtitle:'Six-quadrant map of what a stakeholder thinks, feels, says, does, hears, and fears — sharpens persona and journey decisions', link:'https://iasa-global.github.io/btabok/stakeholder_empathy_map.html', badge:'BTABoK', note:'One map per persona or key stakeholder type', recurring:true, importance:1},
   { id:'n33', phase:'innovation', title:'JTBD Card',                          subtitle:'Functional, emotional, and social jobs customers want done — solution-independent — anchoring architecture to real needs rather than assumed features',  link:'https://iasa-global.github.io/btabok/strategyn_jtbd_canvas.html',               badge:'BTABoK', note:'One card per distinct customer job', recurring:true, importance:1},
 
   // BTABoK Strategy phase artifacts
@@ -260,5 +261,9 @@ export const EDGES: EdgeData[] = [
   { id:'e100', from:'n01', to:'n34', label:'customer segment in BMC grounds persona',        importance:3, btabok:true },
   { id:'e101', from:'n34', to:'n32', label:'persona behaviour shapes journey mapping',       importance:3, btabok:true },
   { id:'e102', from:'n34', to:'n26', label:'persona needs surface service pain points',      importance:2, btabok:true },
+  { id:'e103', from:'n34', to:'n35', label:'persona deepened by stakeholder empathy map',   importance:2, btabok:true },
+
+  // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
+  { id:'e104', from:'n35', to:'n32', label:'empathy insights enrich journey touchpoints',   importance:2, btabok:true },
 
 ];
