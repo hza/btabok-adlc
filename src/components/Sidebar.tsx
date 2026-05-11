@@ -213,16 +213,24 @@ export const LegendPanel = React.memo(function LegendPanel() {
           <Hr/>
 
           <SectionLabel>Importance levels</SectionLabel>
-          {(Object.entries(IMPORTANCE_STYLES) as [string, { label: string; color: string; bg: string; rationale: string }][]).map(([key, s]) => (
-            <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 3,
-                background: s.bg, borderRadius: 20, flexShrink: 0,
-                padding: '2px 8px', fontSize: 11, color: s.color, fontWeight: 600,
-              }}>★ {s.label}</span>
-              <span style={{ color: '#475569', fontSize: 12, lineHeight: 1.5 }}>{s.rationale}</span>
-            </div>
-          ))}
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <tbody>
+              {(Object.entries(IMPORTANCE_STYLES) as [string, { label: string; color: string; bg: string; rationale: string }][]).map(([key, s]) => (
+                <tr key={key}>
+                  <td style={{ paddingBottom: 8, paddingRight: 8, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 3,
+                      background: s.bg, borderRadius: 20,
+                      padding: '2px 7px', fontSize: 10, color: s.color, fontWeight: 600,
+                    }}>★ {s.label}</span>
+                  </td>
+                  <td style={{ paddingBottom: 8, color: '#475569', fontSize: 12, lineHeight: 1.5, verticalAlign: 'top' }}>
+                    {s.rationale}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
           <Hr/>
 
