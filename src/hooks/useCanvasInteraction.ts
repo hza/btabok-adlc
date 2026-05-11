@@ -66,11 +66,33 @@ export function useCanvasInteraction() {
     setPanScale({ pan: { ...panRef.current }, scale: scaleRef.current });
   }, []);
 
-  const handleWheel = useCallback((e: WheelEvent, _containerEl: HTMLElement) => {
+  const handleWheel = useCallback((e: WheelEvent, containerEl: HTMLElement) => {
     e.preventDefault();
-    panRef.current = { x: panRef.current.x - e.deltaX, y: panRef.current.y - e.deltaY };
+
+    // Normalize delta across deltaMode (0=px, 1=line, 2=page)
+    const LINE = 16, PAGE = 400;
+    const mult = e.deltaMode === 2 ? PAGE : e.deltaMode === 1 ? LINE : 1;
+    const dx = e.deltaX * mult;
+    const dy = e.deltaY * mult;
+
+    if (e.ctrlKey) {
+      // Pinch-to-zoom or Ctrl+Wheel — zoom toward pointer
+      const rect = containerEl.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const zoomFactor = Math.exp(-dy / 300);
+      const newScale = Math.min(3, Math.max(0.18, scaleRef.current * zoomFactor));
+      // Anchor pan so the canvas point under the cursor stays fixed
+      panRef.current = {
+        x: mx - (mx - panRef.current.x) * (newScale / scaleRef.current),
+        y: my - (my - panRef.current.y) * (newScale / scaleRef.current),
+      };
+      scaleRef.current = newScale;
+    } else {
+      panRef.current = { x: panRef.current.x - dx, y: panRef.current.y - dy };
+    }
+
     applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
-    // Debounce the React state commit so the grid re-renders once after scrolling settles
     scheduleCommit();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
