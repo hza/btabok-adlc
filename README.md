@@ -2,7 +2,7 @@
 
 An interactive visual reference for the **BTABoK Architecture Development Life Cycle** — a structured, phase-by-phase model that guides architects from initial business opportunity through strategy, design, implementation, and outcome measurement.
 
-**Live app → [hza.github.io/btabook-adlc](https://hza.github.io/btabook-adlc/)**
+**Live app → [hza.github.io/btabok-adlc](https://hza.github.io/btabok-adlc/)**
 
 ---
 
