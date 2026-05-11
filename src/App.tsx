@@ -16,7 +16,7 @@ const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
 
 export default function App() {
   const {
-    positions, pan, scale, isPanning,
+    positions, pan, scale, isPanning, isDraggingNode,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen, zoomIn, zoomOut,
@@ -207,7 +207,7 @@ export default function App() {
         <div
           ref={containerRef}
           style={{ flex: 1, overflow: 'hidden', position: 'relative',
-            cursor: isPanning ? 'grabbing' : 'grab', background: '#FFFFFF',
+            cursor: (isPanning || isDraggingNode) ? 'grabbing' : 'grab', background: '#FFFFFF',
             ...(showGrid ? infiniteGridStyle : {}) }}
           onMouseDown={handleCanvasDown}
           onMouseMove={handleMouseMove}
@@ -278,6 +278,7 @@ export default function App() {
                 <NodeCard key={node.id} node={node} pos={positions[node.id]}
                   selected={node.id === selectedId}
                   dimmed={dimmed}
+                  dragging={isDraggingNode && node.id === selectedId}
                   onMouseDown={e => handleNodeDown(e, node.id)}
                   onHeightChange={handleHeightChange}/>
               );

@@ -10,11 +10,12 @@ interface CardProps {
   dimmed: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
   onHeightChange?: (id: string, height: number) => void;
+  dragging?: boolean;
 }
 
 
 
-const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown, onHeightChange }: CardProps) {
+const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onMouseDown, onHeightChange, dragging }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState(80);
 
@@ -68,7 +69,7 @@ const NodeCard = React.memo(function NodeCard({ node, pos, selected, dimmed, onM
           ? `0 0 0 3px ${bc}33, 0 6px 20px rgba(0,0,0,0.16)`
           : '0 2px 8px rgba(0,0,0,0.08)',
         opacity: dimmed ? 0.85 : 1,
-        cursor: 'grab',
+        cursor: dragging ? 'grabbing' : 'grab',
         userSelect: 'none',
         transition: 'opacity 0.18s, box-shadow 0.15s',
         fontFamily: 'system-ui,-apple-system,sans-serif',

@@ -18,6 +18,7 @@ export function useCanvasInteraction() {
   const [scale, setScale] = useState(DEFAULT_SCALE);
 
   const [isPanning, setIsPanning] = useState(false);
+  const [isDraggingNode, setIsDraggingNode] = useState(false);
 
   const posRef   = useRef(positions);
   const panRef   = useRef(pan);
@@ -34,11 +35,14 @@ export function useCanvasInteraction() {
     setPan(p => ({ x: p.x - e.deltaX, y: p.y - e.deltaY }));
   }, []);
 
+  const dragCursorTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const startNodeDrag = useCallback((e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     if (e.button !== 0) return;
     const pos = posRef.current[id];
     dragNode.current = { id, sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y };
+    dragCursorTimer.current = setTimeout(() => setIsDraggingNode(true), 100);
   }, []);
 
   const startPanDrag = useCallback((e: React.MouseEvent) => {
@@ -81,9 +85,11 @@ export function useCanvasInteraction() {
   }, []);
 
   const handleMouseUp = useCallback(() => {
+    if (dragCursorTimer.current) { clearTimeout(dragCursorTimer.current); dragCursorTimer.current = null; }
     dragNode.current = null;
     dragPan.current  = null;
     setIsPanning(false);
+    setIsDraggingNode(false);
   }, []);
 
   const resetPositions = useCallback(() => {
@@ -112,7 +118,7 @@ export function useCanvasInteraction() {
   }, []);
 
   return {
-    positions, pan, scale, isPanning,
+    positions, pan, scale, isPanning, isDraggingNode,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen,
