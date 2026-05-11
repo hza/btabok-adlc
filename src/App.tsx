@@ -115,7 +115,8 @@ export default function App() {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = 'btabok-adlc.svg';
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19).replace('T', '_');
+    a.download = `btabok-adlc_${ts}.svg`;
     a.click();
     URL.revokeObjectURL(url);
   }, [canvasW, canvasH]);
