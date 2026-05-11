@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface TopBarProps {
-  cardImportanceLevel: 'high' | 'extra' | 'ultra';
+  cardImportanceLevel: 1 | 2 | 3;
   showSwimlanes: boolean;
   showGrid: boolean;
   showSidebar: boolean;
@@ -11,7 +11,7 @@ interface TopBarProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onSave: () => void;
-  onCardImportanceLevelChange: (v: 'high' | 'extra' | 'ultra') => void;
+  onCardImportanceLevelChange: (v: 1 | 2 | 3) => void;
   onShowSwimlanesChange: (v: boolean) => void;
   onShowGridChange: (v: boolean) => void;
   onToggleSidebar: () => void;
@@ -59,11 +59,8 @@ const TopBar = React.memo(function TopBar({
         LOD:
         <input
           type="range" min={1} max={3}
-          value={cardImportanceLevel === 'ultra' ? 1 : cardImportanceLevel === 'extra' ? 2 : 3}
-          onChange={e => {
-            const v = Number(e.target.value);
-            onCardImportanceLevelChange(v === 1 ? 'ultra' : v === 2 ? 'extra' : 'high');
-          }}
+          value={cardImportanceLevel}
+          onChange={e => onCardImportanceLevelChange(Number(e.target.value) as 1 | 2 | 3)}
           style={{ accentColor: '#7F77DD', width: 80, cursor: 'pointer' }}
         />
         {/* <span style={{ fontSize: 12, color: '#CBD5E1', minWidth: 90 }}>

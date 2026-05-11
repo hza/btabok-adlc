@@ -6,7 +6,7 @@ import {
   NODES, IMPORTANCE_STYLES,
 } from '../btabok-adlc-model';
 
-const EDGE_IMPORTANCE_KEY: Record<1 | 2 | 3, 'high' | 'extra' | 'ultra'> = { 1: 'high', 2: 'extra', 3: 'ultra' };
+const IMPORTANCE_KEY: Record<1 | 2 | 3, 'high' | 'extra' | 'ultra'> = { 1: 'high', 2: 'extra', 3: 'ultra' };
 import type { NodeData, EdgeData, Phase } from '../btabok-adlc-model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: node.importance ? 6 : 8 }}>
         <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} onClick={() => onPhaseClick(node.phase)} />
         {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
-        {node.importance && <ImportanceTag importance={node.importance} />}
+        {node.importance && <ImportanceTag importance={IMPORTANCE_KEY[node.importance]} />}
         <span style={{ background: `${bc}18`, color: bc, borderRadius: 4,
           padding: '1px 6px', fontSize: 10, fontWeight: 600, lineHeight: 1.4, alignSelf: 'center' }}>
           {node.badge}
@@ -50,9 +50,9 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
       </div>
       {node.importance && (
         <div style={{ fontSize: 12, color: '#64748B', lineHeight: 1.5, marginBottom: 10,
-          padding: '6px 10px', background: `${IMPORTANCE_STYLES[node.importance].bg}99`,
-          borderRadius: 6, borderLeft: `3px solid ${IMPORTANCE_STYLES[node.importance].color}` }}>
-          {IMPORTANCE_STYLES[node.importance].rationale}
+          padding: '6px 10px', background: `${IMPORTANCE_STYLES[IMPORTANCE_KEY[node.importance]].bg}99`,
+          borderRadius: 6, borderLeft: `3px solid ${IMPORTANCE_STYLES[IMPORTANCE_KEY[node.importance]].color}` }}>
+          {IMPORTANCE_STYLES[IMPORTANCE_KEY[node.importance]].rationale}
         </div>
       )}
       {node.link && (
@@ -86,7 +86,7 @@ function ConnList({ title, items, accent }: {
           background: '#F8FAFC', borderRadius: 6, borderLeft: `3px solid ${accent}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
             <span style={{ fontWeight: 600, color: '#1E293B', fontSize: 14, flex: 1 }}>{n.num}. {n.title}</span>
-            {(() => { const s = IMPORTANCE_STYLES[EDGE_IMPORTANCE_KEY[e.importance]]; return (
+            {(() => { const s = IMPORTANCE_STYLES[IMPORTANCE_KEY[e.importance]]; return (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3,
                 background: s.bg, borderRadius: 20, padding: '1px 7px',
                 fontSize: 10, color: s.color, fontWeight: 600, flexShrink: 0 }}>

@@ -120,10 +120,9 @@ export default function App() {
     };
   }, [pan.x, pan.y, scale]);
 
-  const IMPORTANCE_ORDER = { ultra: 3, extra: 2, high: 1 } as const;
-  const [cardImportanceLevel, setCardImportanceLevel] = useState<'high' | 'extra' | 'ultra'>('high');
+  const [cardImportanceLevel, setCardImportanceLevel] = useState<1 | 2 | 3>(1);
   const visibleNodes = useMemo(
-    () => NODES.filter(n => !n.importance || IMPORTANCE_ORDER[n.importance] >= IMPORTANCE_ORDER[cardImportanceLevel]),
+    () => NODES.filter(n => !n.importance || n.importance >= cardImportanceLevel),
     [cardImportanceLevel],
   );
 
