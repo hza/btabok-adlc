@@ -15,11 +15,12 @@ interface TopBarProps {
   onShowSwimlanesChange: (v: boolean) => void;
   onShowGridChange: (v: boolean) => void;
   onToggleSidebar: () => void;
+  onDownload: () => void;
 }
 
 const TopBar = React.memo(function TopBar({
   cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved,
-  onReset, onFit, onSave, onZoomIn, onZoomOut,
+  onReset, onFit, onSave, onZoomIn, onZoomOut, onDownload,
   onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
 }: TopBarProps) {
   return (
@@ -82,6 +83,13 @@ const TopBar = React.memo(function TopBar({
           <line x1="12" y1="1.5" x2="12" y2="16.5" stroke="currentColor" strokeWidth="1.5"/>
           <line x1="1.5" y1="6" x2="16.5" y2="6" stroke="currentColor" strokeWidth="1.5"/>
           <line x1="1.5" y1="12" x2="16.5" y2="12" stroke="currentColor" strokeWidth="1.5"/>
+        </svg>
+      </IconBtn>
+      <IconBtn onClick={onDownload} title="Download as SVG">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <line x1="9" y1="2" x2="9" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <polyline points="5.5,8.5 9,12.5 12.5,8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <line x1="2.5" y1="15.5" x2="15.5" y2="15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       </IconBtn>
       <IconBtn onClick={onSave} title={saved ? 'Copied!' : 'Copy positions to clipboard'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>

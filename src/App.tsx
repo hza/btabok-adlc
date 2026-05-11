@@ -11,9 +11,10 @@ const IMP_COLOR: Record<1 | 2 | 3, string> = {
 };
 import type { Phase } from './btabok-adlc-model';
 import { NODE_W, BAND_PADDING } from './constants';
+import { computeNodeSvgHeight } from './utils/nodeLayout';
 import { computeEdgePaths } from './utils/edgeUtils';
 import { useCanvasInteraction } from './hooks/useCanvasInteraction';
-import NodeCard from './components/NodeCard';
+import NodeCardSvg from './components/NodeCardSvg';
 import TopBar from './components/TopBar';
 import { SelectedPanel, LegendPanel, PhasePanel } from './components/Sidebar';
 
@@ -36,10 +37,11 @@ export default function App() {
   const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const [nodeHeights, setNodeHeights] = useState<Record<string, number>>({});
-  const handleHeightChange = useCallback((id: string, h: number) => {
-    setNodeHeights(prev => prev[id] === h ? prev : { ...prev, [id]: h });
-  }, []);
+  const svgRef       = useRef<SVGSVGElement>(null);
+  const nodeHeights = useMemo(
+    () => Object.fromEntries(NODES.map(n => [n.id, computeNodeSvgHeight(n)])),
+    [],
+  );
 
   // ── wheel zoom ───────────────────────────────────────────────────────────────
   const onWheel = useCallback((e: WheelEvent) => {
@@ -57,7 +59,7 @@ export default function App() {
   const panStartPos = useRef<{ x: number; y: number } | null>(null);
 
   const handleCanvasDown = useCallback((e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
+    const target = e.target as Element;
     if (target.closest('[data-node]')) return;
     panStartPos.current = { x: e.clientX, y: e.clientY };
     startPanDrag(e);
@@ -100,6 +102,27 @@ export default function App() {
     () => Math.max(...Object.values(positions).map(p => p.y)) + 200 + 80,
     [positions],
   );
+
+  const handleDownload = useCallback(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const clone = svg.cloneNode(true) as SVGSVGElement;
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    clone.setAttribute('width',  String(canvasW));
+    clone.setAttribute('height', String(canvasH));
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('width',  String(canvasW));
+    bg.setAttribute('height', String(canvasH));
+    bg.setAttribute('fill', '#ffffff');
+    clone.insertBefore(bg, clone.firstChild);
+    const blob = new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'btabok-adlc.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [canvasW, canvasH]);
 
   const infiniteGridStyle = useMemo(() => {
     const minor = 20 * scale;
@@ -204,6 +227,7 @@ export default function App() {
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
         onToggleSidebar={() => setShowLegend(v => !v)}
+        onDownload={handleDownload}
       />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -223,8 +247,8 @@ export default function App() {
             position: 'absolute', transformOrigin: '0 0',
             transform: `translate(${pan.x}px,${pan.y}px) scale(${scale})`,
           }}>
-            <svg width={canvasW} height={canvasH} overflow="visible"
-              style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+            <svg ref={svgRef} width={canvasW} height={canvasH} overflow="visible"
+              style={{ position: 'absolute', top: 0, left: 0 }}>
               <defs>
                 <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
                   <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
@@ -234,60 +258,65 @@ export default function App() {
                     <polygon points="0 0,7 3.5,0 7" fill={IMP_COLOR[imp]}/>
                   </marker>
                 ))}
+                <filter id="nodeShadow" x="-10%" y="-10%" width="120%" height="130%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="rgba(0,0,0,0.08)"/>
+                </filter>
+                <filter id="nodeShadowSelected" x="-20%" y="-20%" width="140%" height="150%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="10" floodColor="rgba(0,0,0,0.16)"/>
+                </filter>
               </defs>
 
-              {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
-                <g key={ph}>
-                  <rect x={minX} y={0} width={maxX - minX} height={canvasH}
-                    fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
-                  <rect x={minX} y={0} width={maxX - minX} height={24}
-                    fill={style.band} opacity={selectedPhase === ph ? 1 : 0.75}/>
-                  <text x={minX + (maxX - minX) / 2} y={16}
-                    textAnchor="middle" fontSize={12} fontWeight="600"
-                    fontFamily="system-ui,-apple-system,sans-serif"
-                    fill={style.text} style={{ userSelect: 'none' }}>
-                    {PHASE_LABEL[ph]}
-                  </text>
-                </g>
-              ))}
+              <g pointerEvents="none">
+                {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
+                  <g key={ph}>
+                    <rect x={minX} y={0} width={maxX - minX} height={canvasH}
+                      fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
+                    <rect x={minX} y={0} width={maxX - minX} height={24}
+                      fill={style.band} opacity={selectedPhase === ph ? 1 : 0.75}/>
+                    <text x={minX + (maxX - minX) / 2} y={16}
+                      textAnchor="middle" fontSize={12} fontWeight="600"
+                      fontFamily="system-ui,-apple-system,sans-serif"
+                      fill={style.text} style={{ userSelect: 'none' }}>
+                      {PHASE_LABEL[ph]}
+                    </text>
+                  </g>
+                ))}
 
-              {edgePaths.map(edge => {
-                const hi   = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
-                const dimS = connectedEdgeIds ? !hi : false;
-                const impColor = IMP_COLOR[edge.importance];
-                const opacity = dimS ? 0.15 : hi ? 1 : 0.55;
-                const stroke  = hi ? '#7F77DD' : impColor;
-                const sw      = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
-                return (
-                  <g key={edge.id} opacity={opacity}>
-                    <path d={edge.path} fill="none"
-                      stroke={stroke}
-                      strokeWidth={sw}
-                      markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
-                    {(
+                {edgePaths.map(edge => {
+                  const hi   = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
+                  const dimS = connectedEdgeIds ? !hi : false;
+                  const impColor = IMP_COLOR[edge.importance];
+                  const opacity = dimS ? 0.15 : hi ? 1 : 0.55;
+                  const stroke  = hi ? '#7F77DD' : impColor;
+                  const sw      = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
+                  return (
+                    <g key={edge.id} opacity={opacity}>
+                      <path d={edge.path} fill="none"
+                        stroke={stroke}
+                        strokeWidth={sw}
+                        markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
                       <text x={edge.mx} y={edge.my - 5}
                         textAnchor="middle" fontSize={12} fontFamily="system-ui"
                         fill="#000000"
                         stroke="white" strokeWidth="2.8" paintOrder="stroke">
                         {edge.label}
                       </text>
-                    )}
-                  </g>
+                    </g>
+                  );
+                })}
+              </g>
+
+              {visibleNodes.map(node => {
+                const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
+                return (
+                  <NodeCardSvg key={node.id} node={node} pos={positions[node.id]}
+                    selected={node.id === selectedId}
+                    dimmed={dimmed}
+                    dragging={isDraggingNode && node.id === selectedId}
+                    onMouseDown={(e: React.MouseEvent) => handleNodeDown(e, node.id)}/>
                 );
               })}
             </svg>
-
-            {visibleNodes.map(node => {
-              const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
-              return (
-                <NodeCard key={node.id} node={node} pos={positions[node.id]}
-                  selected={node.id === selectedId}
-                  dimmed={dimmed}
-                  dragging={isDraggingNode && node.id === selectedId}
-                  onMouseDown={e => handleNodeDown(e, node.id)}
-                  onHeightChange={handleHeightChange}/>
-              );
-            })}
           </div>
         </div>
 
