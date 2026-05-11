@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { PHASE_LABEL, IMP_COLOR } from '../btabok-adlc-model';
 import type { Phase, NodeData } from '../btabok-adlc-model';
-import NodeCardSvg from './NodeCardSvg';
+import NodeCardSvg, { NodeStackLayer } from './NodeCardSvg';
 
 interface EdgePath {
   id: string;
@@ -106,6 +106,15 @@ const SvgContent = memo(function SvgContent({
           </g>
         ))}
 
+      </g>
+
+      {/* 1: recurring stack layers */}
+      {visibleNodes.map(node => (
+        <NodeStackLayer key={node.id} node={node} pos={positions[node.id]}/>
+      ))}
+
+      {/* 2: edges */}
+      <g pointerEvents="none">
         {edgePaths.map(edge => {
           const hi      = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
           const dimS    = connectedEdgeIds ? !hi : false;
@@ -119,17 +128,20 @@ const SvgContent = memo(function SvgContent({
                 stroke={stroke}
                 strokeWidth={sw}
                 markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
-              <text x={edge.mx} y={edge.my - 5}
-                textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                fill="#000000"
-                stroke="white" strokeWidth="2.8" paintOrder="stroke">
-                {edge.label}
-              </text>
+              {edge.label && (
+                <text x={edge.mx} y={edge.my - 5}
+                  textAnchor="middle" fontSize={12} fontFamily="system-ui"
+                  fill="#000000"
+                  stroke="white" strokeWidth="2.8" paintOrder="stroke">
+                  {edge.label}
+                </text>
+              )}
             </g>
           );
         })}
       </g>
 
+      {/* 3: cards */}
       {visibleNodes.map(node => {
         const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
         return (

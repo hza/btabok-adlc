@@ -45,14 +45,6 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
       style={{ cursor: dragging ? 'grabbing' : 'grab', userSelect: 'none' }}
       opacity={dimmed ? 0.85 : 1}
     >
-      {/* recurring stack layers */}
-      {node.recurring && <>
-        <rect x={8} y={8} width={NODE_W} height={h} rx={8}
-          fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5"/>
-        <rect x={4} y={4} width={NODE_W} height={h} rx={8}
-          fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5"/>
-      </>}
-
       {/* card background */}
       <rect x={0} y={0} width={NODE_W} height={h} rx={8}
         fill="#FFFFFF"
@@ -120,3 +112,16 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
 });
 
 export default NodeCardSvg;
+
+export function NodeStackLayer({ node, pos }: { node: NodeData; pos: { x: number; y: number } }) {
+  if (!node.recurring) return null;
+  const h = computeNodeSvgHeight(node);
+  return (
+    <g transform={`translate(${pos.x},${pos.y})`} pointerEvents="none">
+      <rect x={8} y={8} width={NODE_W} height={h} rx={8}
+        fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5"/>
+      <rect x={4} y={4} width={NODE_W} height={h} rx={8}
+        fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5"/>
+    </g>
+  );
+}
