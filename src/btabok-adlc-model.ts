@@ -67,7 +67,7 @@ export const PHASE_KEY_QUESTIONS: Record<Phase, string[]> = {
 export const IMPORTANCE_STYLES: Record<string, { label: string; color: string; bg: string; rationale: string }> = {
   ultra: { label: 'Max',       color: '#B91C1C', bg: '#FEE2E2', rationale: 'Non-negotiable core. Without it the architecture lacks justification, scope, requirements, decisions, or structural verifiability.' },
   extra: { label: 'High',      color: '#C2410C', bg: '#FFEDD5', rationale: 'Strongly recommended; skipping it leaves a significant blind spot in strategy, traceability, or governance.' },
-  high:  { label: 'Normal',     color: '#854D0E', bg: '#FEF9C3', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
+  high:  { label: 'Normal',    color: '#166534', bg: '#DCFCE7', rationale: 'Valuable and recommended; gaps are felt but the engagement can proceed without it.' },
 };
 
 // ─── data types ───────────────────────────────────────────────────────────────
@@ -80,13 +80,7 @@ export interface NodeData {
 }
 
 export function badgeColor(badge: string): string {
-  switch (badge) {
-    case 'BTABoK': return BADGE_COLORS.purple;
-    case 'DDD':    return BADGE_COLORS.gray;
-    case 'C4':     return BADGE_COLORS.amber;
-    case 'OWASP':  return BADGE_COLORS.amber;
-    default:       return BADGE_COLORS.gray;
-  }
+  return BADGE_TYPES.find(b => b.badge === badge)?.color ?? BADGE_COLORS.gray;
 }
 export interface EdgeData {
   id: string; from: string; to: string; label: string;
