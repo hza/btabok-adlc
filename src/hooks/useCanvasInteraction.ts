@@ -1,16 +1,16 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react';
 import { NODES, PHASES } from '../btabok-adlc-model';
 import { NODE_W, SNAP, BAND_PADDING, DEFAULT_SCALE, snapV } from '../constants';
 import { NODE_POSITIONS } from '../positions';
 
 function applyPanScale(
-  transformDiv: HTMLDivElement | null,
+  transformG: SVGGElement | null,
   containerDiv: HTMLDivElement | null,
   px: number, py: number, sc: number,
   showGrid: boolean,
 ) {
-  if (transformDiv) {
-    transformDiv.style.transform = `translate(${px}px,${py}px) scale(${sc})`;
+  if (transformG) {
+    transformG.setAttribute('transform', `translate(${px},${py}) scale(${sc})`);
   }
   if (containerDiv && showGrid) {
     const minor = 20 * sc;
@@ -52,15 +52,20 @@ export function useCanvasInteraction() {
   const [isDraggingNode, setIsDraggingNode] = useState(false);
 
   // Refs to DOM elements — hook writes directly to bypass React rendering during pan
-  const transformDivRef  = useRef<HTMLDivElement | null>(null);
-  const containerDivRef  = useRef<HTMLDivElement | null>(null);
-  const showGridRef      = useRef(true);
+  const transformGRef   = useRef<SVGGElement | null>(null);
+  const containerDivRef = useRef<HTMLDivElement | null>(null);
+  const showGridRef     = useRef(true);
 
   const posRef   = useRef(positions);
   const dragNode = useRef<{ id: string; sx: number; sy: number; ox: number; oy: number } | null>(null);
   const dragPan  = useRef<{ sx: number; sy: number; opx: number; opy: number } | null>(null);
 
   useEffect(() => { posRef.current = positions; }, [positions]);
+
+  // Apply initial transform before first paint — useEffect fires too late and causes a flicker
+  useLayoutEffect(() => {
+    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const commitPanScale = useCallback(() => {
     setPanScale({ pan: { ...panRef.current }, scale: scaleRef.current });
@@ -92,7 +97,7 @@ export function useCanvasInteraction() {
       panRef.current = { x: panRef.current.x - dx, y: panRef.current.y - dy };
     }
 
-    applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
     scheduleCommit();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -148,7 +153,7 @@ export function useCanvasInteraction() {
     } else if (dragPan.current) {
       const { sx, sy, opx, opy } = dragPan.current;
       panRef.current = { x: opx + e.clientX - sx, y: opy + e.clientY - sy };
-      applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+      applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
     }
   }, []);
 
@@ -169,7 +174,7 @@ export function useCanvasInteraction() {
     const minY = Math.min(...Object.values(defaultPos).map(p => p.y));
     panRef.current   = { x: 72 - minX * DEFAULT_SCALE, y: 86 - minY * DEFAULT_SCALE };
     scaleRef.current = DEFAULT_SCALE;
-    applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
@@ -184,19 +189,19 @@ export function useCanvasInteraction() {
     const ns   = Math.min(0.98, (width - 48) / (maxX - minX), (height - 48) / (maxY - minY));
     panRef.current   = { x: (width - (maxX - minX) * ns) / 2 - minX * ns, y: (height - (maxY - minY) * ns) / 2 - minY * ns };
     scaleRef.current = ns;
-    applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
   const zoomIn = useCallback(() => {
     scaleRef.current = Math.min(3, Math.round(scaleRef.current * 10 + 1) / 10);
-    applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
   const zoomOut = useCallback(() => {
     scaleRef.current = Math.max(0.18, Math.round(scaleRef.current * 10 - 1) / 10);
-    applyPanScale(transformDivRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
@@ -205,7 +210,7 @@ export function useCanvasInteraction() {
     pan: panScale.pan,
     scale: panScale.scale,
     isDraggingNode,
-    transformDivRef,
+    transformGRef,
     containerDivRef,
     showGridRef,
     handleWheel, startNodeDrag, startPanDrag,

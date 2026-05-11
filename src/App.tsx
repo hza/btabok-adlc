@@ -19,7 +19,7 @@ const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
 export default function App() {
   const {
     positions, pan, scale, isDraggingNode,
-    transformDivRef, containerDivRef, showGridRef,
+    transformGRef, containerDivRef, showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen, zoomIn, zoomOut,
@@ -106,6 +106,10 @@ export default function App() {
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     clone.setAttribute('width',  String(canvasW));
     clone.setAttribute('height', String(canvasH));
+    // Remove pan/scale transform so the export shows all content at natural coordinates
+    clone.removeAttribute('style');
+    const g = clone.querySelector('g[transform]');
+    if (g) g.removeAttribute('transform');
     const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     bg.setAttribute('width',  String(canvasW));
     bg.setAttribute('height', String(canvasH));
@@ -241,12 +245,9 @@ export default function App() {
         <Canvas
           containerRef={containerRef}
           containerDivRef={containerDivRef}
-          transformDivRef={transformDivRef}
+          transformGRef={transformGRef}
           svgRef={svgRef}
-          canvasW={canvasW}
           canvasH={canvasH}
-          pan={pan}
-          scale={scale}
           isDraggingNode={isDraggingNode}
           showGrid={showGrid}
           showGridRef={showGridRef}

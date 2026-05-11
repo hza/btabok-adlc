@@ -22,12 +22,9 @@ interface PhaseBand {
 interface CanvasProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   containerDivRef: React.RefObject<HTMLDivElement | null>;
-  transformDivRef: React.RefObject<HTMLDivElement | null>;
+  transformGRef: React.RefObject<SVGGElement | null>;
   svgRef: React.RefObject<SVGSVGElement | null>;
-  canvasW: number;
   canvasH: number;
-  pan: { x: number; y: number };
-  scale: number;
   isDraggingNode: boolean;
   showGrid: boolean;
   showGridRef: React.RefObject<boolean>;
@@ -49,7 +46,7 @@ interface CanvasProps {
 
 interface SvgContentProps {
   svgRef: React.RefObject<SVGSVGElement | null>;
-  canvasW: number;
+  transformGRef: React.RefObject<SVGGElement | null>;
   canvasH: number;
   isDraggingNode: boolean;
   showSwimlanes: boolean;
@@ -65,14 +62,14 @@ interface SvgContentProps {
 }
 
 const SvgContent = memo(function SvgContent({
-  svgRef, canvasW, canvasH,
+  svgRef, transformGRef, canvasH,
   isDraggingNode, showSwimlanes, phaseBands, selectedPhase,
   edgePaths, connectedEdgeIds, connectedNodeIds,
   visibleNodes, selectedId, positions, onNodeDown,
 }: SvgContentProps) {
   return (
-    <svg ref={svgRef} width={canvasW} height={canvasH} overflow="visible"
-      style={{ position: 'absolute', top: 0, left: 0 }}>
+    <svg ref={svgRef} width="100%" height="100%"
+      style={{ position: 'absolute', top: 0, left: 0, overflow: 'hidden' }}>
       <defs>
         <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
           <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
@@ -90,83 +87,87 @@ const SvgContent = memo(function SvgContent({
         </filter>
       </defs>
 
-      <g pointerEvents="none">
-        {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
-          <g key={ph}>
-            <rect x={minX} y={0} width={maxX - minX} height={canvasH}
-              fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
-            <rect x={minX} y={0} width={maxX - minX} height={24}
-              fill={style.band} opacity={selectedPhase === ph ? 1 : 0.75}/>
-            <text x={minX + (maxX - minX) / 2} y={16}
-              textAnchor="middle" fontSize={12} fontWeight="600"
-              fontFamily="system-ui,-apple-system,sans-serif"
-              fill={style.text} style={{ userSelect: 'none' }}>
-              {PHASE_LABEL[ph]}
-            </text>
-          </g>
+      {/* All canvas content lives in this <g> — the hook sets its transform attribute directly */}
+      <g ref={transformGRef}>
+
+        <g pointerEvents="none">
+          {showSwimlanes && phaseBands.map(({ ph, minX, maxX, style }) => (
+            <g key={ph}>
+              <rect x={minX} y={0} width={maxX - minX} height={canvasH}
+                fill={style.bg} stroke={style.band} strokeWidth="1" opacity="0.72"/>
+              <rect x={minX} y={0} width={maxX - minX} height={24}
+                fill={style.band} opacity={selectedPhase === ph ? 1 : 0.75}/>
+              <text x={minX + (maxX - minX) / 2} y={16}
+                textAnchor="middle" fontSize={12} fontWeight="600"
+                fontFamily="system-ui,-apple-system,sans-serif"
+                fill={style.text} style={{ userSelect: 'none' }}>
+                {PHASE_LABEL[ph]}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        {/* 1: recurring stack layers */}
+        {visibleNodes.map(node => (
+          <NodeStackLayer key={node.id} node={node} pos={positions[node.id]}/>
         ))}
 
-      </g>
+        {/* 2: edges */}
+        <g pointerEvents="none">
+          {edgePaths.map(edge => {
+            const hi       = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
+            const dimS     = connectedEdgeIds ? !hi : false;
+            const impColor = IMP_COLOR[edge.importance];
+            const opacity  = dimS ? 0.35 : hi ? 1 : 0.55;
+            const stroke   = hi ? '#7F77DD' : impColor;
+            const sw       = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
+            return (
+              <g key={edge.id} opacity={opacity}>
+                <path d={edge.path} fill="none"
+                  stroke={stroke}
+                  strokeWidth={sw}
+                  markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
+                {edge.label && (() => {
+                  const words = edge.label.split(' ');
+                  const mid = Math.ceil(words.length / 2);
+                  const line1 = words.slice(0, mid).join(' ');
+                  const line2 = words.slice(mid).join(' ');
+                  return (
+                    <text x={edge.mx} y={edge.my - 10}
+                      textAnchor="middle" fontSize={12} fontFamily="system-ui"
+                      fill={hi ? stroke : '#000000'}
+                      stroke="white" strokeWidth="2.8" paintOrder="stroke">
+                      <tspan x={edge.mx} dy="0">{line1}</tspan>
+                      {line2 && <tspan x={edge.mx} dy="15">{line2}</tspan>}
+                    </text>
+                  );
+                })()}
+              </g>
+            );
+          })}
+        </g>
 
-      {/* 1: recurring stack layers */}
-      {visibleNodes.map(node => (
-        <NodeStackLayer key={node.id} node={node} pos={positions[node.id]}/>
-      ))}
-
-      {/* 2: edges */}
-      <g pointerEvents="none">
-        {edgePaths.map(edge => {
-          const hi      = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
-          const dimS    = connectedEdgeIds ? !hi : false;
-          const impColor = IMP_COLOR[edge.importance];
-          const opacity = dimS ? 0.35 : hi ? 1 : 0.55;
-          const stroke  = hi ? '#7F77DD' : impColor;
-          const sw      = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
+        {/* 3: cards */}
+        {visibleNodes.map(node => {
+          const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
           return (
-            <g key={edge.id} opacity={opacity}>
-              <path d={edge.path} fill="none"
-                stroke={stroke}
-                strokeWidth={sw}
-                markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
-              {edge.label && (() => {
-                const words = edge.label.split(' ');
-                const mid = Math.ceil(words.length / 2);
-                const line1 = words.slice(0, mid).join(' ');
-                const line2 = words.slice(mid).join(' ');
-                return (
-                  <text x={edge.mx} y={edge.my - 10}
-                    textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                    fill={hi ? stroke : '#000000'}
-                    stroke="white" strokeWidth="2.8" paintOrder="stroke">
-                    <tspan x={edge.mx} dy="0">{line1}</tspan>
-                    {line2 && <tspan x={edge.mx} dy="15">{line2}</tspan>}
-                  </text>
-                );
-              })()}
-            </g>
+            <NodeCardSvg key={node.id} node={node} pos={positions[node.id]}
+              selected={node.id === selectedId}
+              dimmed={dimmed}
+              dragging={isDraggingNode && node.id === selectedId}
+              onMouseDown={(e: React.MouseEvent) => onNodeDown(e, node.id)}/>
           );
         })}
-      </g>
 
-      {/* 3: cards */}
-      {visibleNodes.map(node => {
-        const dimmed = !!(connectedNodeIds && !connectedNodeIds.has(node.id));
-        return (
-          <NodeCardSvg key={node.id} node={node} pos={positions[node.id]}
-            selected={node.id === selectedId}
-            dimmed={dimmed}
-            dragging={isDraggingNode && node.id === selectedId}
-            onMouseDown={(e: React.MouseEvent) => onNodeDown(e, node.id)}/>
-        );
-      })}
+      </g>
     </svg>
   );
 });
 
 export default function Canvas({
-  containerRef, containerDivRef, transformDivRef,
-  svgRef, canvasW, canvasH,
-  pan, scale, isDraggingNode,
+  containerRef, containerDivRef, transformGRef,
+  svgRef, canvasH,
+  isDraggingNode,
   showGrid, showGridRef, infiniteGridStyle,
   showSwimlanes, phaseBands, selectedPhase,
   edgePaths, connectedEdgeIds, connectedNodeIds,
@@ -193,22 +194,14 @@ export default function Canvas({
       onMouseUp={onCanvasUp}
       onMouseLeave={onCanvasUp}
     >
-      <div
-        ref={transformDivRef}
-        style={{
-          position: 'absolute', transformOrigin: '0 0',
-          transform: `translate(${pan.x}px,${pan.y}px) scale(${scale})`,
-        }}
-      >
-        <SvgContent
-          svgRef={svgRef} canvasW={canvasW} canvasH={canvasH}
-          isDraggingNode={isDraggingNode}
-          showSwimlanes={showSwimlanes} phaseBands={phaseBands} selectedPhase={selectedPhase}
-          edgePaths={edgePaths} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds}
-          visibleNodes={visibleNodes} selectedId={selectedId} positions={positions}
-          onNodeDown={onNodeDown}
-        />
-      </div>
+      <SvgContent
+        svgRef={svgRef} transformGRef={transformGRef} canvasH={canvasH}
+        isDraggingNode={isDraggingNode}
+        showSwimlanes={showSwimlanes} phaseBands={phaseBands} selectedPhase={selectedPhase}
+        edgePaths={edgePaths} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds}
+        visibleNodes={visibleNodes} selectedId={selectedId} positions={positions}
+        onNodeDown={onNodeDown}
+      />
     </div>
   );
 }
