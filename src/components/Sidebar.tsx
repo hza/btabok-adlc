@@ -42,7 +42,6 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
       )}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: node.importance ? 6 : 8 }}>
         <Tag label={PHASE_LABEL[node.phase] + ' Phase'} dot={PHASE_STYLES[node.phase].band} onClick={() => onPhaseClick(node.phase)} />
-        {node.external  && <Tag label="External" dot={BADGE_COLORS.amber} />}
         {node.importance && <ImportanceTag importance={IMPORTANCE_KEY[node.importance]} />}
         <span style={{ background: `${bc}18`, color: bc, borderRadius: 4,
           padding: '1px 6px', fontSize: 10, fontWeight: 600, lineHeight: 1.4, alignSelf: 'center' }}>
