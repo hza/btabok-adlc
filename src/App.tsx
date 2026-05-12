@@ -44,6 +44,7 @@ export default function App() {
     if (scrollContainerRef.current) handleWheel(e, scrollContainerRef.current);
   }, [handleWheel, scrollContainerRef]);
 
+  // Add wheel listener to scroll container for zooming, with proper cleanup.
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
@@ -54,6 +55,7 @@ export default function App() {
   // ── canvas mouse down ────────────────────────────────────────────────────────
   const panStartPos = useRef<{ x: number; y: number } | null>(null);
 
+  // If user clicks on canvas (not on a node), we start a pan drag. If the mouseup happens without significant movement, we clear the selection.
   const handleCanvasDown = useCallback((e: React.MouseEvent) => {
     const target = e.target as Element;
     if (target.closest('[data-node]')) return;
@@ -61,6 +63,7 @@ export default function App() {
     startPanDrag(e);
   }, [startPanDrag]);
 
+  // If mouseup happens after a pan drag, we check if there was significant movement. If not, we clear the selection (deselect nodes).
   const handleCanvasUp = useCallback((e: React.MouseEvent) => {
     if (panStartPos.current) {
       const dx = Math.abs(e.clientX - panStartPos.current.x);
@@ -71,6 +74,7 @@ export default function App() {
     handleMouseUp();
   }, [handleMouseUp]);
 
+  // ── node mouse down ─────────────────────────────────────────────────────────
   const handleNodeDown = useCallback((e: React.MouseEvent, id: string) => {
     setSelectedId(id);
     startNodeDrag(e, id);
