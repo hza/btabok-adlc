@@ -94,9 +94,12 @@ const TopBar = React.memo(function TopBar({
       </IconBtn>
       <IconBtn onClick={onSave} title={saved ? 'Copied!' : 'Copy positions to clipboard'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <line x1="2" y1="16" x2="2" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="2" y1="16" x2="15" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          <text x="4" y="13" fontSize="7" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">XY</text>
+          {/* clipboard body */}
+          <rect x="4" y="4" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+          {/* clipboard top clip */}
+          <rect x="6.5" y="2.5" width="5" height="3" rx="1" stroke="currentColor" strokeWidth="1.3" fill="none"/>
+          {/* XY label */}
+          <text x="5.5" y="13.5" fontSize="5.5" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">XY</text>
         </svg>
       </IconBtn>
       <Divider/>
