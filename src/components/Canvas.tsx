@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { PHASE_LABEL, IMP_COLOR } from '../btabok-adlc-model';
 import type { Phase, NodeData } from '../btabok-adlc-model';
 import NodeCardSvg, { NodeStackLayer } from './NodeCardSvg';
+import { SCROLL_SURFACE } from '../constants';
 
 interface EdgePath {
   id: string;
@@ -22,6 +23,7 @@ interface PhaseBand {
 interface CanvasProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   containerDivRef: React.RefObject<HTMLDivElement | null>;
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>;
   transformGRef: React.RefObject<SVGGElement | null>;
   svgRef: React.RefObject<SVGSVGElement | null>;
   canvasH: number;
@@ -68,8 +70,8 @@ const SvgContent = memo(function SvgContent({
   visibleNodes, selectedId, positions, onNodeDown,
 }: SvgContentProps) {
   return (
-    <svg ref={svgRef} width="100%" height="100%"
-      style={{ position: 'absolute', top: 0, left: 0, overflow: 'hidden' }}>
+    <svg ref={svgRef}
+      style={{ position: 'absolute', top: 0, left: 0, width: SCROLL_SURFACE, height: SCROLL_SURFACE, overflow: 'visible' }}>
       <defs>
         <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
           <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
@@ -165,7 +167,7 @@ const SvgContent = memo(function SvgContent({
 });
 
 export default function Canvas({
-  containerRef, containerDivRef, transformGRef,
+  containerRef, containerDivRef, scrollContainerRef, transformGRef,
   svgRef, canvasH,
   isDraggingNode,
   showGrid, showGridRef, infiniteGridStyle,
@@ -194,14 +196,27 @@ export default function Canvas({
       onMouseUp={onCanvasUp}
       onMouseLeave={onCanvasUp}
     >
-      <SvgContent
-        svgRef={svgRef} transformGRef={transformGRef} canvasH={canvasH}
-        isDraggingNode={isDraggingNode}
-        showSwimlanes={showSwimlanes} phaseBands={phaseBands} selectedPhase={selectedPhase}
-        edgePaths={edgePaths} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds}
-        visibleNodes={visibleNodes} selectedId={selectedId} positions={positions}
-        onNodeDown={onNodeDown}
-      />
+      {/* Native scroll surface — browser handles momentum panning */}
+      <div
+        ref={(el) => { (scrollContainerRef as { current: HTMLDivElement | null }).current = el; }}
+        className="btabook-scroll-surface"
+        style={{
+          position: 'absolute', inset: 0,
+          overflow: 'scroll',
+          scrollbarWidth: 'none',
+        }}
+      >
+        <div style={{ width: SCROLL_SURFACE, height: SCROLL_SURFACE, position: 'relative' }}>
+          <SvgContent
+            svgRef={svgRef} transformGRef={transformGRef} canvasH={canvasH}
+            isDraggingNode={isDraggingNode}
+            showSwimlanes={showSwimlanes} phaseBands={phaseBands} selectedPhase={selectedPhase}
+            edgePaths={edgePaths} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds}
+            visibleNodes={visibleNodes} selectedId={selectedId} positions={positions}
+            onNodeDown={onNodeDown}
+          />
+        </div>
+      </div>
     </div>
   );
 }

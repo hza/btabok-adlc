@@ -18,8 +18,8 @@ const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
 
 export default function App() {
   const {
-    positions, pan, scale, isDraggingNode,
-    transformGRef, containerDivRef, showGridRef,
+    positions, isDraggingNode,
+    transformGRef, containerDivRef, scrollContainerRef, showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen, zoomIn, zoomOut,
@@ -41,11 +41,11 @@ export default function App() {
 
   // ── wheel zoom ───────────────────────────────────────────────────────────────
   const onWheel = useCallback((e: WheelEvent) => {
-    if (containerRef.current) handleWheel(e, containerRef.current);
-  }, [handleWheel]);
+    if (scrollContainerRef.current) handleWheel(e, scrollContainerRef.current);
+  }, [handleWheel, scrollContainerRef]);
 
   useEffect(() => {
-    const el = containerRef.current;
+    const el = scrollContainerRef.current;
     if (!el) return;
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
@@ -133,30 +133,15 @@ export default function App() {
     setShowLegend(v => !v);
   }, []);
 
-  const infiniteGridStyle = useMemo(() => {
-    const minor = 20 * scale;
-    const major = 4 * minor;
-    const offXMinor = ((pan.x % minor) + minor) % minor;
-    const offYMinor = ((pan.y % minor) + minor) % minor;
-    const offXMajor = ((pan.x % major) + major) % major;
-    const offYMajor = ((pan.y % major) + major) % major;
-    return {
-      backgroundImage: [
-        'linear-gradient(rgba(203,213,225,0.3) 1px, transparent 1px)',
-        'linear-gradient(90deg, rgba(203,213,225,0.3) 1px, transparent 1px)',
-        'linear-gradient(rgba(203,213,225,0.2) 1px, transparent 1px)',
-        'linear-gradient(90deg, rgba(203,213,225,0.2) 1px, transparent 1px)',
-      ].join(','),
-      backgroundSize: [
-        `${major}px ${major}px`, `${major}px ${major}px`,
-        `${minor}px ${minor}px`, `${minor}px ${minor}px`,
-      ].join(','),
-      backgroundPosition: [
-        `${offXMajor}px ${offYMajor}px`, `${offXMajor}px ${offYMajor}px`,
-        `${offXMinor}px ${offYMinor}px`, `${offXMinor}px ${offYMinor}px`,
-      ].join(','),
-    };
-  }, [pan.x, pan.y, scale]);
+  // Grid background is managed imperatively by the hook (applyScale + scroll listener)
+  const infiniteGridStyle = useMemo(() => ({
+    backgroundImage: [
+      'linear-gradient(rgba(203,213,225,0.3) 1px, transparent 1px)',
+      'linear-gradient(90deg, rgba(203,213,225,0.3) 1px, transparent 1px)',
+      'linear-gradient(rgba(203,213,225,0.2) 1px, transparent 1px)',
+      'linear-gradient(90deg, rgba(203,213,225,0.2) 1px, transparent 1px)',
+    ].join(','),
+  }), []);
 
   const [cardImportanceLevel, setCardImportanceLevel] = useState<1 | 2 | 3>(1);
   const visibleNodes = useMemo(
@@ -245,6 +230,7 @@ export default function App() {
         <Canvas
           containerRef={containerRef}
           containerDivRef={containerDivRef}
+          scrollContainerRef={scrollContainerRef}
           transformGRef={transformGRef}
           svgRef={svgRef}
           canvasH={canvasH}

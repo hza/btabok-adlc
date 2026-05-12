@@ -1,24 +1,30 @@
 import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react';
 import { NODES, PHASES } from '../btabok-adlc-model';
-import { NODE_W, SNAP, BAND_PADDING, DEFAULT_SCALE, snapV } from '../constants';
+import { NODE_W, SNAP, BAND_PADDING, DEFAULT_SCALE, SCROLL_SURFACE, snapV } from '../constants';
+
+// Content is translated to the center of the scroll surface so there is equal panning room in all directions
+const CONTENT_OFFSET = SCROLL_SURFACE / 2;
 import { NODE_POSITIONS } from '../positions';
 
-function applyPanScale(
+function applyScale(
   transformG: SVGGElement | null,
   containerDiv: HTMLDivElement | null,
-  px: number, py: number, sc: number,
+  scrollEl: HTMLDivElement | null,
+  sc: number,
   showGrid: boolean,
 ) {
   if (transformG) {
-    transformG.setAttribute('transform', `translate(${px},${py}) scale(${sc})`);
+    transformG.setAttribute('transform', `translate(${CONTENT_OFFSET},${CONTENT_OFFSET}) scale(${sc})`);
   }
-  if (containerDiv && showGrid) {
+  if (containerDiv && showGrid && scrollEl) {
+    const px = scrollEl.scrollLeft;
+    const py = scrollEl.scrollTop;
     const minor = 20 * sc;
     const major = 4 * minor;
-    const offXMinor = ((px % minor) + minor) % minor;
-    const offYMinor = ((py % minor) + minor) % minor;
-    const offXMajor = ((px % major) + major) % major;
-    const offYMajor = ((py % major) + major) % major;
+    const offXMinor = ((-px % minor) + minor) % minor;
+    const offYMinor = ((-py % minor) + minor) % minor;
+    const offXMajor = ((-px % major) + major) % major;
+    const offYMajor = ((-py % major) + major) % major;
     containerDiv.style.backgroundSize = [
       `${major}px ${major}px`, `${major}px ${major}px`,
       `${minor}px ${minor}px`, `${minor}px ${minor}px`,
@@ -30,31 +36,33 @@ function applyPanScale(
   }
 }
 
+function computeInitialScroll(positions: Record<string, { x: number; y: number }>, sc: number) {
+  const xs = NODES.map(n => positions[n.id].x);
+  const ys = NODES.map(n => positions[n.id].y);
+  // CONTENT_OFFSET shifts content to the center of the scroll surface;
+  // subtract the desired viewport margin (72/86) to land the content in view
+  return {
+    left: CONTENT_OFFSET + Math.min(...xs) * sc - 72,
+    top:  CONTENT_OFFSET + Math.min(...ys) * sc - 86,
+  };
+}
+
 export function useCanvasInteraction() {
   const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(
     () => Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]))
   );
 
-  const initialPan = (() => {
-    const xs = NODES.map(n => NODE_POSITIONS[n.id].x);
-    const ys = NODES.map(n => NODE_POSITIONS[n.id].y);
-    const minX = Math.min(...xs), minY = Math.min(...ys);
-    return { x: 72 - minX * DEFAULT_SCALE, y: 86 - minY * DEFAULT_SCALE };
-  })();
-
-  // pan/scale kept in refs for zero-overhead updates during panning
-  const panRef   = useRef(initialPan);
   const scaleRef = useRef(DEFAULT_SCALE);
 
-  // React state only for triggering re-renders when pan/scale commit (zoom, fit, reset)
-  const [panScale, setPanScale] = useState({ pan: initialPan, scale: DEFAULT_SCALE });
+  // React state only for triggering re-renders on zoom/fit/reset
+  const [panScale, setPanScale] = useState({ scale: DEFAULT_SCALE });
 
   const [isDraggingNode, setIsDraggingNode] = useState(false);
 
-  // Refs to DOM elements — hook writes directly to bypass React rendering during pan
-  const transformGRef   = useRef<SVGGElement | null>(null);
-  const containerDivRef = useRef<HTMLDivElement | null>(null);
-  const showGridRef     = useRef(true);
+  const transformGRef      = useRef<SVGGElement | null>(null);
+  const containerDivRef    = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const showGridRef        = useRef(true);
 
   const posRef   = useRef(positions);
   const dragNode = useRef<{ id: string; sx: number; sy: number; ox: number; oy: number } | null>(null);
@@ -62,42 +70,51 @@ export function useCanvasInteraction() {
 
   useEffect(() => { posRef.current = positions; }, [positions]);
 
-  // Apply initial transform before first paint — useEffect fires too late and causes a flicker
   useLayoutEffect(() => {
-    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    const scrollEl = scrollContainerRef.current;
+    if (scrollEl) {
+      const s = computeInitialScroll(posRef.current, scaleRef.current);
+      scrollEl.scrollLeft = s.left;
+      scrollEl.scrollTop  = s.top;
+    }
+    applyScale(transformGRef.current, containerDivRef.current, scrollContainerRef.current, scaleRef.current, showGridRef.current);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keep grid in sync with native scroll
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const onScroll = () => applyScale(transformGRef.current, containerDivRef.current, el, scaleRef.current, showGridRef.current);
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const commitPanScale = useCallback(() => {
-    setPanScale({ pan: { ...panRef.current }, scale: scaleRef.current });
+    setPanScale({ scale: scaleRef.current });
   }, []);
 
-  const handleWheel = useCallback((e: WheelEvent, containerEl: HTMLElement) => {
+  const handleWheel = useCallback((e: WheelEvent, scrollEl: HTMLDivElement) => {
+    if (!e.ctrlKey) return; // let browser handle scroll panning natively
     e.preventDefault();
 
-    // Normalize delta across deltaMode (0=px, 1=line, 2=page)
     const LINE = 16, PAGE = 400;
     const mult = e.deltaMode === 2 ? PAGE : e.deltaMode === 1 ? LINE : 1;
-    const dx = e.deltaX * mult;
     const dy = e.deltaY * mult;
 
-    if (e.ctrlKey) {
-      // Pinch-to-zoom or Ctrl+Wheel — zoom toward pointer
-      const rect = containerEl.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-      const zoomFactor = Math.exp(-dy / 300);
-      const newScale = Math.min(3, Math.max(0.18, scaleRef.current * zoomFactor));
-      // Anchor pan so the canvas point under the cursor stays fixed
-      panRef.current = {
-        x: mx - (mx - panRef.current.x) * (newScale / scaleRef.current),
-        y: my - (my - panRef.current.y) * (newScale / scaleRef.current),
-      };
-      scaleRef.current = newScale;
-    } else {
-      panRef.current = { x: panRef.current.x - dx, y: panRef.current.y - dy };
-    }
+    const rect = scrollEl.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const oldScale = scaleRef.current;
+    const newScale = Math.min(3, Math.max(0.18, oldScale * Math.exp(-dy / 300)));
 
-    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    // Anchor: canvas point under cursor stays fixed after zoom.
+    // With translate(OFFSET,OFFSET) scale(sc), canvas coord = (scroll + cursor - OFFSET) / sc
+    // => newScroll = OFFSET + (scroll + cursor - OFFSET) * ratio - cursor
+    const ratio = newScale / oldScale;
+    scrollEl.scrollLeft = CONTENT_OFFSET + (scrollEl.scrollLeft + mx - CONTENT_OFFSET) * ratio - mx;
+    scrollEl.scrollTop  = CONTENT_OFFSET + (scrollEl.scrollTop  + my - CONTENT_OFFSET) * ratio - my;
+    scaleRef.current = newScale;
+    applyScale(transformGRef.current, containerDivRef.current, scrollEl, newScale, showGridRef.current);
     scheduleCommit();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -119,7 +136,9 @@ export function useCanvasInteraction() {
 
   const startPanDrag = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return;
-    dragPan.current = { sx: e.clientX, sy: e.clientY, opx: panRef.current.x, opy: panRef.current.y };
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    dragPan.current = { sx: e.clientX, sy: e.clientY, opx: scrollEl.scrollLeft, opy: scrollEl.scrollTop };
     if (containerDivRef.current) containerDivRef.current.style.cursor = 'grabbing';
   }, []);
 
@@ -152,33 +171,40 @@ export function useCanvasInteraction() {
       });
     } else if (dragPan.current) {
       const { sx, sy, opx, opy } = dragPan.current;
-      panRef.current = { x: opx + e.clientX - sx, y: opy + e.clientY - sy };
-      applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+      const scrollEl = scrollContainerRef.current;
+      if (scrollEl) {
+        scrollEl.scrollLeft = opx - (e.clientX - sx);
+        scrollEl.scrollTop  = opy - (e.clientY - sy);
+        // grid updates automatically via the scroll event listener
+      }
     }
   }, []);
 
   const handleMouseUp = useCallback(() => {
     if (dragCursorTimer.current) { clearTimeout(dragCursorTimer.current); dragCursorTimer.current = null; }
     if (containerDivRef.current) containerDivRef.current.style.cursor = 'grab';
-    const wasPanning = !!dragPan.current;
     dragNode.current = null;
     dragPan.current  = null;
     setIsDraggingNode(false);
-    if (wasPanning) commitPanScale();
-  }, [commitPanScale]);
+  }, []);
 
   const resetPositions = useCallback(() => {
     const defaultPos = Object.fromEntries(NODES.map(n => [n.id, { ...NODE_POSITIONS[n.id] }]));
     setPositions(defaultPos);
-    const minX = Math.min(...Object.values(defaultPos).map(p => p.x));
-    const minY = Math.min(...Object.values(defaultPos).map(p => p.y));
-    panRef.current   = { x: 72 - minX * DEFAULT_SCALE, y: 86 - minY * DEFAULT_SCALE };
     scaleRef.current = DEFAULT_SCALE;
-    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    const scrollEl = scrollContainerRef.current;
+    if (scrollEl) {
+      const s = computeInitialScroll(defaultPos, DEFAULT_SCALE);
+      scrollEl.scrollLeft = s.left;
+      scrollEl.scrollTop  = s.top;
+      applyScale(transformGRef.current, containerDivRef.current, scrollEl, DEFAULT_SCALE, showGridRef.current);
+    }
     commitPanScale();
   }, [commitPanScale]);
 
   const fitToScreen = useCallback((containerEl: HTMLElement) => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
     const { width, height } = containerEl.getBoundingClientRect();
     const ps   = posRef.current;
     const xs   = Object.values(ps).map(p => p.x);
@@ -187,31 +213,52 @@ export function useCanvasInteraction() {
     const maxX = Math.max(...xs) + NODE_W;
     const maxY = Math.max(...ys) + 140;
     const ns   = Math.min(0.98, (width - 48) / (maxX - minX), (height - 48) / (maxY - minY));
-    panRef.current   = { x: (width - (maxX - minX) * ns) / 2 - minX * ns, y: (height - (maxY - minY) * ns) / 2 - minY * ns };
     scaleRef.current = ns;
-    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    const contentW = (maxX - minX) * ns;
+    const contentH = (maxY - minY) * ns;
+    scrollEl.scrollLeft = CONTENT_OFFSET + minX * ns - (width  - contentW) / 2;
+    scrollEl.scrollTop  = CONTENT_OFFSET + minY * ns - (height - contentH) / 2;
+    applyScale(transformGRef.current, containerDivRef.current, scrollEl, ns, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
   const zoomIn = useCallback(() => {
-    scaleRef.current = Math.min(3, Math.round(scaleRef.current * 10 + 1) / 10);
-    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    const oldScale = scaleRef.current;
+    const newScale = Math.min(3, Math.round(oldScale * 10 + 1) / 10);
+    const { width, height } = scrollEl.getBoundingClientRect();
+    const cx = width / 2, cy = height / 2;
+    const ratio = newScale / oldScale;
+    scrollEl.scrollLeft = CONTENT_OFFSET + (scrollEl.scrollLeft + cx - CONTENT_OFFSET) * ratio - cx;
+    scrollEl.scrollTop  = CONTENT_OFFSET + (scrollEl.scrollTop  + cy - CONTENT_OFFSET) * ratio - cy;
+    scaleRef.current = newScale;
+    applyScale(transformGRef.current, containerDivRef.current, scrollEl, newScale, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
   const zoomOut = useCallback(() => {
-    scaleRef.current = Math.max(0.18, Math.round(scaleRef.current * 10 - 1) / 10);
-    applyPanScale(transformGRef.current, containerDivRef.current, panRef.current.x, panRef.current.y, scaleRef.current, showGridRef.current);
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    const oldScale = scaleRef.current;
+    const newScale = Math.max(0.18, Math.round(oldScale * 10 - 1) / 10);
+    const { width, height } = scrollEl.getBoundingClientRect();
+    const cx = width / 2, cy = height / 2;
+    const ratio = newScale / oldScale;
+    scrollEl.scrollLeft = CONTENT_OFFSET + (scrollEl.scrollLeft + cx - CONTENT_OFFSET) * ratio - cx;
+    scrollEl.scrollTop  = CONTENT_OFFSET + (scrollEl.scrollTop  + cy - CONTENT_OFFSET) * ratio - cy;
+    scaleRef.current = newScale;
+    applyScale(transformGRef.current, containerDivRef.current, scrollEl, newScale, showGridRef.current);
     commitPanScale();
   }, [commitPanScale]);
 
   return {
     positions,
-    pan: panScale.pan,
     scale: panScale.scale,
     isDraggingNode,
     transformGRef,
     containerDivRef,
+    scrollContainerRef,
     showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
