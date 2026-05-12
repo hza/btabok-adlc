@@ -41,6 +41,7 @@ export default function App() {
 
   // ── wheel zoom ───────────────────────────────────────────────────────────────
   const onWheel = useCallback((e: WheelEvent) => {
+    if (!e.ctrlKey) return; // let browser handle scroll panning natively
     if (scrollContainerRef.current) handleWheel(e, scrollContainerRef.current);
   }, [handleWheel, scrollContainerRef]);
 
