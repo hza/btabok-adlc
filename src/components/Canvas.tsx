@@ -145,7 +145,8 @@ const SvgContent = memo(function SvgContent({
                     <text x={edge.mx} y={edge.my - 10}
                       textAnchor="middle" fontSize={12} fontFamily="system-ui"
                       fill={hi ? stroke : '#000000'}
-                      stroke="white" strokeWidth="2.8" paintOrder="stroke">
+                      stroke="white" strokeWidth="2.8" paintOrder="stroke"
+                      style={{ userSelect: 'none' }}>
                       <tspan x={edge.mx} dy="0">{line1}</tspan>
                       {line2 && <tspan x={edge.mx} dy="15">{line2}</tspan>}
                     </text>
@@ -196,6 +197,7 @@ export default function Canvas({
         flex: 1, overflow: 'hidden', position: 'relative',
         cursor: isDraggingNode ? 'grabbing' : 'grab',
         background: '#FFFFFF',
+        userSelect: 'none',
         ...(showGrid ? infiniteGridStyle : {}),
       }}
       onMouseDown={onCanvasDown}
