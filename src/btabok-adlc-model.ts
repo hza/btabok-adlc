@@ -124,6 +124,7 @@ export const NODES: NodeData[] = (([
   { id:'n12', phase:'strategy', title:'Architecture Definition Canvas',       subtitle:'Defines what architecture means for the engagement and its value to each stakeholder group',                 link:'https://iasa-global.github.io/btabok/architecture_definition_canvas.html', badge:'BTABoK', importance:1},
 
   // BTABoK Planning phase artifacts
+  { id:'n37', phase:'planning', title:'Transition Roadmap Canvas',               subtitle:'Migration path from current to target state: transition milestones, workstreams, dependencies, and risk mitigations per capability or system',  link:'https://iasa-global.github.io/btabok/transition_roadmap_canvas.html',     badge:'BTABoK', importance:2},
   { id:'n07', phase:'planning', title:'Layered Roadmap Canvas',               subtitle:'Four-lane timeline of capability, technology, and people evolution from current to target state',              link:'https://iasa-global.github.io/btabok/layered_roadmap_canvas.html',        badge:'BTABoK', importance:1},
   { id:'n08', phase:'planning', title:'Context View Card',                    subtitle:'Solution boundary and relationships with external systems, user groups, and stakeholders; aligns scope before design begins',                 link:'https://iasa-global.github.io/btabok/context_view_card.html',           badge:'BTABoK', descr:'Describes the solution by illustrating how it interacts within its broader environment. Defines boundaries relative to external entities (systems, user groups, stakeholders), maps integration points and dependencies, and fosters stakeholder alignment through a shared visualization of the solution ecosystem. Links to ASRs, ADRs, and downstream architectural views.', note:'Use UML or ArchiMate; document each external connection and data flow', importance:3},
   { id:'n26', phase:'planning', title:'Service Blueprint Canvas',             subtitle:'Customer actions, frontstage interactions, backstage processes, supporting technology, and failure points across the service delivery chain',   link:'https://iasa-global.github.io/btabok/service_blueprint_canvas.html',      badge:'BTABoK', note:'One canvas per customer journey or service scenario', recurring:true, importance:1},
@@ -156,9 +157,6 @@ export const EDGES: EdgeData[] = [
   // ── Business Model Canvas (n01) ───────────────────────────────────────────
   { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:3, btabok:true },
 
-  // ── Business Capability Canvas (n02) ─────────────────────────────────────
-  { id:'e03',  from:'n02', to:'n06', label:'capability gaps inform principles',               importance:2, btabok:true },
-
   // ── Architect Stakeholder Canvas (n03) ───────────────────────────────────
   { id:'e06',  from:'n03', to:'n04', label:'stakeholders populate grid',                     importance:2, btabok:true },
 
@@ -168,9 +166,6 @@ export const EDGES: EdgeData[] = [
 
   // ── Architecture Principles (n06) ────────────────────────────────────────
   { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3, btabok:true },
-  // ── Layered Roadmap Canvas (n07) ─────────────────────────────────────────
-  { id:'e45',  from:'n07', to:'n08', label:'roadmap components scope context view',          importance:1 },
-
   // ── Context View Card (n08) ───────────────────────────────────────────────
   { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3, btabok:true },
   { id:'e23',  from:'n08', to:'n16', label:'system boundary scopes bounded contexts',        importance:2 },
@@ -284,5 +279,14 @@ export const EDGES: EdgeData[] = [
 
   // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
   { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3, btabok:true },
+
+  // ── Transition Roadmap Canvas (n37) ──────────────────────────────────────
+  { id:'e111', from:'n30', to:'n37', label:'strategic IT initiatives → transition scope',         importance:3, btabok:true },
+  { id:'e112', from:'n37', to:'n07', label:'transition steps populate layered roadmap lanes',      importance:2, btabok:true },
+  { id:'e113', from:'n24', to:'n37', label:'capability maturity gaps drive transition priorities',importance:2, btabok:true },
+  { id:'e114', from:'n08', to:'n37', label:'current-state context scopes transition boundary',    importance:2, btabok:true },
+  { id:'e115', from:'n37', to:'n14', label:'transition decisions captured as ADRs',               importance:2, btabok:true },
+  { id:'e116', from:'n37', to:'n28', label:'transition milestones drive application decomposition',importance:2, btabok:true },
+  { id:'e117', from:'n37', to:'n09', label:'transition constraints surface new ASRs',             importance:2, btabok:true },
 
 ];
