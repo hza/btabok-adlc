@@ -148,7 +148,7 @@ export const NODES: NodeData[] = (([
   { id:'n22', phase:'utilize', title:'Benefits Realization View Canvas',     subtitle:'Architecture investments mapped to measurable business benefits, costs, and technical debt',          link:'https://iasa-global.github.io/btabok/benefits_realization_view_canvas.html', badge:'BTABoK', importance:2 },
 
   // Decommission phase artifacts
-  { id:'n36', phase:'decommission', title:'Lifecycle Planning Canvas',         subtitle:'End-of-life planning for systems and capabilities: retirement triggers, transition timelines, dependency resolution, data archival, and knowledge transfer',  link:'https://iasa-global.github.io/btabok/lifecycle_planning_canvas.html',        badge:'BTABoK', importance:3 },
+  { id:'n36', phase:'decommission', title:'Lifecycle Planning Canvas',         subtitle:'End-of-life planning for systems and capabilities: retirement triggers, transition timelines, dependency resolution, data archival, and knowledge transfer',  link:'https://iasa-global.github.io/btabok/lifecycle_planning_canvas.html',        badge:'BTABoK', importance:2 },
 ] as Omit<NodeData,'num'>[]).map((n, i) => ({ ...n, num: String(i + 1).padStart(2, '0') } as NodeData)));
 
 // ─── edge data ────────────────────────────────────────────────────────────────
