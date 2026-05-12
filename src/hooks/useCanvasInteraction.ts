@@ -21,10 +21,10 @@ function applyScale(
     const py = scrollEl.scrollTop;
     const minor = 20 * sc;
     const major = 4 * minor;
-    const offXMinor = ((-px % minor) + minor) % minor;
-    const offYMinor = ((-py % minor) + minor) % minor;
-    const offXMajor = ((-px % major) + major) % major;
-    const offYMajor = ((-py % major) + major) % major;
+    const offXMinor = ((CONTENT_OFFSET - px) % minor + minor) % minor;
+    const offYMinor = ((CONTENT_OFFSET - py) % minor + minor) % minor;
+    const offXMajor = ((CONTENT_OFFSET - px) % major + major) % major;
+    const offYMajor = ((CONTENT_OFFSET - py) % major + major) % major;
     containerDiv.style.backgroundSize = [
       `${major}px ${major}px`, `${major}px ${major}px`,
       `${minor}px ${minor}px`, `${minor}px ${minor}px`,
