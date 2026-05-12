@@ -137,11 +137,11 @@ export const NODES: NodeData[] = (([
   { id:'n14', phase:'transformation', title:'ADR Card',                             subtitle:'Architectural decision record: context, options considered, rationale, consequences, status, and ASR traceability',                  link:'https://iasa-global.github.io/btabok/architecture_decision_record.html',                                                                                             badge:'BTABoK', note:'Core — new ADR for every significant decision in Planning and Transformation', recurring:true, importance:3},
   { id:'n15', phase:'transformation', title:'Architecture Decision Cascade Card',   subtitle:'Secondary decisions and downstream consequences flowing from a primary ADR',                   link:'https://iasa-global.github.io/btabok/architecture_decision_cascade_card.html', badge:'BTABoK', note:'Core — one Cascade Card per ADR, in both phases', recurring:true, importance:2},
   { id:'n16', phase:'transformation', title:'Bounded Context Canvas',               subtitle:'Inside-out domain partition within the system boundary: ubiquitous language, upstream/downstream dependencies, and team ownership — one per subdomain, defined after the Context View',                       link:'https://github.com/ddd-crew/bounded-context-canvas',                                                                 badge:'DDD', note:'One per bounded context', recurring:true, importance:2},
-  { id:'n28', phase:'transformation', title:'Container / Component View (C4 L2-L3)',subtitle:'System decomposed into containers and components, responsibilities', link:'https://c4model.com/#ContainerDiagram',                               badge:'C4', note:'BTABoK gap: structural decomposition (Views & Viewpoints) — use C4 Container + Component Diagrams; bridges Context View to service interfaces', external:true, importance:3},
+  { id:'n28', phase:'transformation', title:'Application View Card',                subtitle:'System decomposed into containers and components - use C4 L2/L3 Diagram', link:'https://c4model.com/#ContainerDiagram',                               badge:'BTABoK', descr:'Decomposes the solution into containers and components using C4 Level 2 and Level 3 diagrams. Maps bounded contexts to containers, defines service interfaces, and links containers to deployment nodes. Bridges the high-level context view and the infrastructure deployment view.', note:'Rename Context View Card to Application View Card', recurring:true, importance:3},
   { id:'n17', phase:'transformation', title:'Service Interface Design Canvas',      subtitle:'Outside-in service spec: value proposition, consumers, interactions, SLAs, dependencies, quality attributes, and consumption economics',                       link:'https://iasa-global.github.io/btabok/service_interface_design_canvas.html',     badge:'BTABoK', note:'One canvas per service, API, or product delivered by a team', recurring:true, importance:2},
-  { id:'n18', phase:'transformation', title:'Deployment / Infrastructure View',     subtitle:'Components mapped to nodes, networks, environments',           link:'https://c4model.com/#DeploymentDiagram',                                                                             badge:'C4', note:'BTABoK gap: physical view (Views & Viewpoints) — use C4 Deployment or UML Deployment Diagram', external:true, importance:2},
+  { id:'n18', phase:'transformation', title:'Physical View Card',                   subtitle:'Components mapped to nodes, networks, environments — use C4 Deployment or UML Deployment Diagram',           link:'https://c4model.com/#DeploymentDiagram',                                                                             badge:'BTABoK', note:'Rename Context View Card to Deployment View Card', recurring:true, importance:2},
   { id:'n29', phase:'transformation', title:'Security Architecture View',           subtitle:'Threat model, trust zones, security controls, attack surface', link:'https://owasp.org/www-community/Threat_Modeling',                        badge:'OWASP', note:'BTABoK gap: security viewpoint — use STRIDE + security zone diagram; critical for compliance', external:true, importance:3},
-  { id:'n20', phase:'transformation', title:'Sequence / Scenario View',             subtitle:'Time-ordered message flow for key use cases',                  link:'https://c4model.com/#DynamicDiagram',                                                                                badge:'C4', note:'BTABoK gap: scenario view (Views & Viewpoints) — use UML Sequence or C4 Dynamic Diagram', external:true, recurring:true, importance:1},
+  { id:'n20', phase:'transformation', title:'Process View Card',                    subtitle:'Time-ordered message flow for key use cases',                  link:'https://c4model.com/#DynamicDiagram',                                                                                badge:'BTABoK', note:'Rename Context View Card to Process View Card. For sequence / scenario view use UML Sequence or C4 Dynamic Diagram', recurring:true, importance:1},
   { id:'n21', phase:'transformation', title:'Technical Loan Request Card',          subtitle:'Technical debt treated as a deliberate loan: justification, impact, repayment schedule, and approval trail',          link:'https://iasa-global.github.io/btabok/technical_loan_request_card.html',  badge:'BTABoK', note:'One card per technical debt item', recurring:true, importance:1},
 
   // BTABoK Utilize phase artifacts
@@ -237,15 +237,25 @@ export const EDGES: EdgeData[] = [
   { id:'e67',  from:'n08', to:'n26', label:'context boundary scopes service blueprint',      importance:2, btabok:true },
   { id:'e68',  from:'n26', to:'n17', label:'front-stage operations → service interface',     importance:2, btabok:true },
 
-  // ── Container / Component View (n28) ──────────────────────────────────────
+  // ── Application View Card (n28) ──────────────────────────────────────────
   { id:'e74',  from:'n08', to:'n28', label:'context boundary decomposed to containers',      importance:3 },
   { id:'e75',  from:'n16', to:'n28', label:'bounded contexts map to containers',             importance:3 },
   { id:'e76',  from:'n28', to:'n17', label:'containers expose service interfaces',           importance:2 },
   { id:'e77',  from:'n28', to:'n18', label:'containers mapped to deployment nodes',          importance:2 },
+  { id:'e78',  from:'n28', to:'n09', label:'structural decomposition surfaces ASRs',         importance:2 },
+  { id:'e106', from:'n28', to:'n14', label:'container decomposition decisions → ADRs',       importance:2 },
 
   // ── Security Architecture View (n29) ──────────────────────────────────────
   { id:'e80',  from:'n29', to:'n14', label:'security decisions → ADRs',                      importance:3 },
   { id:'e81',  from:'n29', to:'n18', label:'security zones constrain deployment',            importance:2 },
+
+  // ── Physical View Card (n18) ──────────────────────────────────────────────
+  { id:'e107', from:'n18', to:'n09', label:'deployment topology surfaces availability ASRs', importance:2 },
+  { id:'e108', from:'n18', to:'n14', label:'infrastructure decisions → ADRs',                importance:2 },
+
+  // ── Process View Card (n20) ───────────────────────────────────────────────
+  { id:'e109', from:'n20', to:'n09', label:'scenario flows validate ASR fulfillment',        importance:1 },
+  { id:'e110', from:'n20', to:'n14', label:'interaction patterns trigger ADR decisions',     importance:1 },
 
   // ── Value Stream Map (n31) ────────────────────────────────────────────────
   { id:'e87',  from:'n02', to:'n31', label:'capabilities are building blocks of value streams', importance:3, btabok:true },
