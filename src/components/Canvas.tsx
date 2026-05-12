@@ -204,6 +204,7 @@ export default function Canvas({
           position: 'absolute', inset: 0,
           overflow: 'scroll',
           scrollbarWidth: 'none',
+          overscrollBehavior: 'none',
         }}
       >
         <div style={{ width: SCROLL_SURFACE, height: SCROLL_SURFACE, position: 'relative' }}>
