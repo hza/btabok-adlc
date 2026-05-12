@@ -73,17 +73,24 @@ const SvgContent = memo(function SvgContent({
     <svg ref={svgRef}
       style={{ position: 'absolute', top: 0, left: 0, width: SCROLL_SURFACE, height: SCROLL_SURFACE, overflow: 'visible' }}>
       <defs>
+        {/* Arrowhead marker for highlighted edges (connected to selected node) */}
         <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
           <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
         </marker>
+
+        {/* Arrowhead markers for edges of different importance levels */}
         {([1, 2, 3] as const).map(imp => (
           <marker key={imp} id={`mImp${imp}`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
             <polygon points="0 0,7 3.5,0 7" fill={IMP_COLOR[imp]}/>
           </marker>
         ))}
+        
+        {/* Drop shadow filters for nodes — stronger shadow for selected node */}
         <filter id="nodeShadow" x="-10%" y="-10%" width="120%" height="130%">
           <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="rgba(0,0,0,0.08)"/>
         </filter>
+        
+        {/* Stronger shadow for selected node to make it pop more */}
         <filter id="nodeShadowSelected" x="-20%" y="-20%" width="140%" height="150%">
           <feDropShadow dx="0" dy="6" stdDeviation="10" floodColor="rgba(0,0,0,0.16)"/>
         </filter>
