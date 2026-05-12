@@ -1,7 +1,7 @@
 import React from 'react';
 import adlcImg from '../../public/adlc.jpg';
 import {
-  badgeColor, BADGE_COLORS, BADGE_TYPES,
+  badgeColor, BADGE_TYPES,
   PHASE_STYLES, PHASES, PHASE_LABEL,
   PHASE_DESCRIPTION, PHASE_GOAL, PHASE_KEY_QUESTIONS,
   NODES, IMPORTANCE_STYLES,
