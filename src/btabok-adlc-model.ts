@@ -24,7 +24,6 @@ export const IMPORTANCE_STYLES: Record<string, { label: string; color: string; b
 export const BADGE_TYPES: { badge: string; color: string; description: string }[] = [
   { badge: 'BTABoK', color: '#7F77DD', description: 'BTABoK native artifact' },
   { badge: 'DDD',    color: '#B5451B', description: 'Domain-Driven Design artifact' },
-  { badge: 'C4',     color: '#1D6FA4', description: 'C4 model artifact' },
   { badge: 'OWASP',  color: '#2E7D32', description: 'OWASP artifact' },
 ];
 
