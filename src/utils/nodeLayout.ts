@@ -35,15 +35,28 @@ export interface NodeLines {
   noteLines: string[];
 }
 
+const _linesCache = new Map<string, NodeLines>();
+
 export function nodeLines(node: NodeData): NodeLines {
-  return {
+  const cached = _linesCache.get(node.id);
+  if (cached !== undefined) return cached;
+
+  const result: NodeLines = {
     titleLines:    wrapWords(node.title,    TITLE_CHARS),
     subtitleLines: wrapWords(node.subtitle, SUBTITLE_CHARS),
     noteLines:     node.note ? wrapWords(node.note, NOTE_CHARS) : [],
   };
+  
+  _linesCache.set(node.id, result);
+  return result;
 }
 
+const _heightCache = new Map<string, number>();
+
 export function computeNodeSvgHeight(node: NodeData): number {
+  const cached = _heightCache.get(node.id);
+  if (cached !== undefined) return cached;
+
   const { titleLines, subtitleLines, noteLines } = nodeLines(node);
   let h = HEADER_H + 6;
   h += titleLines.length * LINE_TITLE;
@@ -54,5 +67,7 @@ export function computeNodeSvgHeight(node: NodeData): number {
     h += noteLines.length * LINE_NOTE;
   }
   h += 8; // bottom padding
+
+  _heightCache.set(node.id, h);
   return h;
 }
