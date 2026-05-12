@@ -22,7 +22,7 @@ export default function App() {
     transformGRef, containerDivRef, scrollContainerRef, showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
-    resetPositions, fitToScreen, zoomIn, zoomOut,
+    resetPositions, fitToScreen, zoomIn, zoomOut, resetZoom,
   } = useCanvasInteraction();
 
   const [selectedId,    setSelectedId]    = useState<string | null>(null);
@@ -38,6 +38,37 @@ export default function App() {
     () => Object.fromEntries(NODES.map(n => [n.id, computeNodeSvgHeight(n)])),
     [],
   );
+
+  // ── keyboard zoom ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const PAN_STEP = 80;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        const el = scrollContainerRef.current;
+        if (!el) return;
+        e.preventDefault();
+        const step = e.shiftKey ? PAN_STEP * 3 : PAN_STEP;
+        if (e.key === 'ArrowLeft')  el.scrollLeft -= step;
+        if (e.key === 'ArrowRight') el.scrollLeft += step;
+        if (e.key === 'ArrowUp')    el.scrollTop  -= step;
+        if (e.key === 'ArrowDown')  el.scrollTop  += step;
+        return;
+      }
+      if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.key === '=' || e.key === '+') {
+        e.preventDefault();
+        zoomIn();
+      } else if (e.key === '-') {
+        e.preventDefault();
+        zoomOut();
+      } else if (e.key === '0') {
+        e.preventDefault();
+        resetZoom();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [zoomIn, zoomOut, resetZoom, scrollContainerRef]);
 
   // ── wheel zoom ───────────────────────────────────────────────────────────────
   const onWheel = useCallback((e: WheelEvent) => {

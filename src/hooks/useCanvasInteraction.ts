@@ -222,6 +222,21 @@ export function useCanvasInteraction() {
     commitPanScale();
   }, [commitPanScale]);
 
+  const resetZoom = useCallback(() => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    const oldScale = scaleRef.current;
+    const newScale = DEFAULT_SCALE;
+    const { width, height } = scrollEl.getBoundingClientRect();
+    const cx = width / 2, cy = height / 2;
+    const ratio = newScale / oldScale;
+    scrollEl.scrollLeft = CONTENT_OFFSET + (scrollEl.scrollLeft + cx - CONTENT_OFFSET) * ratio - cx;
+    scrollEl.scrollTop  = CONTENT_OFFSET + (scrollEl.scrollTop  + cy - CONTENT_OFFSET) * ratio - cy;
+    scaleRef.current = newScale;
+    applyScale(transformGRef.current, containerDivRef.current, scrollEl, newScale, showGridRef.current);
+    commitPanScale();
+  }, [commitPanScale]);
+
   const zoomIn = useCallback(() => {
     const scrollEl = scrollContainerRef.current;
     if (!scrollEl) return;
@@ -262,6 +277,6 @@ export function useCanvasInteraction() {
     showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
-    resetPositions, fitToScreen, zoomIn, zoomOut,
+    resetPositions, fitToScreen, zoomIn, zoomOut, resetZoom,
   };
 }

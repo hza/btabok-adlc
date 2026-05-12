@@ -259,11 +259,27 @@ export const LegendPanel = React.memo(function LegendPanel() {
 
           <div style={{ marginTop: 12, background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
             fontSize: 12, color: '#94A3B8', lineHeight: 1.7 }}>
-            <strong style={{ color: '#475569', display: 'block', marginBottom: 4 }}>Interactions</strong>
-            Click a node to explore connections<br/>
-            Drag nodes to rearrange<br/>
-            Scroll or drag canvas to pan<br/>
-            Phase chips filter the view
+            <strong style={{ color: '#475569', display: 'block', marginBottom: 6 }}>Interactions</strong>
+            <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+              <tbody>
+                {([
+                  ['Click node',          'Explore connections'],
+                  ['Drag node',           'Rearrange layout'],
+                  ['Scroll / drag',       'Pan canvas'],
+                  ['Ctrl+Scroll',         'Zoom in / out'],
+                  ['⌘/Ctrl + + / −',     'Zoom in / out'],
+                  ['⌘/Ctrl + 0',         'Reset zoom'],
+                  ['Arrow keys',          'Pan canvas'],
+                  ['Shift + Arrow',       'Pan faster'],
+                  ['Phase chips',         'Filter the view'],
+                ] as [string, string][]).map(([key, desc]) => (
+                  <tr key={key}>
+                    <td style={{ paddingRight: 10, paddingBottom: 3, whiteSpace: 'nowrap', color: '#475569', fontWeight: 500 }}>{key}</td>
+                    <td style={{ paddingBottom: 3, color: '#94A3B8' }}>{desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
       </div>
     </div>
