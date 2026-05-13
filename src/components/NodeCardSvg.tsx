@@ -114,7 +114,7 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
 export default NodeCardSvg;
 
 export function NodeStackLayer({ node, pos }: { node: NodeData; pos: { x: number; y: number } }) {
-  if (!node.recurring) return null;
+  if (!node.multiple) return null;
   const h = computeNodeSvgHeight(node);
   return (
     <g transform={`translate(${pos.x},${pos.y})`} pointerEvents="none">
