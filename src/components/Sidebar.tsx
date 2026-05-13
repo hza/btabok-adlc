@@ -195,6 +195,9 @@ export const LegendPanel = React.memo(function LegendPanel() {
           <div style={{ padding: '0 16px 8px' }}>
             <img src={adlcImg} alt="ADLC" style={{ width: '100%', display: 'block', borderRadius: 8 }} />
           </div>
+          <div style={{ fontSize: 12, color: '#64748B', lineHeight: 1.6, marginBottom: 8 }}>
+            Cards are sequenced to reflect a typical architecture engagement flow, but the model is non-linear and iterative — these are not strict dependencies.
+          </div>
           <a href="https://iasa-global.github.io/btabok/architecture_lifecycle.html"
             target="_blank" rel="noreferrer"
             style={{ fontSize: 12, color: '#6366F1', textDecoration: 'none', fontWeight: 500 }}>

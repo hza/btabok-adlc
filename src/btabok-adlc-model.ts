@@ -100,7 +100,7 @@ export interface EdgeData {
   importance: 1 | 2 | 3;
 }
 
-// Order of cards are ordered to reflect a typical architecture engagement flow, but the model is non-linear and iterative so these are not strict dependencies. 
+// Cards are sequenced to reflect a typical architecture engagement flow, but the model is non-linear and iterative — these are not strict dependencies.
 // Importance ratings reflect how critical each artifact is to a complete and verifiable architecture, with 3 being non-negotiable core artifacts, 2 being strongly recommended, and 1 being valuable but not essential.
 // ─── node data ────────────────────────────────────────────────────────────────
 export const NODES: NodeData[] = (([
