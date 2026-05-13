@@ -6,6 +6,8 @@ import { SCROLL_SURFACE } from '../constants';
 
 interface EdgePath {
   id: string;
+  from: string;
+  to: string;
   path: string;
   mx: number;
   my: number;
@@ -73,8 +75,14 @@ const SvgContent = memo(function SvgContent({
     <svg ref={svgRef}
       style={{ position: 'absolute', top: 0, left: 0, width: SCROLL_SURFACE, height: SCROLL_SURFACE, overflow: 'visible' }}>
       <defs>
-        {/* Arrowhead marker for highlighted edges (connected to selected node) */}
-        <marker id="mHi" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        {/* Arrowhead markers for highlighted edges — outgoing (blue), incoming (green), default (purple) */}
+        <marker id="mHi-out" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0 0,7 3.5,0 7" fill="#2563EB"/>
+        </marker>
+        <marker id="mHi-in" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0 0,7 3.5,0 7" fill="#16A34A"/>
+        </marker>
+        <marker id="mHi-def" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
           <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
         </marker>
 
@@ -128,14 +136,18 @@ const SvgContent = memo(function SvgContent({
             const dimS     = connectedEdgeIds ? !hi : false;
             const impColor = IMP_COLOR[edge.importance];
             const opacity  = dimS ? 0.35 : hi ? 1 : 0.55;
-            const stroke   = hi ? '#7F77DD' : impColor;
+            const isOutgoing = hi && selectedId === edge.from;
+            const isIncoming = hi && selectedId === edge.to;
+            const hiColor  = isOutgoing ? '#586fa1' : isIncoming ? '#528866' : '#7F77DD';
+            const stroke   = hi ? hiColor : impColor;
             const sw       = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
+            const markerId = hi ? `mHi-${isOutgoing ? 'out' : isIncoming ? 'in' : 'def'}` : `mImp${edge.importance}`;
             return (
               <g key={edge.id} opacity={opacity}>
                 <path d={edge.path} fill="none"
                   stroke={stroke}
                   strokeWidth={sw}
-                  markerEnd={`url(#${hi ? 'mHi' : `mImp${edge.importance}`})`}/>
+                  markerEnd={`url(#${markerId})`}/>
                 {edge.label && (() => {
                   const words = edge.label.split(' ');
                   const mid = Math.ceil(words.length / 2);
