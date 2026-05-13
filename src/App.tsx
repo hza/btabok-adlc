@@ -295,11 +295,9 @@ export default function App() {
           borderLeft: '1px solid #E2E8F0',
           overflowY: 'auto', flexShrink: 0, fontSize: 14, color: '#334155',
         }}>
-          {selectedPhase
-            ? <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>
-            : selectedNode
-              ? <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)}/>
-              : <LegendPanel/>}
+          <LegendPanel style={{ display: selectedPhase || selectedNode ? 'none' : undefined }}/>
+          {selectedNode && !selectedPhase && <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)}/>}
+          {selectedPhase && <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>}
         </div>}
       </div>
     </div>

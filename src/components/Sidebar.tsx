@@ -179,9 +179,9 @@ export const PhasePanel = React.memo(function PhasePanel({ phase, onClose }: Pha
 
 // ─── LegendPanel ──────────────────────────────────────────────────────────────
 
-export const LegendPanel = React.memo(function LegendPanel() {
+export const LegendPanel = React.memo(function LegendPanel({ style }: { style?: React.CSSProperties }) {
   return (
-    <div>
+    <div style={style}>
 
       <div style={{ padding: 16 }}>
 
