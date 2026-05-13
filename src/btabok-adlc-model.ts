@@ -284,11 +284,8 @@ export const EDGES: EdgeData[] = [
   // ── Innovation Assessment Card (n38) ─────────────────────────────────────
   { id:'e119', from:'n01', to:'n38', label:'business model surfaces innovation candidates',  importance:3, btabok:true },
   { id:'e120', from:'n02', to:'n38', label:'capability gaps generate innovation ideas',      importance:3, btabok:true },
-  { id:'e121', from:'n25', to:'n38', label:'identified risks trigger innovation responses',  importance:2, btabok:true },
   { id:'e122', from:'n33', to:'n38', label:'unmet jobs seed innovation candidates',          importance:2, btabok:true },
   { id:'e123', from:'n38', to:'n05', label:'assessed innovation becomes business case',      importance:3, btabok:true },
-  { id:'e124', from:'n38', to:'n23', label:'prioritised innovation sets OKR targets',        importance:2, btabok:true },
-  { id:'e125', from:'n38', to:'n30', label:'viable innovations placed on strategic roadmap', importance:3, btabok:true },
 
   // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
   { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3, btabok:true },
