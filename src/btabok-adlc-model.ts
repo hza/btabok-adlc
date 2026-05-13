@@ -113,6 +113,7 @@ export const NODES: NodeData[] = (([
   { id:'n34', phase:'innovation', title:'Customer Persona',                   subtitle:'Named profile of a customer segment covering goals, frustrations, behaviours, and context to ground architecture decisions in real people', link:'https://iasa-global.github.io/btabok/persona_card.html',             badge:'BTABoK', note:'One persona per distinct customer segment or user type', recurring:true, importance:1},
   { id:'n35', phase:'innovation', title:'Stakeholder Empathy Map',            subtitle:'Six-quadrant map of what a stakeholder thinks, feels, says, does, hears, and fears — sharpens persona and journey decisions', link:'https://iasa-global.github.io/btabok/stakeholder_empathy_map.html', badge:'BTABoK', note:'One map per persona or key stakeholder type', recurring:true, importance:1},
   { id:'n33', phase:'innovation', title:'JTBD Card',                          subtitle:'Functional, emotional, and social jobs customers want done — solution-independent — anchoring architecture to real needs rather than assumed features',  link:'https://iasa-global.github.io/btabok/strategyn_jtbd_canvas.html',               badge:'BTABoK', note:'One card per distinct customer job', recurring:true, importance:1},
+  { id:'n38', phase:'innovation', title:'Innovation Assessment Card',         subtitle:'Feasibility gate for innovation ideas: description, benefits, required changes, affected stakeholders, and effort vs. value rating on 1–10 scales',             link:'https://iasa-global.github.io/btabok/architecture_lifecycle.html',               badge:'BTABoK', note:'One card per innovation candidate; only ideas that pass advance to strategy', recurring:true, importance:2},
 
   // BTABoK Strategy phase artifacts
   { id:'n03', phase:'strategy', title:'Architect Stakeholder Canvas',         subtitle:'Business and technology stakeholders mapped across external, consumer, provider, and partner roles relative to the architect team',                   link:'https://iasa-global.github.io/btabok/architect_stakeholder_canvas.html',   badge:'BTABoK', importance:2},
@@ -277,6 +278,15 @@ export const EDGES: EdgeData[] = [
 
   // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
   { id:'e104', from:'n35', to:'n32', label:'empathy insights enrich journey touchpoints',   importance:2, btabok:true },
+
+  // ── Innovation Assessment Card (n38) ─────────────────────────────────────
+  { id:'e119', from:'n01', to:'n38', label:'business model surfaces innovation candidates',  importance:3, btabok:true },
+  { id:'e120', from:'n02', to:'n38', label:'capability gaps generate innovation ideas',      importance:3, btabok:true },
+  { id:'e121', from:'n25', to:'n38', label:'identified risks trigger innovation responses',  importance:2, btabok:true },
+  { id:'e122', from:'n33', to:'n38', label:'unmet jobs seed innovation candidates',          importance:2, btabok:true },
+  { id:'e123', from:'n38', to:'n05', label:'assessed innovation becomes business case',      importance:3, btabok:true },
+  { id:'e124', from:'n38', to:'n23', label:'prioritised innovation sets OKR targets',        importance:2, btabok:true },
+  { id:'e125', from:'n38', to:'n30', label:'viable innovations placed on strategic roadmap', importance:3, btabok:true },
 
   // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
   { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3, btabok:true },
