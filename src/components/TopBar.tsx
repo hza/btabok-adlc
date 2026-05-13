@@ -58,6 +58,13 @@ const TopBar = React.memo(function TopBar({
       </span>
       <span style={{ marginLeft: 'auto' }}/>
       <Divider/>
+      {editMode && <IconBtn onClick={onSave} title={saved ? 'Copied!' : 'Copy positions to clipboard'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="4" y="4" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+          <rect x="6.5" y="2.5" width="5" height="3" rx="1" stroke="currentColor" strokeWidth="1.3" fill="none"/>
+          <text x="5.5" y="13.5" fontSize="5.5" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">XY</text>
+        </svg>
+      </IconBtn>}
       <IconBtn onClick={onToggleEditMode} title={editMode ? 'Exit edit mode' : 'Enter edit mode (drag nodes)'}
         style={{ color: editMode ? '#7F77DD' : '#94A3B8' }}>
         {editMode ? (
@@ -106,16 +113,6 @@ const TopBar = React.memo(function TopBar({
           <line x1="9" y1="2" x2="9" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           <polyline points="5.5,8.5 9,12.5 12.5,8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           <line x1="2.5" y1="15.5" x2="15.5" y2="15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      </IconBtn>
-      <IconBtn onClick={onSave} title={saved ? 'Copied!' : 'Copy positions to clipboard'} style={{ color: saved ? '#4ADE80' : '#94A3B8' }}>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          {/* clipboard body */}
-          <rect x="4" y="4" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
-          {/* clipboard top clip */}
-          <rect x="6.5" y="2.5" width="5" height="3" rx="1" stroke="currentColor" strokeWidth="1.3" fill="none"/>
-          {/* XY label */}
-          <text x="5.5" y="13.5" fontSize="5.5" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">XY</text>
         </svg>
       </IconBtn>
       <Divider/>
