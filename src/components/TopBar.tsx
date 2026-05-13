@@ -90,6 +90,7 @@ const TopBar = React.memo(function TopBar({
         {/* <span style={{ fontSize: 12, color: '#CBD5E1', minWidth: 90 }}>
           {cardImportanceLevel === 'ultra' ? 'ultra' : cardImportanceLevel === 'extra' ? 'ultra & extra' : 'all cards'}
         </span> */}
+      <Divider/>
       </label>
 <IconBtn onClick={() => onShowSwimlanesChange(!showSwimlanes)} title={showSwimlanes ? 'Hide swimlanes' : 'Show swimlanes'}
         style={{ color: showSwimlanes ? '#7F77DD' : '#94A3B8' }}>
@@ -108,6 +109,7 @@ const TopBar = React.memo(function TopBar({
           <line x1="1.5" y1="12" x2="16.5" y2="12" stroke="currentColor" strokeWidth="1.5"/>
         </svg>
       </IconBtn>
+      <Divider/>
       <IconBtn onClick={onDownload} title="Download as SVG">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <line x1="9" y1="2" x2="9" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
