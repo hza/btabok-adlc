@@ -98,7 +98,6 @@ export interface EdgeData {
   id: string; from: string; to: string; label: string;
   tag?: 'input';
   importance: 1 | 2 | 3;
-  btabok?: true;
 }
 
 // Order of cards are ordered to reflect a typical architecture engagement flow, but the model is non-linear and iterative so these are not strict dependencies. 
@@ -158,37 +157,37 @@ export const NODES: NodeData[] = (([
 // importance: 1=extra high  2=ultra high  3=non-negotiable
 export const EDGES: EdgeData[] = [
   // ── Business Model Canvas (n01) ───────────────────────────────────────────
-  { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:3, btabok:true },
+  { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:3,},
 
   // ── Architect Stakeholder Canvas (n03) ───────────────────────────────────
-  { id:'e06',  from:'n03', to:'n04', label:'stakeholders populate grid',                     importance:2, btabok:true },
+  { id:'e06',  from:'n03', to:'n04', label:'stakeholders populate grid',                     importance:2,},
 
   // ── Business Case / NABC Card (n05) ──────────────────────────────────────
-  { id:'e43',  from:'n05', to:'n06', label:'business constraints → principles',              importance:2, btabok:true },
-  { id:'e11',  from:'n05', to:'n12', label:'success criteria inform architecture definition', importance:2, btabok:true },
+  { id:'e43',  from:'n05', to:'n06', label:'business constraints → principles',              importance:2,},
+  { id:'e11',  from:'n05', to:'n12', label:'success criteria inform architecture definition', importance:2,},
 
   // ── Architecture Principles (n06) ────────────────────────────────────────
-  { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3, btabok:true },
+  { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3,},
   // ── Context View Card (n08) ───────────────────────────────────────────────
-  { id:'e118', from:'n05', to:'n08', label:'business case defines solution scope for context view', importance:3, btabok:true },
-  { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3, btabok:true },
+  { id:'e118', from:'n05', to:'n08', label:'business case defines solution scope for context view', importance:3,},
+  { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3,},
   { id:'e23',  from:'n08', to:'n16', label:'system boundary scopes bounded contexts',        importance:2 },
 
   // ── ASR Card (n09) ────────────────────────────────────────────────────────
-  { id:'e18',  from:'n09', to:'n14', label:'ASR IDs referenced in ADR',                     importance:3, btabok:true },
+  { id:'e18',  from:'n09', to:'n14', label:'ASR IDs referenced in ADR',                     importance:3,},
 
   // ── Architecture Hypothesis Canvas (n10) ─────────────────────────────────
-  { id:'e20',  from:'n10', to:'n14', label:'validated hypothesis informs ADR',               importance:2, btabok:true },
+  { id:'e20',  from:'n10', to:'n14', label:'validated hypothesis informs ADR',               importance:2,},
 
   // ── Architecture Definition Canvas (n12) ─────────────────────────────────
-  { id:'e22',  from:'n12', to:'n13', label:'scope constrains design options',                importance:2, btabok:true },
+  { id:'e22',  from:'n12', to:'n13', label:'scope constrains design options',                importance:2,},
 
   // ── Solution Design Canvas (n13) ─────────────────────────────────────────
-  { id:'e25',  from:'n13', to:'n14', label:'design options trigger ADR decisions',            importance:3, btabok:true },
+  { id:'e25',  from:'n13', to:'n14', label:'design options trigger ADR decisions',            importance:3,},
 
   // ── ADR Card (n14) ────────────────────────────────────────────────────────
-  { id:'e27',  from:'n14', to:'n15', label:'spawns cascade card',                            importance:3, btabok:true },
-  { id:'e28',  from:'n14', to:'n21', label:'technical debt formalized as loan request',       importance:2, btabok:true },
+  { id:'e27',  from:'n14', to:'n15', label:'spawns cascade card',                            importance:3,},
+  { id:'e28',  from:'n14', to:'n21', label:'technical debt formalized as loan request',       importance:2,},
 
   // ── Bounded Context Canvas (n16) ─────────────────────────────────────────
   { id:'e30',  from:'n16', to:'n17', label:'domain model drives service interface',           importance:2 },
@@ -197,43 +196,43 @@ export const EDGES: EdgeData[] = [
   { id:'e33',  from:'n17', to:'n20', label:'operations → sequence messages',                 importance:1 },
 
   // ── Technical Loan Request Card (n21) ────────────────────────────────────
-  { id:'e36',  from:'n21', to:'n22', label:'debt reduces realised benefits',                 importance:2, btabok:true },
-  { id:'e38',  from:'n22', to:'n21', label:'benefits analysis surfaces new technical debt',  importance:2, btabok:true },
+  { id:'e36',  from:'n21', to:'n22', label:'debt reduces realised benefits',                 importance:2,},
+  { id:'e38',  from:'n22', to:'n21', label:'benefits analysis surfaces new technical debt',  importance:2,},
 
   // ── Benefits Realization View Canvas (n22) ───────────────────────────────
-  { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:3, btabok:true },
-  { id:'e40',  from:'n22', to:'n01', label:'realized value informs business model refresh',   importance:3, btabok:true },
+  { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:3,},
+  { id:'e40',  from:'n22', to:'n01', label:'realized value informs business model refresh',   importance:3,},
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
-  { id:'e48',  from:'n09', to:'n11', label:'ASRs define quality scenarios',                  importance:3, btabok:true },
-  { id:'e49',  from:'n08', to:'n11', label:'context sets stimulus environment',              importance:2, btabok:true },
-  { id:'e50',  from:'n11', to:'n14', label:'QA tactics inform ADR decisions',                importance:3, btabok:true },
+  { id:'e48',  from:'n09', to:'n11', label:'ASRs define quality scenarios',                  importance:3,},
+  { id:'e49',  from:'n08', to:'n11', label:'context sets stimulus environment',              importance:2,},
+  { id:'e50',  from:'n11', to:'n14', label:'QA tactics inform ADR decisions',                importance:3,},
 
   // ── Strategic Roadmap Canvas (n30) ───────────────────────────────────────
-  { id:'e82',  from:'n02', to:'n30', label:'capabilities anchor strategic IT initiatives',   importance:2, btabok:true },
-  { id:'e83',  from:'n05', to:'n30', label:'business case defines initiative scope',         importance:2, btabok:true },
-  { id:'e84',  from:'n06', to:'n30', label:'principles constrain strategic initiatives',     importance:3, btabok:true },
-  { id:'e85',  from:'n23', to:'n30', label:'OKRs align strategic IT direction',              importance:3, btabok:true },
-  { id:'e86',  from:'n30', to:'n07', label:'strategic IT direction → phased delivery',       importance:3, btabok:true },
+  { id:'e82',  from:'n02', to:'n30', label:'capabilities anchor strategic IT initiatives',   importance:2,},
+  { id:'e83',  from:'n05', to:'n30', label:'business case defines initiative scope',         importance:2,},
+  { id:'e84',  from:'n06', to:'n30', label:'principles constrain strategic initiatives',     importance:3,},
+  { id:'e85',  from:'n23', to:'n30', label:'OKRs align strategic IT direction',              importance:3,},
+  { id:'e86',  from:'n30', to:'n07', label:'strategic IT direction → phased delivery',       importance:3,},
 
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
-  { id:'e51',  from:'n05', to:'n23', label:'business case seeds OKR objectives',             importance:3, btabok:true },
-  { id:'e53',  from:'n23', to:'n07', label:'objectives set roadmap goals',                   importance:3, btabok:true },
-  { id:'e54',  from:'n22', to:'n23', label:'realized benefits validate OKRs',               importance:2, btabok:true },
+  { id:'e51',  from:'n05', to:'n23', label:'business case seeds OKR objectives',             importance:3,},
+  { id:'e53',  from:'n23', to:'n07', label:'objectives set roadmap goals',                   importance:3,},
+  { id:'e54',  from:'n22', to:'n23', label:'realized benefits validate OKRs',               importance:2,},
 
   // ── Capability Card (n24) ─────────────────────────────────────────────────
-  { id:'e55',  from:'n02', to:'n24', label:'capabilities assessed for maturity',             importance:3, btabok:true },
-  { id:'e56',  from:'n24', to:'n07', label:'capability gaps drive roadmap priorities',       importance:3, btabok:true },
-  { id:'e58',  from:'n24', to:'n25', label:'weak capabilities expose risks',                 importance:2, btabok:true },
+  { id:'e55',  from:'n02', to:'n24', label:'capabilities assessed for maturity',             importance:3,},
+  { id:'e56',  from:'n24', to:'n07', label:'capability gaps drive roadmap priorities',       importance:3,},
+  { id:'e58',  from:'n24', to:'n25', label:'weak capabilities expose risks',                 importance:2,},
 
   // ── Risk Methods Cards (n25) ──────────────────────────────────────────────
-  { id:'e61',  from:'n25', to:'n14', label:'risks trigger ADRs',                             importance:3, btabok:true },
-  { id:'e62',  from:'n25', to:'n09', label:'risks become ASRs',                              importance:3, btabok:true },
+  { id:'e61',  from:'n25', to:'n14', label:'risks trigger ADRs',                             importance:3,},
+  { id:'e62',  from:'n25', to:'n09', label:'risks become ASRs',                              importance:3,},
   { id:'e63',  from:'n25', to:'n29', label:'risk exposure → security requirements',          importance:2 },
 
   // ── Service Blueprint (n26) ───────────────────────────────────────────────
-  { id:'e67',  from:'n08', to:'n26', label:'context boundary scopes service blueprint',      importance:2, btabok:true },
-  { id:'e68',  from:'n26', to:'n17', label:'front-stage operations → service interface',     importance:2, btabok:true },
+  { id:'e67',  from:'n08', to:'n26', label:'context boundary scopes service blueprint',      importance:2,},
+  { id:'e68',  from:'n26', to:'n17', label:'front-stage operations → service interface',     importance:2,},
 
   // ── Application View Card (n28) ──────────────────────────────────────────
   { id:'e74',  from:'n08', to:'n28', label:'context boundary decomposed to containers',      importance:3 },
@@ -256,47 +255,47 @@ export const EDGES: EdgeData[] = [
   { id:'e110', from:'n20', to:'n14', label:'interaction patterns trigger ADR decisions',     importance:1 },
 
   // ── Value Stream Map (n31) ────────────────────────────────────────────────
-  { id:'e87',  from:'n02', to:'n31', label:'capabilities are building blocks of value streams', importance:3, btabok:true },
-  { id:'e88',  from:'n31', to:'n26', label:'value stream steps surface in service blueprint',    importance:3, btabok:true },
+  { id:'e87',  from:'n02', to:'n31', label:'capabilities are building blocks of value streams', importance:3,},
+  { id:'e88',  from:'n31', to:'n26', label:'value stream steps surface in service blueprint',    importance:3,},
   { id:'e89',  from:'n31', to:'n16', label:'value stream analysis drives bounded context boundaries', importance:2 },
-  { id:'e91',  from:'n23', to:'n31', label:'OKRs set value stream performance targets',         importance:2, btabok:true },
+  { id:'e91',  from:'n23', to:'n31', label:'OKRs set value stream performance targets',         importance:2,},
 
   // ── Customer Journey Map (n32) ────────────────────────────────────────────
-  { id:'e92',  from:'n32', to:'n26', label:'customer actions align with service blueprint',  importance:3, btabok:true },
-  { id:'e93',  from:'n32', to:'n23', label:'journey pain points feed OKR goal-setting',      importance:2, btabok:true },
-  { id:'e94',  from:'n32', to:'n05', label:'journey improvements justify business case',     importance:2, btabok:true },
-  { id:'e95',  from:'n32', to:'n31', label:'customer journey insights inform value stream',  importance:2, btabok:true },
+  { id:'e92',  from:'n32', to:'n26', label:'customer actions align with service blueprint',  importance:3,},
+  { id:'e93',  from:'n32', to:'n23', label:'journey pain points feed OKR goal-setting',      importance:2,},
+  { id:'e94',  from:'n32', to:'n05', label:'journey improvements justify business case',     importance:2,},
+  { id:'e95',  from:'n32', to:'n31', label:'customer journey insights inform value stream',  importance:2,},
 
   // ── JTBD Card (n33) ───────────────────────────────────────────────────────
-  { id:'e96',  from:'n34', to:'n33', label:'persona defines who holds the job',              importance:3, btabok:true },
-  { id:'e97',  from:'n33', to:'n32', label:'jobs frame customer journey touchpoints',        importance:3, btabok:true },
-  { id:'e98',  from:'n33', to:'n05', label:'unmet jobs justify business case investment',    importance:2, btabok:true },
-  { id:'e99',  from:'n33', to:'n23', label:'customer jobs define OKR success metrics',       importance:2, btabok:true },
+  { id:'e96',  from:'n34', to:'n33', label:'persona defines who holds the job',              importance:3,},
+  { id:'e97',  from:'n33', to:'n32', label:'jobs frame customer journey touchpoints',        importance:3,},
+  { id:'e98',  from:'n33', to:'n05', label:'unmet jobs justify business case investment',    importance:2,},
+  { id:'e99',  from:'n33', to:'n23', label:'customer jobs define OKR success metrics',       importance:2,},
 
   // ── Customer Persona (n34) ────────────────────────────────────────────────
-  { id:'e100', from:'n01', to:'n34', label:'customer segment in BMC grounds persona',        importance:3, btabok:true },
-  { id:'e101', from:'n34', to:'n32', label:'persona behaviour shapes journey mapping',       importance:3, btabok:true },
-  { id:'e103', from:'n34', to:'n35', label:'persona deepened by stakeholder empathy map',   importance:2, btabok:true },
+  { id:'e100', from:'n01', to:'n34', label:'customer segment in BMC grounds persona',        importance:3,},
+  { id:'e101', from:'n34', to:'n32', label:'persona behaviour shapes journey mapping',       importance:3,},
+  { id:'e103', from:'n34', to:'n35', label:'persona deepened by stakeholder empathy map',   importance:2,},
 
   // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
-  { id:'e104', from:'n35', to:'n32', label:'empathy insights enrich journey touchpoints',   importance:2, btabok:true },
+  { id:'e104', from:'n35', to:'n32', label:'empathy insights enrich journey touchpoints',   importance:2,},
 
   // ── Innovation Assessment Card (n38) ─────────────────────────────────────
-  { id:'e119', from:'n01', to:'n38', label:'business model surfaces innovation candidates',  importance:3, btabok:true },
-  { id:'e120', from:'n02', to:'n38', label:'capability gaps generate innovation ideas',      importance:3, btabok:true },
-  { id:'e122', from:'n33', to:'n38', label:'unmet jobs seed innovation candidates',          importance:2, btabok:true },
-  { id:'e123', from:'n38', to:'n05', label:'assessed innovation becomes business case',      importance:3, btabok:true },
+  { id:'e119', from:'n01', to:'n38', label:'business model surfaces innovation candidates',  importance:3,},
+  { id:'e120', from:'n02', to:'n38', label:'capability gaps generate innovation ideas',      importance:3,},
+  { id:'e122', from:'n33', to:'n38', label:'unmet jobs seed innovation candidates',          importance:2,},
+  { id:'e123', from:'n38', to:'n05', label:'assessed innovation becomes business case',      importance:3,},
 
   // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
-  { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3, btabok:true },
+  { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3,},
 
   // ── Transition Roadmap Canvas (n37) ──────────────────────────────────────
-  { id:'e111', from:'n30', to:'n37', label:'strategic IT initiatives → transition scope',         importance:3, btabok:true },
-  { id:'e112', from:'n37', to:'n07', label:'transition steps populate layered roadmap lanes',      importance:2, btabok:true },
-  { id:'e113', from:'n24', to:'n37', label:'capability maturity gaps drive transition priorities',importance:2, btabok:true },
-  { id:'e114', from:'n08', to:'n37', label:'current-state context scopes transition boundary',    importance:2, btabok:true },
-  { id:'e115', from:'n37', to:'n14', label:'transition decisions captured as ADRs',               importance:2, btabok:true },
-  { id:'e116', from:'n37', to:'n28', label:'transition milestones drive application decomposition',importance:2, btabok:true },
-  { id:'e117', from:'n37', to:'n09', label:'transition constraints surface new ASRs',             importance:2, btabok:true },
+  { id:'e111', from:'n30', to:'n37', label:'strategic IT initiatives → transition scope',         importance:3,},
+  { id:'e112', from:'n37', to:'n07', label:'transition steps populate layered roadmap lanes',      importance:2,},
+  { id:'e113', from:'n24', to:'n37', label:'capability maturity gaps drive transition priorities',importance:2,},
+  { id:'e114', from:'n08', to:'n37', label:'current-state context scopes transition boundary',    importance:2,},
+  { id:'e115', from:'n37', to:'n14', label:'transition decisions captured as ADRs',               importance:2,},
+  { id:'e116', from:'n37', to:'n28', label:'transition milestones drive application decomposition',importance:2,},
+  { id:'e117', from:'n37', to:'n09', label:'transition constraints surface new ASRs',             importance:2,},
 
 ];
