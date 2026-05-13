@@ -30,6 +30,7 @@ interface CanvasProps {
   svgRef: React.RefObject<SVGSVGElement | null>;
   canvasH: number;
   isDraggingNode: boolean;
+  isPanDragging: boolean;
   showGrid: boolean;
   showGridRef: React.RefObject<boolean>;
   infiniteGridStyle: React.CSSProperties;
@@ -53,6 +54,7 @@ interface SvgContentProps {
   transformGRef: React.RefObject<SVGGElement | null>;
   canvasH: number;
   isDraggingNode: boolean;
+  isPanDragging: boolean;
   showSwimlanes: boolean;
   phaseBands: PhaseBand[];
   selectedPhase: Phase | null;
@@ -67,7 +69,7 @@ interface SvgContentProps {
 
 const SvgContent = memo(function SvgContent({
   svgRef, transformGRef, canvasH,
-  isDraggingNode, showSwimlanes, phaseBands, selectedPhase,
+  isDraggingNode, isPanDragging, showSwimlanes, phaseBands, selectedPhase,
   edgePaths, connectedEdgeIds, connectedNodeIds,
   visibleNodes, selectedId, positions, onNodeDown,
 }: SvgContentProps) {
@@ -176,7 +178,7 @@ const SvgContent = memo(function SvgContent({
             <NodeCardSvg key={node.id} node={node} pos={positions[node.id]}
               selected={node.id === selectedId}
               dimmed={dimmed}
-              dragging={isDraggingNode && node.id === selectedId}
+              dragging={(isDraggingNode && node.id === selectedId) || isPanDragging}
               onMouseDown={(e: React.MouseEvent) => onNodeDown(e, node.id)}/>
           );
         })}
@@ -189,7 +191,7 @@ const SvgContent = memo(function SvgContent({
 export default function Canvas({
   containerRef, containerDivRef, scrollContainerRef, transformGRef,
   svgRef, canvasH,
-  isDraggingNode,
+  isDraggingNode, isPanDragging,
   showGrid, showGridRef, infiniteGridStyle,
   showSwimlanes, phaseBands, selectedPhase,
   edgePaths, connectedEdgeIds, connectedNodeIds,
@@ -207,7 +209,7 @@ export default function Canvas({
       }}
       style={{
         flex: 1, overflow: 'hidden', position: 'relative',
-        cursor: isDraggingNode ? 'grabbing' : 'grab',
+        cursor: isDraggingNode || isPanDragging ? 'grabbing' : 'grab',
         background: '#FFFFFF',
         userSelect: 'none',
         ...(showGrid ? infiniteGridStyle : {}),
@@ -232,6 +234,7 @@ export default function Canvas({
           <SvgContent
             svgRef={svgRef} transformGRef={transformGRef} canvasH={canvasH}
             isDraggingNode={isDraggingNode}
+            isPanDragging={isPanDragging}
             showSwimlanes={showSwimlanes} phaseBands={phaseBands} selectedPhase={selectedPhase}
             edgePaths={edgePaths} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds}
             visibleNodes={visibleNodes} selectedId={selectedId} positions={positions}

@@ -18,7 +18,7 @@ const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
 
 export default function App() {
   const {
-    positions, isDraggingNode,
+    positions, isDraggingNode, isPanDragging,
     transformGRef, containerDivRef, scrollContainerRef, showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
@@ -287,6 +287,7 @@ export default function App() {
           svgRef={svgRef}
           canvasH={canvasH}
           isDraggingNode={isDraggingNode}
+          isPanDragging={isPanDragging}
           showGrid={showGrid}
           showGridRef={showGridRef}
           infiniteGridStyle={infiniteGridStyle}

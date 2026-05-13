@@ -58,6 +58,7 @@ export function useCanvasInteraction() {
   const [panScale, setPanScale] = useState({ scale: DEFAULT_SCALE });
 
   const [isDraggingNode, setIsDraggingNode] = useState(false);
+  const [isPanDragging, setIsPanDragging] = useState(false);
 
   const transformGRef      = useRef<SVGGElement | null>(null);
   const containerDivRef    = useRef<HTMLDivElement | null>(null);
@@ -139,7 +140,7 @@ export function useCanvasInteraction() {
     const scrollEl = scrollContainerRef.current;
     if (!scrollEl) return;
     dragPan.current = { sx: e.clientX, sy: e.clientY, opx: scrollEl.scrollLeft, opy: scrollEl.scrollTop };
-    if (containerDivRef.current) containerDivRef.current.style.cursor = 'grabbing';
+    setIsPanDragging(true);
   }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -182,10 +183,10 @@ export function useCanvasInteraction() {
 
   const handleMouseUp = useCallback(() => {
     if (dragCursorTimer.current) { clearTimeout(dragCursorTimer.current); dragCursorTimer.current = null; }
-    if (containerDivRef.current) containerDivRef.current.style.cursor = 'grab';
     dragNode.current = null;
     dragPan.current  = null;
     setIsDraggingNode(false);
+    setIsPanDragging(false);
   }, []);
 
   const resetPositions = useCallback(() => {
@@ -271,6 +272,7 @@ export function useCanvasInteraction() {
     positions,
     scale: panScale.scale,
     isDraggingNode,
+    isPanDragging,
     transformGRef,
     containerDivRef,
     scrollContainerRef,
