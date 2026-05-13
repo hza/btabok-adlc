@@ -30,6 +30,7 @@ export default function App() {
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(true);
+  const [editMode,   setEditMode]   = useState(false);
   const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,6 +87,7 @@ export default function App() {
 
   // ── canvas mouse down ────────────────────────────────────────────────────────
   const panStartPos = useRef<{ x: number; y: number } | null>(null);
+  const pendingSelectRef = useRef<{ id: string; x: number; y: number } | null>(null);
 
   // If user clicks on canvas (not on a node), we start a pan drag. If the mouseup happens without significant movement, we clear the selection.
   const handleCanvasDown = useCallback((e: React.MouseEvent) => {
@@ -97,10 +99,17 @@ export default function App() {
 
   // If mouseup happens after a pan drag, we check if there was significant movement. If not, we clear the selection (deselect nodes).
   const handleCanvasUp = useCallback((e: React.MouseEvent) => {
-    if (panStartPos.current) {
+    const DRAG_THRESHOLD = 4;
+    if (pendingSelectRef.current) {
+      const { id, x, y } = pendingSelectRef.current;
+      const dx = Math.abs(e.clientX - x);
+      const dy = Math.abs(e.clientY - y);
+      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) setSelectedId(id);
+      pendingSelectRef.current = null;
+    } else if (panStartPos.current) {
       const dx = Math.abs(e.clientX - panStartPos.current.x);
       const dy = Math.abs(e.clientY - panStartPos.current.y);
-      if (dx < 4 && dy < 4) setSelectedId(null);
+      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) setSelectedId(null);
       panStartPos.current = null;
     }
     handleMouseUp();
@@ -108,9 +117,14 @@ export default function App() {
 
   // ── node mouse down ─────────────────────────────────────────────────────────
   const handleNodeDown = useCallback((e: React.MouseEvent, id: string) => {
-    setSelectedId(id);
-    startNodeDrag(e, id);
-  }, [startNodeDrag]);
+    if (editMode) {
+      setSelectedId(id);
+      startNodeDrag(e, id);
+    } else {
+      pendingSelectRef.current = { id, x: e.clientX, y: e.clientY };
+      startPanDrag(e);
+    }
+  }, [editMode, startNodeDrag, startPanDrag]);
 
   // ── copy positions ───────────────────────────────────────────────────────────
   const handleSave = useCallback(() => {
@@ -254,6 +268,8 @@ export default function App() {
         onCardImportanceLevelChange={setCardImportanceLevel}
         onShowSwimlanesChange={setShowSwimlanes}
         onShowGridChange={setShowGrid}
+        editMode={editMode}
+        onToggleEditMode={() => setEditMode(v => !v)}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
         onToggleSidebar={handleToggleSidebar}

@@ -6,6 +6,7 @@ interface TopBarProps {
   showGrid: boolean;
   showSidebar: boolean;
   saved: boolean;
+  editMode: boolean;
   onReset: () => void;
   onFit: () => void;
   onZoomIn: () => void;
@@ -15,13 +16,14 @@ interface TopBarProps {
   onShowSwimlanesChange: (v: boolean) => void;
   onShowGridChange: (v: boolean) => void;
   onToggleSidebar: () => void;
+  onToggleEditMode: () => void;
   onDownload: () => void;
 }
 
 const TopBar = React.memo(function TopBar({
-  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved,
+  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved, editMode,
   onReset, onFit, onSave, onZoomIn, onZoomOut, onDownload,
-  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar,
+  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar, onToggleEditMode,
 }: TopBarProps) {
   return (
     <div style={{
@@ -55,6 +57,20 @@ const TopBar = React.memo(function TopBar({
         BTABoK Architecture Development Life Cycle
       </span>
       <span style={{ marginLeft: 'auto' }}/>
+      <Divider/>
+      <IconBtn onClick={onToggleEditMode} title={editMode ? 'Exit edit mode' : 'Enter edit mode (drag nodes)'}
+        style={{ color: editMode ? '#7F77DD' : '#94A3B8' }}>
+        {editMode ? (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.5 6.25c0-.69-.56-1.25-1.25-1.25-.18 0-.35.04-.5.1V4.25a1.25 1.25 0 0 0-2.45-.34A1.25 1.25 0 0 0 7 5.25v.1A1.25 1.25 0 0 0 5 6.5v3.75l-.66-.83a1.25 1.25 0 0 0-1.93 1.58l2.1 2.63A4.25 4.25 0 0 0 7.83 15h1.92A3.75 3.75 0 0 0 13.5 11.25V6.25zm-1.25.25a.25.25 0 0 1 .25.25v4.5a2.75 2.75 0 0 1-2.75 2.75H7.83a3.25 3.25 0 0 1-2.55-1.22L3.18 10.2a.25.25 0 0 1 .39-.32L5 11.5V6.5a.25.25 0 0 1 .5 0v3h1V5.25a.25.25 0 0 1 .5 0V9.5h1V4.25a.25.25 0 0 1 .5 0V9.5h1V6.25a.25.25 0 0 1 .25-.25z"/>
+          </svg>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3 15 L4.5 10.5 L12 3 L15 6 L7.5 13.5 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
+            <line x1="10.5" y1="4.5" x2="13.5" y2="7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+        )}
+      </IconBtn>
       <Divider/>
       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#94A3B8' }}>
         LOD:
