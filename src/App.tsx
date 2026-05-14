@@ -29,7 +29,7 @@ export default function App() {
   const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
-  const [showLegend, setShowLegend] = useState(true);
+  const [showLegend, setShowLegend] = useState(() => window.innerWidth > 600);
   const [editMode,   setEditMode]   = useState(false);
   const [saved,       setSaved]       = useState(false);
 
@@ -204,8 +204,7 @@ export default function App() {
       const dx = e.changedTouches[0].clientX - startX;
       const dy = e.changedTouches[0].clientY - startY;
       if (Math.abs(dy) > SWIPE_MAX_Y || Math.abs(dx) < SWIPE_MIN_X) return;
-      if (dx < 0 && !showLegendRef.current) setShowLegend(true);
-      else if (dx > 0 && showLegendRef.current) setShowLegend(false);
+      if (dx > 0 && showLegendRef.current) setShowLegend(false);
     };
 
     window.addEventListener('touchstart', onTouchStart, { passive: true });
