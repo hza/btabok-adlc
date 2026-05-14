@@ -268,6 +268,55 @@ export function useCanvasInteraction() {
     commitPanScale();
   }, [commitPanScale]);
 
+  // ── pinch-to-zoom (touch) ────────────────────────────────────────────────────
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    let pinchDist0 = 0;
+    let pinchScale0 = 1;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        const t1 = e.touches[0], t2 = e.touches[1];
+        pinchDist0  = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        pinchScale0 = scaleRef.current;
+        e.preventDefault();
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 2 || pinchDist0 === 0) return;
+      e.preventDefault();
+      const t1 = e.touches[0], t2 = e.touches[1];
+      const dist     = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const newScale = Math.min(3, Math.max(0.18, pinchScale0 * dist / pinchDist0));
+      const rect  = el.getBoundingClientRect();
+      const midX  = (t1.clientX + t2.clientX) / 2 - rect.left;
+      const midY  = (t1.clientY + t2.clientY) / 2 - rect.top;
+      const ratio = newScale / scaleRef.current;
+      el.scrollLeft    = CONTENT_OFFSET + (el.scrollLeft + midX - CONTENT_OFFSET) * ratio - midX;
+      el.scrollTop     = CONTENT_OFFSET + (el.scrollTop  + midY - CONTENT_OFFSET) * ratio - midY;
+      scaleRef.current = newScale;
+      applyScale(transformGRef.current, containerDivRef.current, el, newScale, showGridRef.current);
+    };
+
+    const onTouchEnd = () => {
+      if (pinchDist0 !== 0) {
+        pinchDist0 = 0;
+        commitPanScale();
+      }
+    };
+
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
+    el.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    el.addEventListener('touchend',   onTouchEnd);
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove',  onTouchMove);
+      el.removeEventListener('touchend',   onTouchEnd);
+    };
+  }, [commitPanScale]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return {
     positions,
     scale: panScale.scale,

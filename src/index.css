@@ -44,6 +44,14 @@ body {
   display: none;
 }
 
+.topbar-title-full { display: inline; }
+.topbar-title-short { display: none; }
+@media (max-width: 600px) {
+  .topbar-title-full { display: none; }
+  .topbar-title-short { display: inline; }
+  .topbar-hide-sm { display: none !important; }
+}
+
 h1,
 h2 {
   font-family: var(--heading);
