@@ -183,6 +183,39 @@ export default function App() {
     setShowLegend(v => !v);
   }, []);
 
+  // ── swipe to show/hide sidebar (mobile) ──────────────────────────────────────
+  const showLegendRef = useRef(showLegend);
+  useEffect(() => { showLegendRef.current = showLegend; }, [showLegend]);
+
+  useEffect(() => {
+    const SWIPE_MIN_X = 60;
+    const SWIPE_MAX_Y = 80;
+    let startX = 0, startY = 0, singleTouch = false;
+
+    const onTouchStart = (e: TouchEvent) => {
+      singleTouch = e.touches.length === 1;
+      if (!singleTouch) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!singleTouch || e.changedTouches.length !== 1) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dy) > SWIPE_MAX_Y || Math.abs(dx) < SWIPE_MIN_X) return;
+      if (dx < 0 && !showLegendRef.current) setShowLegend(true);
+      else if (dx > 0 && showLegendRef.current) setShowLegend(false);
+    };
+
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend',   onTouchEnd,   { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend',   onTouchEnd);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Grid background is managed imperatively by the hook (applyScale + scroll listener)
   const infiniteGridStyle = useMemo(() => ({
     backgroundImage: [
