@@ -188,8 +188,8 @@ export default function App() {
   useEffect(() => { showLegendRef.current = showLegend; }, [showLegend]);
 
   useEffect(() => {
-    const SWIPE_MIN_X = 60;
-    const SWIPE_MAX_Y = 80;
+    const SWIPE_MIN_X = 120;
+    const SWIPE_MAX_Y = 50;
     let startX = 0, startY = 0, singleTouch = false;
 
     const onTouchStart = (e: TouchEvent) => {
