@@ -25,6 +25,7 @@ export const BADGE_TYPES: { badge: string; color: string; description: string }[
   { badge: 'BTABoK', color: '#7F77DD', description: 'BTABoK native artifact' },
   { badge: 'DDD',    color: '#B5451B', description: 'Domain-Driven Design artifact' },
   { badge: 'OWASP',  color: '#2E7D32', description: 'OWASP artifact' },
+  { badge: 'TOGAF',  color: '#00539F', description: 'TOGAF artifact' },
 ];
 
 export const PHASE_STYLES: Record<string, { bg: string; band: string; text: string }> = {
@@ -145,6 +146,7 @@ export const NODES: NodeData[] = (([
   { id:'n29', phase:'transformation', title:'Security Architecture View',           subtitle:'Threat model, trust zones, security controls, attack surface', link:'https://owasp.org/www-community/Threat_Modeling',                        badge:'OWASP', note:'BTABoK gap: security viewpoint — use STRIDE + security zone diagram; critical for compliance', external:true, importance:3},
   { id:'n20', phase:'transformation', title:'Process View Card',                    subtitle:'Time-ordered message flow for key use cases. For sequence / scenario view use UML Sequence or C4 Dynamic Diagram',                  link:'https://c4model.com/#DynamicDiagram',                                                                                badge:'BTABoK', note:'Rename Context View Card to Process View Card.', multiple:true, importance:1},
   { id:'n21', phase:'transformation', title:'Technical Loan Request Card',          subtitle:'Technical debt treated as a deliberate loan: justification, impact, repayment schedule, and approval trail',          link:'https://iasa-global.github.io/btabok/technical_loan_request_card.html',  badge:'BTABoK', note:'One card per technical debt item', multiple:true, importance:1},
+  { id:'n39', phase:'transformation', title:'Information View Card',                subtitle:'Data entities, state transitions, storage semantics, and information lifecycle. Ensures data integrity.',                                      link:'https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap09.html',        badge:'TOGAF', note:'BTABoK gap: data viewpoint — use TOGAF Data Architecture. Maps data to bounded contexts and containers.', multiple:true, external:true, importance:3},
 
   // BTABoK Utilize phase artifacts
   { id:'n22', phase:'utilize', title:'Benefits Realization View Canvas',     subtitle:'Architecture investments mapped to measurable business benefits, costs, and technical debt',          link:'https://iasa-global.github.io/btabok/benefits_realization_view_canvas.html', badge:'BTABoK', note:'Populate after first production release; revisit at each OKR review cycle', importance:2 },
@@ -157,145 +159,151 @@ export const NODES: NodeData[] = (([
 // importance: 1=extra high  2=ultra high  3=non-negotiable
 export const EDGES: EdgeData[] = [
   // ── Business Model Canvas (n01) ───────────────────────────────────────────
-  { id:'e01',  from:'n01', to:'n02', label:'seeds capability hierarchy',                     importance:3,},
+  { id:'e01',  from:'n01', to:'n02', label:'Establishes foundational capability taxonomy',                   importance:3,},
 
   // ── Architect Stakeholder Canvas (n03) ───────────────────────────────────
-  { id:'e06',  from:'n03', to:'n04', label:'stakeholders populate grid',                     importance:2,},
+  { id:'e06',  from:'n03', to:'n04', label:'Prioritizes stakeholders for engagement governance',             importance:2,},
 
   // ── Business Case / NABC Card (n05) ──────────────────────────────────────
-  { id:'e43',  from:'n05', to:'n06', label:'business constraints → principles',              importance:2,},
-  { id:'e11',  from:'n05', to:'n12', label:'success criteria inform architecture definition', importance:2,},
+  { id:'e43',  from:'n05', to:'n06', label:'Translates constraints into architectural principles',           importance:2,},
+  { id:'e11',  from:'n05', to:'n12', label:'Defines success metrics for architecture definition',            importance:2,},
 
   // ── Architecture Principles (n06) ────────────────────────────────────────
-  { id:'e12',  from:'n06', to:'n12', label:'principles populate definition',                 importance:3,},
+  { id:'e12',  from:'n06', to:'n12', label:'Establishes guardrails for architecture definition',             importance:3,},
   // ── Context View Card (n08) ───────────────────────────────────────────────
-  { id:'e118', from:'n05', to:'n08', label:'business case defines solution scope for context view', importance:3,},
-  { id:'e15',  from:'n08', to:'n09', label:'external interactions trigger ASRs',             importance:3,},
-  { id:'e23',  from:'n08', to:'n16', label:'system boundary scopes bounded contexts',        importance:2 },
+  { id:'e118', from:'n05', to:'n08', label:'Bounds the solution scope for contextual design',                importance:3,},
+  { id:'e15',  from:'n08', to:'n09', label:'External dependencies drive structural ASRs',                    importance:3,},
+  { id:'e23',  from:'n08', to:'n16', label:'System boundary delineates domain bounded contexts',             importance:2 },
 
   // ── ASR Card (n09) ────────────────────────────────────────────────────────
-  { id:'e18',  from:'n09', to:'n14', label:'ASR IDs referenced in ADR',                     importance:3,},
+  { id:'e18',  from:'n09', to:'n14', label:'Provides requirement traceability for ADRs',                     importance:3,},
 
   // ── Architecture Hypothesis Canvas (n10) ─────────────────────────────────
-  { id:'e20',  from:'n10', to:'n14', label:'validated hypothesis informs ADR',               importance:2,},
+  { id:'e20',  from:'n10', to:'n14', label:'Empirical validation substantiates architectural decisions',     importance:2,},
 
   // ── Architecture Definition Canvas (n12) ─────────────────────────────────
-  { id:'e22',  from:'n12', to:'n13', label:'scope constrains design options',                importance:2,},
+  { id:'e22',  from:'n12', to:'n13', label:'Scope boundaries constrain solution design options',             importance:2,},
 
   // ── Solution Design Canvas (n13) ─────────────────────────────────────────
-  { id:'e25',  from:'n13', to:'n14', label:'design options trigger ADR decisions',            importance:3,},
+  { id:'e25',  from:'n13', to:'n14', label:'Evaluated design options resolve into formal ADRs',              importance:3,},
 
   // ── ADR Card (n14) ────────────────────────────────────────────────────────
-  { id:'e27',  from:'n14', to:'n15', label:'spawns cascade card',                            importance:3,},
-  { id:'e28',  from:'n14', to:'n21', label:'technical debt formalized as loan request',       importance:2,},
+  { id:'e27',  from:'n14', to:'n15', label:'Triggers consequential downstream architectural decisions',      importance:3,},
+  { id:'e28',  from:'n14', to:'n21', label:'Formalizes technical debt as an actionable loan',                importance:2,},
 
   // ── Bounded Context Canvas (n16) ─────────────────────────────────────────
-  { id:'e30',  from:'n16', to:'n17', label:'domain model drives service interface',           importance:2 },
+  { id:'e30',  from:'n16', to:'n17', label:'Domain boundaries dictate service contracts',                    importance:2 },
+  { id:'e124', from:'n16', to:'n39', label:'Domain model dictates conceptual data schema',                   importance:3 },
 
   // ── Service Interface Design Canvas (n17) ────────────────────────────────
-  { id:'e33',  from:'n17', to:'n20', label:'operations → sequence messages',                 importance:1 },
+  { id:'e33',  from:'n17', to:'n20', label:'Service operations map to process interactions',                 importance:1 },
 
   // ── Technical Loan Request Card (n21) ────────────────────────────────────
-  { id:'e36',  from:'n21', to:'n22', label:'debt reduces realised benefits',                 importance:2,},
-  { id:'e38',  from:'n22', to:'n21', label:'benefits analysis surfaces new technical debt',  importance:2,},
+  { id:'e36',  from:'n21', to:'n22', label:'Technical debt degrades realized business value',                importance:2,},
+  { id:'e38',  from:'n22', to:'n21', label:'Value realization uncovers latent technical debt',               importance:2,},
 
   // ── Benefits Realization View Canvas (n22) ───────────────────────────────
-  { id:'e37',  from:'n22', to:'n07', label:'outcomes reprioritise roadmap',                  importance:3,},
-  { id:'e40',  from:'n22', to:'n01', label:'realized value informs business model refresh',   importance:3,},
+  { id:'e37',  from:'n22', to:'n07', label:'Measured outcomes enforce roadmap reprioritization',             importance:3,},
+  { id:'e40',  from:'n22', to:'n01', label:'Realized benefits validate business model hypotheses',           importance:3,},
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
-  { id:'e48',  from:'n09', to:'n11', label:'ASRs define quality scenarios',                  importance:3,},
-  { id:'e49',  from:'n08', to:'n11', label:'context sets stimulus environment',              importance:2,},
-  { id:'e50',  from:'n11', to:'n14', label:'QA tactics inform ADR decisions',                importance:3,},
+  { id:'e48',  from:'n09', to:'n11', label:'ASRs form the basis for quality attribute scenarios',            importance:3,},
+  { id:'e49',  from:'n08', to:'n11', label:'Context boundary defines quality test stimulus environment',     importance:2,},
+  { id:'e50',  from:'n11', to:'n14', label:'Quality tactics dictate architectural design choices',           importance:3,},
 
   // ── Strategic Roadmap Canvas (n30) ───────────────────────────────────────
-  { id:'e82',  from:'n02', to:'n30', label:'capabilities anchor strategic IT initiatives',   importance:2,},
-  { id:'e83',  from:'n05', to:'n30', label:'business case defines initiative scope',         importance:2,},
-  { id:'e84',  from:'n06', to:'n30', label:'principles constrain strategic initiatives',     importance:3,},
-  { id:'e85',  from:'n23', to:'n30', label:'OKRs align strategic IT direction',              importance:3,},
-  { id:'e86',  from:'n30', to:'n07', label:'strategic IT direction → phased delivery',       importance:3,},
+  { id:'e82',  from:'n02', to:'n30', label:'Capabilities provide the foundation for strategic initiatives',  importance:2,},
+  { id:'e83',  from:'n05', to:'n30', label:'Business case justifies and bounds strategic initiatives',       importance:2,},
+  { id:'e84',  from:'n06', to:'n30', label:'Principles provide governance for strategic initiatives',        importance:3,},
+  { id:'e85',  from:'n23', to:'n30', label:'OKRs measure and align strategic initiative outcomes',           importance:3,},
+  { id:'e86',  from:'n30', to:'n07', label:'Strategic roadmap dictates phased execution delivery',           importance:3,},
 
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
-  { id:'e51',  from:'n05', to:'n23', label:'business case seeds OKR objectives',             importance:3,},
-  { id:'e53',  from:'n23', to:'n07', label:'objectives set roadmap goals',                   importance:3,},
-  { id:'e54',  from:'n22', to:'n23', label:'realized benefits validate OKRs',               importance:2,},
+  { id:'e51',  from:'n05', to:'n23', label:'Business goals translate into measurable OKRs',                  importance:3,},
+  { id:'e53',  from:'n23', to:'n07', label:'OKRs define target milestones for strategic roadmaps',           importance:3,},
+  { id:'e54',  from:'n22', to:'n23', label:'Realized benefits verify OKR achievement',                       importance:2,},
 
   // ── Capability Card (n24) ─────────────────────────────────────────────────
-  { id:'e55',  from:'n02', to:'n24', label:'capabilities assessed for maturity',             importance:3,},
-  { id:'e56',  from:'n24', to:'n07', label:'capability gaps drive roadmap priorities',       importance:3,},
-  { id:'e58',  from:'n24', to:'n25', label:'weak capabilities expose risks',                 importance:2,},
+  { id:'e55',  from:'n02', to:'n24', label:'Capabilities are evaluated for maturity and operational gaps',   importance:3,},
+  { id:'e56',  from:'n24', to:'n07', label:'Maturity gaps dictate strategic investment priorities',          importance:3,},
+  { id:'e58',  from:'n24', to:'n25', label:'Capability deficits introduce systemic and business risks',      importance:2,},
 
   // ── Risk Methods Cards (n25) ──────────────────────────────────────────────
-  { id:'e61',  from:'n25', to:'n14', label:'risks trigger ADRs',                             importance:3,},
-  { id:'e62',  from:'n25', to:'n09', label:'risks become ASRs',                              importance:3,},
-  { id:'e63',  from:'n25', to:'n29', label:'risk exposure → security requirements',          importance:2 },
+  { id:'e61',  from:'n25', to:'n14', label:'Identified risks mandate architectural mitigation decisions',    importance:3,},
+  { id:'e62',  from:'n25', to:'n09', label:'Risk mitigation strategies form Architecturally Significant Requirements', importance:3,},
+  { id:'e63',  from:'n25', to:'n29', label:'Risk posture dictates security architecture requirements',       importance:2 },
 
   // ── Service Blueprint (n26) ───────────────────────────────────────────────
-  { id:'e67',  from:'n08', to:'n26', label:'context boundary scopes service blueprint',      importance:2,},
-  { id:'e68',  from:'n26', to:'n17', label:'front-stage operations → service interface',     importance:2,},
+  { id:'e67',  from:'n08', to:'n26', label:'System boundaries define the scope of service blueprints',       importance:2,},
+  { id:'e68',  from:'n26', to:'n17', label:'Customer touchpoints define service interface requirements',     importance:2,},
 
   // ── Application View Card (n28) ──────────────────────────────────────────
-  { id:'e74',  from:'n08', to:'n28', label:'context boundary decomposed to containers',      importance:3 },
-  { id:'e75',  from:'n16', to:'n28', label:'bounded contexts map to containers',             importance:3 },
-  { id:'e76',  from:'n28', to:'n17', label:'containers expose service interfaces',           importance:2 },
-  { id:'e77',  from:'n28', to:'n18', label:'containers mapped to deployment nodes',          importance:2 },
-  { id:'e78',  from:'n28', to:'n09', label:'structural decomposition surfaces ASRs',         importance:2 },
-  { id:'e106', from:'n28', to:'n14', label:'container decomposition decisions → ADRs',       importance:2 },
+  { id:'e74',  from:'n08', to:'n28', label:'System boundary decomposes into deployable containers',          importance:3 },
+  { id:'e75',  from:'n16', to:'n28', label:'Domain boundaries align with container responsibilities',        importance:3 },
+  { id:'e76',  from:'n28', to:'n17', label:'Containers implement and expose service contracts',              importance:2 },
+  { id:'e77',  from:'n28', to:'n18', label:'Containers are allocated to physical deployment targets',        importance:2 },
+  { id:'e78',  from:'n28', to:'n09', label:'Component decomposition reveals implicit structural ASRs',       importance:2 },
+  { id:'e106', from:'n28', to:'n14', label:'Decomposition strategies are formalized as ADRs',                importance:2 },
+  { id:'e126', from:'n28', to:'n39', label:'Containers encapsulate data storage mechanisms',                 importance:2 },
 
   // ── Security Architecture View (n29) ──────────────────────────────────────
-  { id:'e80',  from:'n29', to:'n14', label:'security decisions → ADRs',                      importance:3 },
-  { id:'e81',  from:'n29', to:'n18', label:'security zones constrain deployment',            importance:2 },
+  { id:'e80',  from:'n29', to:'n14', label:'Security controls are captured as formal architectural decisions',importance:3 },
+  { id:'e81',  from:'n29', to:'n18', label:'Security boundaries dictate deployment topologies',              importance:2 },
 
   // ── Physical View Card (n18) ──────────────────────────────────────────────
-  { id:'e107', from:'n18', to:'n09', label:'deployment topology surfaces availability ASRs', importance:2 },
-  { id:'e108', from:'n18', to:'n14', label:'infrastructure decisions → ADRs',                importance:2 },
+  { id:'e107', from:'n18', to:'n09', label:'Physical infrastructure constraints drive availability ASRs',    importance:2 },
+  { id:'e108', from:'n18', to:'n14', label:'Infrastructure selections are codified as ADRs',                 importance:2 },
 
   // ── Process View Card (n20) ───────────────────────────────────────────────
-  { id:'e109', from:'n20', to:'n09', label:'scenario flows validate ASR fulfillment',        importance:1 },
-  { id:'e110', from:'n20', to:'n14', label:'interaction patterns trigger ADR decisions',     importance:1 },
+  { id:'e109', from:'n20', to:'n09', label:'Process flows verify fulfillment of behavioral ASRs',            importance:1 },
+  { id:'e110', from:'n20', to:'n14', label:'System interaction patterns mandate design decisions',           importance:1 },
 
   // ── Value Stream Map (n31) ────────────────────────────────────────────────
-  { id:'e87',  from:'n02', to:'n31', label:'capabilities are building blocks of value streams', importance:3,},
-  { id:'e88',  from:'n31', to:'n26', label:'value stream steps surface in service blueprint',    importance:3,},
-  { id:'e89',  from:'n31', to:'n16', label:'value stream analysis drives bounded context boundaries', importance:2 },
-  { id:'e91',  from:'n23', to:'n31', label:'OKRs set value stream performance targets',         importance:2,},
+  { id:'e87',  from:'n02', to:'n31', label:'Capabilities enable value stream execution',                     importance:3,},
+  { id:'e88',  from:'n31', to:'n26', label:'Value stream activities align with service blueprint stages',    importance:3,},
+  { id:'e89',  from:'n31', to:'n16', label:'Value flow delineates bounded context boundaries',               importance:2 },
+  { id:'e91',  from:'n23', to:'n31', label:'OKRs establish performance targets for value streams',           importance:2,},
 
   // ── Customer Journey Map (n32) ────────────────────────────────────────────
-  { id:'e92',  from:'n32', to:'n26', label:'customer actions align with service blueprint',  importance:3,},
-  { id:'e93',  from:'n32', to:'n23', label:'journey pain points feed OKR goal-setting',      importance:2,},
-  { id:'e94',  from:'n32', to:'n05', label:'journey improvements justify business case',     importance:2,},
-  { id:'e95',  from:'n32', to:'n31', label:'customer journey insights inform value stream',  importance:2,},
+  { id:'e92',  from:'n32', to:'n26', label:'Journey map actions define front-stage blueprint interactions',  importance:3,},
+  { id:'e93',  from:'n32', to:'n23', label:'Customer frictions highlight targets for OKR improvement',       importance:2,},
+  { id:'e94',  from:'n32', to:'n05', label:'Customer experience enhancements substantiate the business case',importance:2,},
+  { id:'e95',  from:'n32', to:'n31', label:'Journey map interactions refine value stream flow',              importance:2,},
 
   // ── JTBD Card (n33) ───────────────────────────────────────────────────────
-  { id:'e96',  from:'n34', to:'n33', label:'persona defines who holds the job',              importance:3,},
-  { id:'e97',  from:'n33', to:'n32', label:'jobs frame customer journey touchpoints',        importance:3,},
-  { id:'e98',  from:'n33', to:'n05', label:'unmet jobs justify business case investment',    importance:2,},
-  { id:'e99',  from:'n33', to:'n23', label:'customer jobs define OKR success metrics',       importance:2,},
+  { id:'e96',  from:'n34', to:'n33', label:'Persona establishes the primary actor for the Job-to-be-Done',   importance:3,},
+  { id:'e97',  from:'n33', to:'n32', label:'JTBDs anchor the critical touchpoints in the customer journey',  importance:3,},
+  { id:'e98',  from:'n33', to:'n05', label:'Unfulfilled jobs provide the rationale for business investment', importance:2,},
+  { id:'e99',  from:'n33', to:'n23', label:'JTBD fulfillment translates into OKR success metrics',           importance:2,},
 
   // ── Customer Persona (n34) ────────────────────────────────────────────────
-  { id:'e100', from:'n01', to:'n34', label:'customer segment in BMC grounds persona',        importance:3,},
-  { id:'e101', from:'n34', to:'n32', label:'persona behaviour shapes journey mapping',       importance:3,},
-  { id:'e103', from:'n34', to:'n35', label:'persona deepened by stakeholder empathy map',   importance:2,},
+  { id:'e100', from:'n01', to:'n34', label:'Business model customer segments define target personas',        importance:3,},
+  { id:'e101', from:'n34', to:'n32', label:'Persona traits drive the narrative of the journey map',          importance:3,},
+  { id:'e103', from:'n34', to:'n35', label:'Empathy mapping enriches persona behavioral insights',           importance:2,},
 
   // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
-  { id:'e104', from:'n35', to:'n32', label:'empathy insights enrich journey touchpoints',   importance:2,},
+  { id:'e104', from:'n35', to:'n32', label:'Empathy analysis provides emotional context for journey touchpoints',importance:2,},
 
   // ── Innovation Assessment Card (n38) ─────────────────────────────────────
-  { id:'e119', from:'n01', to:'n38', label:'business model surfaces innovation candidates',  importance:3,},
-  { id:'e120', from:'n02', to:'n38', label:'capability gaps generate innovation ideas',      importance:3,},
-  { id:'e122', from:'n33', to:'n38', label:'unmet jobs seed innovation candidates',          importance:2,},
-  { id:'e123', from:'n38', to:'n05', label:'assessed innovation becomes business case',      importance:3,},
+  { id:'e119', from:'n01', to:'n38', label:'Business model evolution generates innovation opportunities',    importance:3,},
+  { id:'e120', from:'n02', to:'n38', label:'Capability deficits spur innovation initiatives',                importance:3,},
+  { id:'e122', from:'n33', to:'n38', label:'Unfulfilled customer jobs inspire new innovation concepts',      importance:2,},
+  { id:'e123', from:'n38', to:'n05', label:'Validated innovation ideas form the foundation of the business case',importance:3,},
 
   // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
-  { id:'e105', from:'n22', to:'n36', label:'low/negative benefits trigger lifecycle planning',    importance:3,},
+  { id:'e105', from:'n22', to:'n36', label:'Diminishing returns necessitate application decommissioning',    importance:3,},
 
   // ── Transition Roadmap Canvas (n37) ──────────────────────────────────────
-  { id:'e111', from:'n30', to:'n37', label:'strategic IT initiatives → transition scope',         importance:3,},
-  { id:'e112', from:'n37', to:'n07', label:'transition steps populate layered roadmap lanes',      importance:2,},
-  { id:'e113', from:'n24', to:'n37', label:'capability maturity gaps drive transition priorities',importance:2,},
-  { id:'e114', from:'n08', to:'n37', label:'current-state context scopes transition boundary',    importance:2,},
-  { id:'e115', from:'n37', to:'n14', label:'transition decisions captured as ADRs',               importance:2,},
-  { id:'e116', from:'n37', to:'n28', label:'transition milestones drive application decomposition',importance:2,},
-  { id:'e117', from:'n37', to:'n09', label:'transition constraints surface new ASRs',             importance:2,},
+  { id:'e111', from:'n30', to:'n37', label:'Strategic initiatives define the scope of the transition roadmap',importance:3,},
+  { id:'e112', from:'n37', to:'n07', label:'Transition milestones drive layered roadmap planning',           importance:2,},
+  { id:'e113', from:'n24', to:'n37', label:'Maturity gaps dictate the sequencing of transition efforts',     importance:2,},
+  { id:'e114', from:'n08', to:'n37', label:'Current-state architecture defines the baseline for transition planning',importance:2,},
+  { id:'e115', from:'n37', to:'n14', label:'Migration strategies are recorded as formal architectural decisions',importance:2,},
+  { id:'e116', from:'n37', to:'n28', label:'Phased transition plans govern application decomposition',       importance:2,},
+  { id:'e117', from:'n37', to:'n09', label:'Migration constraints expose transitional Architecturally Significant Requirements',importance:2,},
+
+  // ── Information View Card (n39) ──────────────────────────────────────────
+  { id:'e125', from:'n39', to:'n14', label:'Data storage and governance decisions form ADRs',                importance:3 },
 
 ];
+
