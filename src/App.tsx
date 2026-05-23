@@ -31,6 +31,7 @@ export default function App() {
   const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(() => window.innerWidth > 600);
   const [editMode,   setEditMode]   = useState(false);
+  const [showGroups, setShowGroups] = useState(false);
   const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -234,16 +235,42 @@ export default function App() {
   }), []);
 
   const [cardImportanceLevel, setCardImportanceLevel] = useState<1 | 2 | 3>(1);
-  const visibleNodes = useMemo(
-    () => NODES.filter(n => !n.importance || n.importance >= cardImportanceLevel),
-    [cardImportanceLevel],
-  );
+  const visibleNodes = useMemo(() => {
+    const importanceFiltered = NODES.filter(n => !n.importance || n.importance >= cardImportanceLevel);
+    if (showGroups) {
+      // Show group nodes, hide their items
+      return importanceFiltered.filter(n => n.role !== 'item');
+    } else {
+      // Show item nodes, hide group nodes
+      return importanceFiltered.filter(n => n.role !== 'group');
+    }
+  }, [cardImportanceLevel, showGroups]);
 
   const visibleNodeIds = useMemo(() => new Set(visibleNodes.map(n => n.id)), [visibleNodes]);
-  const visibleEdges = useMemo(
-    () => EDGES.filter(e => visibleNodeIds.has(e.from) && visibleNodeIds.has(e.to)),
-    [visibleNodeIds],
-  );
+
+  // When showGroups is on, remap edges from member nodes to their group node
+  const visibleEdges = useMemo(() => {
+    if (!showGroups) {
+      return EDGES.filter(e => visibleNodeIds.has(e.from) && visibleNodeIds.has(e.to));
+    }
+    // Build member→group map
+    const memberToGroup = new Map<string, string>();
+    NODES.forEach(n => { if (n.role === 'item' && n.groupId) memberToGroup.set(n.id, n.groupId); });
+    const remap = (id: string) => memberToGroup.get(id) ?? id;
+    const seen = new Set<string>();
+    const result: typeof EDGES = [];
+    for (const e of EDGES) {
+      const from = remap(e.from);
+      const to   = remap(e.to);
+      if (from === to) continue; // self-loop after remap
+      if (!visibleNodeIds.has(from) || !visibleNodeIds.has(to)) continue;
+      const key = `${from}→${to}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      result.push({ ...e, from, to });
+    }
+    return result;
+  }, [visibleNodeIds, showGroups]);
 
   const { connectedEdgeIds, connectedNodeIds } = useMemo(() => {
     if (!selectedId) return { connectedEdgeIds: null, connectedNodeIds: null };
@@ -310,6 +337,8 @@ export default function App() {
         onShowGridChange={setShowGrid}
         editMode={editMode}
         onToggleEditMode={() => setEditMode(v => !v)}
+        showGroups={showGroups}
+        onToggleGroups={() => setShowGroups(v => !v)}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
         onToggleSidebar={handleToggleSidebar}

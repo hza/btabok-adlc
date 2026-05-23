@@ -7,6 +7,8 @@ interface TopBarProps {
   showSidebar: boolean;
   saved: boolean;
   editMode: boolean;
+  showGroups: boolean;
+  onToggleGroups: () => void;
   onReset: () => void;
   onFit: () => void;
   onZoomIn: () => void;
@@ -21,9 +23,9 @@ interface TopBarProps {
 }
 
 const TopBar = React.memo(function TopBar({
-  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved, editMode,
+  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved, editMode, showGroups,
   onReset, onFit, onSave, onZoomIn, onZoomOut, onDownload,
-  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar, onToggleEditMode,
+  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar, onToggleEditMode, onToggleGroups,
 }: TopBarProps) {
   return (
     <div style={{
@@ -98,6 +100,17 @@ const TopBar = React.memo(function TopBar({
             <line x1="12" y1="1.5" x2="12" y2="16.5" stroke="currentColor" strokeWidth="1.5"/>
             <line x1="1.5" y1="6" x2="16.5" y2="6" stroke="currentColor" strokeWidth="1.5"/>
             <line x1="1.5" y1="12" x2="16.5" y2="12" stroke="currentColor" strokeWidth="1.5"/>
+          </svg>
+        </IconBtn>
+        <Divider/>
+        <IconBtn onClick={onToggleGroups} title={showGroups ? 'Expand groups (show individual cards)' : 'Collapse groups (show group cards)'}
+          style={{ color: showGroups ? '#7F77DD' : '#94A3B8' }}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="1.5" y="5.5" width="15" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+            <line x1="5.5" y1="5.5" x2="5.5" y2="14.5" stroke="currentColor" strokeWidth="1.5"/>
+            <line x1="9.5" y1="5.5" x2="9.5" y2="14.5" stroke="currentColor" strokeWidth="1.5"/>
+            <line x1="1.5" y1="3.5" x2="16.5" y2="3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="3.5" y1="1.5" x2="14.5" y2="1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
         </IconBtn>
         <Divider/>
