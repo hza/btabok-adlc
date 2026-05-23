@@ -55,6 +55,14 @@ export default function App() {
         if (e.key === 'ArrowDown')  el.scrollTop  += step;
         return;
       }
+      // Toggle sidebar with ']' key (ignore when typing in inputs)
+      if (e.key === ']') {
+        const active = document.activeElement as HTMLElement | null;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+        e.preventDefault();
+        setShowLegend(v => !v);
+        return;
+      }
       if (!(e.metaKey || e.ctrlKey)) return;
       if (e.key === '=' || e.key === '+') {
         e.preventDefault();

@@ -273,6 +273,7 @@ export const LegendPanel = React.memo(function LegendPanel({ style }: { style?: 
                   ['⌘/Ctrl + 0',         'Reset zoom'],
                   ['Arrow keys',          'Pan canvas'],
                   ['Shift + Arrow',       'Pan faster'],
+                  [']',                   'Show/hide sidebar'],
                   ['Phase chips',         'Filter the view'],
                 ] as [string, string][]).map(([key, desc]) => (
                   <tr key={key}>
