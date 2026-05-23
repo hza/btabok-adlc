@@ -239,10 +239,10 @@ export default function App() {
     const importanceFiltered = NODES.filter(n => !n.importance || n.importance >= cardImportanceLevel);
     if (showGroups) {
       // Show group nodes, hide their items
-      return importanceFiltered.filter(n => n.role !== 'item');
+      return importanceFiltered.filter(n => n.group === n.id || !n.group);
     } else {
       // Show item nodes, hide group nodes
-      return importanceFiltered.filter(n => n.role !== 'group');
+      return importanceFiltered.filter(n => n.group !== n.id);
     }
   }, [cardImportanceLevel, showGroups]);
 
@@ -255,7 +255,7 @@ export default function App() {
     }
     // Build member→group map
     const memberToGroup = new Map<string, string>();
-    NODES.forEach(n => { if (n.role === 'item' && n.groupId) memberToGroup.set(n.id, n.groupId); });
+    NODES.forEach(n => { if (n.group && n.group !== n.id) memberToGroup.set(n.id, n.group); });
     const remap = (id: string) => memberToGroup.get(id) ?? id;
     const seen = new Set<string>();
     const result: typeof EDGES = [];
