@@ -32,6 +32,7 @@ export default function App() {
   const [showLegend, setShowLegend] = useState(() => window.innerWidth > 600);
   const [editMode,   setEditMode]   = useState(false);
   const [showGroups, setShowGroups] = useState(false);
+  const [showImportantEdgesOnly, setShowImportantEdgesOnly] = useState(false);
   const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -251,7 +252,8 @@ export default function App() {
   // When showGroups is on, remap edges from member nodes to their group node
   const visibleEdges = useMemo(() => {
     if (!showGroups) {
-      return EDGES.filter(e => visibleNodeIds.has(e.from) && visibleNodeIds.has(e.to));
+      const filtered = EDGES.filter(e => visibleNodeIds.has(e.from) && visibleNodeIds.has(e.to));
+      return showImportantEdgesOnly ? filtered.filter(e => e.importance === 3) : filtered;
     }
     // Build member→group map
     const memberToGroup = new Map<string, string>();
@@ -269,8 +271,8 @@ export default function App() {
       seen.add(key);
       result.push({ ...e, from, to });
     }
-    return result;
-  }, [visibleNodeIds, showGroups]);
+    return showImportantEdgesOnly ? result.filter(e => e.importance === 3) : result;
+  }, [visibleNodeIds, showGroups, showImportantEdgesOnly]);
 
   const { connectedEdgeIds, connectedNodeIds } = useMemo(() => {
     if (!selectedId) return { connectedEdgeIds: null, connectedNodeIds: null };
@@ -339,6 +341,8 @@ export default function App() {
         onToggleEditMode={() => setEditMode(v => !v)}
         showGroups={showGroups}
         onToggleGroups={() => setShowGroups(v => !v)}
+        showImportantEdgesOnly={showImportantEdgesOnly}
+        onToggleImportantEdgesOnly={() => setShowImportantEdgesOnly(v => !v)}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
         onToggleSidebar={handleToggleSidebar}

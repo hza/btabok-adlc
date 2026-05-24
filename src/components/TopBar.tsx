@@ -9,6 +9,8 @@ interface TopBarProps {
   editMode: boolean;
   showGroups: boolean;
   onToggleGroups: () => void;
+  showImportantEdgesOnly: boolean;
+  onToggleImportantEdgesOnly: () => void;
   onReset: () => void;
   onFit: () => void;
   onZoomIn: () => void;
@@ -23,9 +25,9 @@ interface TopBarProps {
 }
 
 const TopBar = React.memo(function TopBar({
-  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved, editMode, showGroups,
+  cardImportanceLevel, showSwimlanes, showGrid, showSidebar, saved, editMode, showGroups, showImportantEdgesOnly,
   onReset, onFit, onSave, onZoomIn, onZoomOut, onDownload,
-  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar, onToggleEditMode, onToggleGroups,
+  onCardImportanceLevelChange, onShowSwimlanesChange, onShowGridChange, onToggleSidebar, onToggleEditMode, onToggleGroups, onToggleImportantEdgesOnly,
 }: TopBarProps) {
   return (
     <div style={{
@@ -106,11 +108,23 @@ const TopBar = React.memo(function TopBar({
         <IconBtn onClick={onToggleGroups} title={showGroups ? 'Expand groups (show individual cards)' : 'Collapse groups (show group cards)'}
           style={{ color: showGroups ? '#7F77DD' : '#94A3B8' }}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <rect x="1.5" y="5.5" width="15" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
-            <line x1="5.5" y1="5.5" x2="5.5" y2="14.5" stroke="currentColor" strokeWidth="1.5"/>
-            <line x1="9.5" y1="5.5" x2="9.5" y2="14.5" stroke="currentColor" strokeWidth="1.5"/>
-            <line x1="1.5" y1="3.5" x2="16.5" y2="3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <line x1="3.5" y1="1.5" x2="14.5" y2="1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+            {showGroups
+              ? <>
+                  <line x1="9" y1="5" x2="9" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="5" y1="9" x2="13" y2="9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </>
+              : <line x1="5" y1="9" x2="13" y2="9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            }
+          </svg>
+        </IconBtn>
+        <Divider/>
+        <IconBtn onClick={onToggleImportantEdgesOnly} title={showImportantEdgesOnly ? 'Show all edges' : 'Show only important edges (importance 3)'}
+          style={{ color: showImportantEdgesOnly ? '#7F77DD' : '#94A3B8' }}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.5"/>
+            <line x1="9" y1="4.5" x2="9" y2="10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <circle cx="9" cy="13.5" r="1.2" fill="currentColor"/>
           </svg>
         </IconBtn>
         <Divider/>

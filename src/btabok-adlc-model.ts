@@ -215,8 +215,8 @@ export const EDGES: EdgeData[] = [
   { id:'e38',  from:'n22', to:'n21', label:'Value realization uncovers latent technical debt',               importance:2,},
 
   // ── Benefits Realization View Canvas (n22) ───────────────────────────────
-  { id:'e37',  from:'n22', to:'n07', label:'Measured outcomes enforce roadmap reprioritization',             importance:3,},
-  { id:'e40',  from:'n22', to:'n01', label:'Realized benefits validate business model hypotheses',           importance:3,},
+  { id:'e37',  from:'n22', to:'n07', label:'Measured outcomes enforce roadmap reprioritization',             importance:2,},
+  { id:'e40',  from:'n22', to:'n01', label:'Realized benefits validate business model hypotheses',           importance:2,},
 
   // ── QATT Card (n11) ───────────────────────────────────────────────────────
   { id:'e48',  from:'n09', to:'n11', label:'ASRs form the basis for quality attribute scenarios',            importance:3,},
@@ -226,13 +226,13 @@ export const EDGES: EdgeData[] = [
   // ── Strategic Roadmap Canvas (n30) ───────────────────────────────────────
   { id:'e82',  from:'n02', to:'n30', label:'Capabilities provide the foundation for strategic initiatives',  importance:2,},
   { id:'e83',  from:'n05', to:'n30', label:'Business case justifies and bounds strategic initiatives',       importance:2,},
-  { id:'e84',  from:'n06', to:'n30', label:'Principles provide governance for strategic initiatives',        importance:3,},
-  { id:'e85',  from:'n23', to:'n30', label:'OKRs measure and align strategic initiative outcomes',           importance:3,},
+  { id:'e84',  from:'n06', to:'n30', label:'Principles provide governance for strategic initiatives',        importance:2,},
+  { id:'e85',  from:'n23', to:'n30', label:'OKRs measure and align strategic initiative outcomes',           importance:2,},
   { id:'e86',  from:'n30', to:'n07', label:'Strategic roadmap dictates phased execution delivery',           importance:3,},
 
   // ── OKR Card (n23) ────────────────────────────────────────────────────────
-  { id:'e51',  from:'n05', to:'n23', label:'Business goals translate into measurable OKRs',                  importance:3,},
-  { id:'e53',  from:'n23', to:'n07', label:'OKRs define target milestones for strategic roadmaps',           importance:3,},
+  { id:'e51',  from:'n05', to:'n23', label:'Business goals translate into measurable OKRs',                  importance:2,},
+  { id:'e53',  from:'n23', to:'n07', label:'OKRs define target milestones for strategic roadmaps',           importance:2,},
   { id:'e54',  from:'n22', to:'n23', label:'Realized benefits verify OKR achievement',                       importance:2,},
 
   // ── Capability Card (n24) ─────────────────────────────────────────────────
@@ -271,13 +271,13 @@ export const EDGES: EdgeData[] = [
   { id:'e110', from:'n20', to:'n14', label:'System interaction patterns mandate design decisions',           importance:1 },
 
   // ── Value Stream Map (n31) ────────────────────────────────────────────────
-  { id:'e87',  from:'n02', to:'n31', label:'Capabilities enable value stream execution',                     importance:3,},
-  { id:'e88',  from:'n31', to:'n26', label:'Value stream activities align with service blueprint stages',    importance:3,},
+  { id:'e87',  from:'n02', to:'n31', label:'Capabilities enable value stream execution',                     importance:2,},
+  { id:'e88',  from:'n31', to:'n26', label:'Value stream activities align with service blueprint stages',    importance:2,},
   { id:'e89',  from:'n31', to:'n16', label:'Value flow delineates bounded context boundaries',               importance:2 },
   { id:'e91',  from:'n23', to:'n31', label:'OKRs establish performance targets for value streams',           importance:2,},
 
   // ── Customer Journey Map (n32) ────────────────────────────────────────────
-  { id:'e92',  from:'n32', to:'n26', label:'Journey map actions define front-stage blueprint interactions',  importance:3,},
+  { id:'e92',  from:'n32', to:'n26', label:'Journey map actions define front-stage blueprint interactions',  importance:2,},
   { id:'e93',  from:'n32', to:'n23', label:'Customer frictions highlight targets for OKR improvement',       importance:2,},
   { id:'e94',  from:'n32', to:'n05', label:'Customer experience enhancements substantiate the business case',importance:2,},
   { id:'e95',  from:'n32', to:'n31', label:'Journey map interactions refine value stream flow',              importance:2,},
@@ -290,23 +290,23 @@ export const EDGES: EdgeData[] = [
 
   // ── Customer Persona (n34) ────────────────────────────────────────────────
   { id:'e100', from:'n01', to:'n34', label:'Business model customer segments define target personas',        importance:3,},
-  { id:'e101', from:'n34', to:'n32', label:'Persona traits drive the narrative of the journey map',          importance:3,},
+  { id:'e101', from:'n34', to:'n32', label:'Persona traits drive the narrative of the journey map',          importance:2,},
   { id:'e103', from:'n34', to:'n35', label:'Empathy mapping enriches persona behavioral insights',           importance:2,},
 
   // ── Stakeholder Empathy Map (n35) ─────────────────────────────────────────
   { id:'e104', from:'n35', to:'n32', label:'Empathy analysis provides emotional context for journey touchpoints',importance:2,},
 
   // ── Innovation Assessment Card (n38) ─────────────────────────────────────
-  { id:'e119', from:'n01', to:'n38', label:'Business model evolution generates innovation opportunities',    importance:3,},
-  { id:'e120', from:'n02', to:'n38', label:'Capability deficits spur innovation initiatives',                importance:3,},
+  { id:'e119', from:'n01', to:'n38', label:'Business model evolution generates innovation opportunities',    importance:2,},
+  { id:'e120', from:'n02', to:'n38', label:'Capability deficits spur innovation initiatives',                importance:2,},
   { id:'e122', from:'n33', to:'n38', label:'Unfulfilled customer jobs inspire new innovation concepts',      importance:2,},
   { id:'e123', from:'n38', to:'n05', label:'Validated innovation ideas form the foundation of the business case',importance:3,},
 
   // ── Lifecycle Planning Canvas (n36) ──────────────────────────────────────
-  { id:'e105', from:'n22', to:'n36', label:'Diminishing returns necessitate application decommissioning',    importance:3,},
+  { id:'e105', from:'n22', to:'n36', label:'Diminishing returns necessitate application decommissioning',    importance:2,},
 
   // ── Transition Roadmap Canvas (n37) ──────────────────────────────────────
-  { id:'e111', from:'n30', to:'n37', label:'Strategic initiatives define the scope of the transition roadmap',importance:3,},
+  { id:'e111', from:'n30', to:'n37', label:'Strategic initiatives define the scope of the transition roadmap',importance:2,},
   { id:'e112', from:'n37', to:'n07', label:'Transition milestones drive layered roadmap planning',           importance:2,},
   { id:'e113', from:'n24', to:'n37', label:'Maturity gaps dictate the sequencing of transition efforts',     importance:2,},
   { id:'e114', from:'n08', to:'n37', label:'Current-state architecture defines the baseline for transition planning',importance:2,},
