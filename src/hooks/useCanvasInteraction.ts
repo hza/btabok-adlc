@@ -149,7 +149,7 @@ export function useCanvasInteraction() {
       const dx = (e.clientX - sx) / scaleRef.current;
       const dy = (e.clientY - sy) / scaleRef.current;
       setPositions(cur => {
-        const next = { ...cur, [id]: { x: snapV(ox + dx), y: snapV(oy + dy) } };
+        const next = { ...cur, [id]: { x: snapV(ox + dx), y: Math.max(SNAP, snapV(oy + dy)) } };
         const bands = PHASES.map(ph => {
           const xs = NODES.filter(n => n.phase === ph).map(n => next[n.id].x);
           return { ph, maxX: Math.max(...xs) + NODE_W + BAND_PADDING };
