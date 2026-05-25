@@ -66,6 +66,34 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
           ↗ {node.link.replace(/^https?:\/\//, '')}
         </a>
       )}
+      {node.group === node.id && (() => {
+        const members = NODES.filter(n => n.group === node.id && n.id !== node.id);
+        if (!members.length) return null;
+        return (
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ fontWeight: 600, fontSize: 13, color: '#94A3B8', marginBottom: 6,
+              textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              ⬡ Members ({members.length})
+            </div>
+            {members.map(m => {
+              const mbc = badgeColor(m.badge);
+              return (
+                <div key={m.id} style={{ marginBottom: 5, padding: '7px 10px',
+                  background: '#F8FAFC', borderRadius: 6, borderLeft: `3px solid ${mbc}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                    <span style={{ fontWeight: 600, color: '#1E293B', fontSize: 14, flex: 1 }}>{m.num}. {m.title}</span>
+                    <span style={{ background: `${mbc}18`, color: mbc, borderRadius: 4,
+                      padding: '1px 6px', fontSize: 10, fontWeight: 600, flexShrink: 0 }}>
+                      {m.badge}
+                    </span>
+                  </div>
+                  <div style={{ color: '#94A3B8', fontSize: 12, fontStyle: 'italic' }}>{m.subtitle}</div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
       {outgoing.length > 0 && <ConnList title={`→ Outgoing (${outgoing.length})`} items={outgoing} accent="#7F77DD"/>}
       {incoming.length > 0 && <ConnList title={`← Incoming (${incoming.length})`} items={incoming} accent="#1D9E75"/>}
     </div>
