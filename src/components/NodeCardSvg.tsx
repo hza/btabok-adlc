@@ -24,7 +24,9 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
   const { titleLines, subtitleLines, noteLines } = nodeLines(node);
 
   // Badge pill sizing
-  const badgePillW = Math.min(72, node.badge.length * 7.5 + 10);
+  const isGroup    = node.group === node.id;
+  const badgeLabel = isGroup ? 'Group' : node.badge;
+  const badgePillW = Math.min(72, badgeLabel.length * 7.5 + 10);
   const badgePillX = NODE_W - 8 - badgePillW;
 
   // Accumulated y for text baselines
@@ -71,11 +73,11 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
       </text>
 
       {/* badge pill */}
-      <rect x={badgePillX} y={5} width={badgePillW} height={18} rx={4} fill={`${bc}18`}/>
+      <rect x={badgePillX} y={5} width={badgePillW} height={18} rx={4} fill={isGroup ? '#EDE9FE' : `${bc}18`}/>
       <text x={badgePillX + badgePillW / 2} y={18} textAnchor="middle"
-        fontSize={12} fontWeight={600} fill={bc}
+        fontSize={12} fontWeight={600} fill={isGroup ? '#6D28D9' : bc}
         fontFamily="system-ui,-apple-system,sans-serif">
-        {node.badge}
+        {badgeLabel}
       </text>
 
       {/* title */}
