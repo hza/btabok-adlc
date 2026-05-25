@@ -140,9 +140,9 @@ const SvgContent = memo(function SvgContent({
             const opacity  = dimS ? 0.35 : hi ? 1 : 0.55;
             const isOutgoing = hi && selectedId === edge.from;
             const isIncoming = hi && selectedId === edge.to;
-            const hiColor  = isOutgoing ? '#586fa1' : isIncoming ? '#528866' : '#7F77DD';
+            const hiColor  = isOutgoing ? '#babdc2' : isIncoming ? '#528866' : '#7F77DD';
             const stroke   = hi ? hiColor : impColor;
-            const sw       = hi ? 2.2 : edge.importance === 3 ? 2 : edge.importance === 2 ? 1.7 : 1.3;
+            const sw       = hi ? 2.2 : edge.importance === 3 ? 2.5 : edge.importance === 2 ? 1.4 : 1.3;
             const markerId = hi ? `mHi-${isOutgoing ? 'out' : isIncoming ? 'in' : 'def'}` : `mImp${edge.importance}`;
             return (
               <g key={edge.id} opacity={opacity}>

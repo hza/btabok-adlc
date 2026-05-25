@@ -155,8 +155,8 @@ export default function App() {
     [positions],
   );
   const canvasH = useMemo(
-    () => Math.max(...Object.values(positions).map(p => p.y)) + 200 + 80,
-    [positions],
+    () => Math.max(...NODES.map(n => (positions[n.id]?.y ?? 0) + nodeHeights[n.id])) + BAND_PADDING + 80,
+    [positions, nodeHeights],
   );
 
   const handleDownload = useCallback(() => {
