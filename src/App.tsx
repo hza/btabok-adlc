@@ -1,10 +1,10 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
   PHASE_STYLES, PHASES,
-  NODES, EDGES,
+  NODES, EDGES, EDGE_TYPES,
 } from './btabok-adlc-model';
 
-import type { Phase } from './btabok-adlc-model';
+import type { Phase, EdgeType } from './btabok-adlc-model';
 import { NODE_W, BAND_PADDING } from './constants';
 import { computeNodeSvgHeight } from './utils/nodeLayout';
 import { computeEdgePaths } from './utils/edgeUtils';
@@ -33,6 +33,20 @@ export default function App() {
   const [editMode,   setEditMode]   = useState(false);
   const [showGroups, setShowGroups] = useState(false);
   const [showImportantEdgesOnly, setShowImportantEdgesOnly] = useState(false);
+  const [activeEdgeTypes, setActiveEdgeTypes] = useState<Set<EdgeType>>(new Set(EDGE_TYPES));
+
+  const handleToggleEdgeType = useCallback((type: EdgeType) => {
+    setActiveEdgeTypes(prev => {
+      const next = new Set(prev);
+      if (next.has(type)) {
+        if (next.size === 1) return prev; // keep at least one
+        next.delete(type);
+      } else {
+        next.add(type);
+      }
+      return next;
+    });
+  }, []);
   const [saved,       setSaved]       = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -253,7 +267,8 @@ export default function App() {
   const visibleEdges = useMemo(() => {
     if (!showGroups) {
       const filtered = EDGES.filter(e => visibleNodeIds.has(e.from) && visibleNodeIds.has(e.to));
-      return showImportantEdgesOnly ? filtered.filter(e => e.importance === 3) : filtered;
+      const importanceFiltered = showImportantEdgesOnly ? filtered.filter(e => e.importance === 3) : filtered;
+      return importanceFiltered.filter(e => activeEdgeTypes.has(e.type));
     }
     // Build member→group map
     const memberToGroup = new Map<string, string>();
@@ -271,8 +286,9 @@ export default function App() {
       seen.add(key);
       result.push({ ...e, from, to });
     }
-    return showImportantEdgesOnly ? result.filter(e => e.importance === 3) : result;
-  }, [visibleNodeIds, showGroups, showImportantEdgesOnly]);
+      const importanceFiltered2 = showImportantEdgesOnly ? result.filter(e => e.importance === 3) : result;
+      return importanceFiltered2.filter(e => activeEdgeTypes.has(e.type));
+  }, [visibleNodeIds, showGroups, showImportantEdgesOnly, activeEdgeTypes]);
 
   const { connectedEdgeIds, connectedNodeIds } = useMemo(() => {
     if (!selectedId) return { connectedEdgeIds: null, connectedNodeIds: null };
@@ -385,7 +401,11 @@ export default function App() {
           borderLeft: '1px solid #E2E8F0',
           overflowY: 'auto', flexShrink: 0, fontSize: 14, color: '#334155',
         }}>
-          <LegendPanel style={{ display: selectedPhase || selectedNode ? 'none' : undefined }}/>
+          <LegendPanel
+            style={{ display: selectedPhase || selectedNode ? 'none' : undefined }}
+            activeEdgeTypes={activeEdgeTypes}
+            onToggleEdgeType={handleToggleEdgeType}
+          />
           {selectedNode && !selectedPhase && <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)}/>}
           {selectedPhase && <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>}
         </div>}

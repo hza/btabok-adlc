@@ -115,7 +115,7 @@ export const EDGE_TYPE_COLOR: Record<EdgeType, string> = {
   constrains: '#EF4444', // red
   formalizes: '#F59E0B', // amber
   traces_to:  '#888780', // gray
-  aligns:  '#00539F', // navy
+  aligns:     '#00539F', // navy
   validates:  '#0EA5E9', // sky blue
 };
 

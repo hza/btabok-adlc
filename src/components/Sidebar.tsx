@@ -9,7 +9,7 @@ import {
 } from '../btabok-adlc-model';
 
 const IMPORTANCE_KEY: Record<1 | 2 | 3, 'high' | 'extra' | 'ultra'> = { 1: 'high', 2: 'extra', 3: 'ultra' };
-import type { NodeData, EdgeData, Phase } from '../btabok-adlc-model';
+import type { NodeData, EdgeData, Phase, EdgeType } from '../btabok-adlc-model';
 
 // ─── SelectedPanel ────────────────────────────────────────────────────────────
 
@@ -215,7 +215,15 @@ export const PhasePanel = React.memo(function PhasePanel({ phase, onClose }: Pha
 
 // ─── LegendPanel ──────────────────────────────────────────────────────────────
 
-export const LegendPanel = React.memo(function LegendPanel({ style }: { style?: React.CSSProperties }) {
+export const LegendPanel = React.memo(function LegendPanel({
+  style,
+  activeEdgeTypes,
+  onToggleEdgeType,
+}: {
+  style?: React.CSSProperties;
+  activeEdgeTypes?: Set<EdgeType>;
+  onToggleEdgeType?: (type: EdgeType) => void;
+}) {
   return (
     <div style={style}>
 
@@ -248,19 +256,36 @@ export const LegendPanel = React.memo(function LegendPanel({ style }: { style?: 
           <SectionLabel>Edge types</SectionLabel>
           <table style={{ borderCollapse: 'collapse', width: '100%' }}>
             <tbody>
-              {(Object.entries(EDGE_TYPE_COLOR) as [keyof typeof EDGE_TYPE_COLOR, string][]).map(([type, color]) => (
-                <tr key={type}>
-                  <td style={{ paddingBottom: 8, paddingRight: 8, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
-                    <span style={{ background: `${color}18`, color, borderRadius: 4,
-                      padding: '1px 6px', fontSize: 11, fontWeight: 600, fontStyle: 'italic' }}>
-                      {type}
-                    </span>
-                  </td>
-                  <td style={{ paddingBottom: 8, color: '#475569', fontSize: 12, lineHeight: 1.5, verticalAlign: 'top' }}>
-                    {EDGE_TYPE_DESCRIPTION[type]}
-                  </td>
-                </tr>
-              ))}
+              {(Object.entries(EDGE_TYPE_COLOR) as [keyof typeof EDGE_TYPE_COLOR, string][]).map(([type, color]) => {
+                const active = !activeEdgeTypes || activeEdgeTypes.has(type);
+                return (
+                  <tr key={type}>
+                    <td style={{ paddingBottom: 8, paddingRight: 8, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
+                      <span
+                        onClick={() => onToggleEdgeType?.(type)}
+                        title={active ? 'Click to hide this edge type' : 'Click to show this edge type'}
+                        style={{
+                          background: active ? `${color}18` : '#F1F5F9',
+                          color: active ? color : '#94A3B8',
+                          borderRadius: 4,
+                          padding: '1px 6px', fontSize: 11, fontWeight: 600, fontStyle: 'italic',
+                          cursor: onToggleEdgeType ? 'pointer' : undefined,
+                          opacity: active ? 1 : 0.5,
+                          display: 'inline-block',
+                          userSelect: 'none',
+                          transition: 'opacity 0.15s, background 0.15s, color 0.15s',
+                          outline: active ? `1px solid ${color}40` : '1px solid #E2E8F0',
+                        }}
+                      >
+                        {type}
+                      </span>
+                    </td>
+                    <td style={{ paddingBottom: 8, color: active ? '#475569' : '#94A3B8', fontSize: 12, lineHeight: 1.5, verticalAlign: 'top', transition: 'color 0.15s' }}>
+                      {EDGE_TYPE_DESCRIPTION[type]}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 
