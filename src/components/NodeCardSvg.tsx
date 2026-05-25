@@ -47,10 +47,10 @@ const NodeCardSvg = React.memo(function NodeCardSvg({
       style={{ cursor: dragging ? 'grabbing' : 'grab', userSelect: 'none' }}
       opacity={dimmed ? 0.85 : 1}
     >
-      {/* card background */}
+      {/* card box */}
       <rect x={0} y={0} width={NODE_W} height={h} rx={8}
         fill="#FFFFFF"
-        stroke={selected ? bc : '#E2E8F0'}
+        stroke={selected ? bc : node.importance === 3 ? '#9c98b2' : '#E2E8F0'}
         strokeWidth={2}
         filter={selected ? 'url(#nodeShadowSelected)' : 'url(#nodeShadow)'}/>
 
