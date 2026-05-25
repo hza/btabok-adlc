@@ -109,6 +109,17 @@ export const EDGE_TYPES = [
 
 export type EdgeType = typeof EDGE_TYPES[number];
 
+export const EDGE_TYPE_COLOR: Record<EdgeType, string> = {
+  base_for:   '#6366F1', // indigo
+  drives:     '#10B981', // emerald
+  constrains: '#EF4444', // red
+  formalizes: '#F59E0B', // amber
+  traces_to:  '#888780', // gray
+  aligns:  '#00539F', // navy
+  validates:  '#0EA5E9', // sky blue
+};
+
+
 export const EDGE_TYPE_DESCRIPTION: Record<EdgeType, string> = {
   base_for: 'Acts as a foundation, prerequisite, or source material for another artifact.',
   aligns: 'Ensures consistency, agreement, or synchronization between artifacts.',

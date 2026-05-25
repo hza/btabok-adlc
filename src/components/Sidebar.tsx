@@ -5,6 +5,7 @@ import {
   PHASE_STYLES, PHASES, PHASE_LABEL,
   PHASE_DESCRIPTION, PHASE_GOAL, PHASE_KEY_QUESTIONS,
   NODES, IMPORTANCE_STYLES,
+  EDGE_TYPE_COLOR, EDGE_TYPE_DESCRIPTION,
 } from '../btabok-adlc-model';
 
 const IMPORTANCE_KEY: Record<1 | 2 | 3, 'high' | 'extra' | 'ultra'> = { 1: 'high', 2: 'extra', 3: 'ultra' };
@@ -122,7 +123,14 @@ function ConnList({ title, items, accent }: {
               </span>
             ); })()}
           </div>
-          <div style={{ color: '#94A3B8', fontSize: 12, fontStyle: 'italic' }}>{e.label}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+            <span style={{ background: `${EDGE_TYPE_COLOR[e.type]}18`, color: EDGE_TYPE_COLOR[e.type],
+              borderRadius: 4, padding: '1px 6px', fontSize: 10, fontWeight: 600, flexShrink: 0,
+              fontStyle: 'italic' }}>
+              {e.type}
+            </span>
+            <div style={{ color: '#94A3B8', fontSize: 12, fontStyle: 'italic' }}>{e.label}</div>
+          </div>
         </div>
       ))}
     </div>
@@ -236,6 +244,27 @@ export const LegendPanel = React.memo(function LegendPanel({ style }: { style?: 
       <Hr/>
 
       <div style={{ fontWeight: 700, fontSize: 15, color: '#1E293B', marginBottom: 12 }}>Legend</div>
+
+          <SectionLabel>Edge types</SectionLabel>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <tbody>
+              {(Object.entries(EDGE_TYPE_COLOR) as [keyof typeof EDGE_TYPE_COLOR, string][]).map(([type, color]) => (
+                <tr key={type}>
+                  <td style={{ paddingBottom: 8, paddingRight: 8, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
+                    <span style={{ background: `${color}18`, color, borderRadius: 4,
+                      padding: '1px 6px', fontSize: 11, fontWeight: 600, fontStyle: 'italic' }}>
+                      {type}
+                    </span>
+                  </td>
+                  <td style={{ paddingBottom: 8, color: '#475569', fontSize: 12, lineHeight: 1.5, verticalAlign: 'top' }}>
+                    {EDGE_TYPE_DESCRIPTION[type]}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <Hr/>
 
       <SectionLabel>Badge types</SectionLabel>
           {BADGE_TYPES.map(({ badge, color, description }) => (

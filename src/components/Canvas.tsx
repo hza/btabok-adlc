@@ -1,8 +1,21 @@
 import React, { memo } from 'react';
-import { PHASE_LABEL, IMP_COLOR } from '../btabok-adlc-model';
-import type { Phase, NodeData } from '../btabok-adlc-model';
+import { PHASE_LABEL, EDGE_TYPE_COLOR } from '../btabok-adlc-model';
+import type { Phase, NodeData, EdgeType } from '../btabok-adlc-model';
 import NodeCardSvg, { NodeStackLayer } from './NodeCardSvg';
 import { SCROLL_SURFACE } from '../constants';
+
+const darkenCache = new Map<string, string>();
+function darken(hex: string, amount = 0.75): string {
+  const key = `${hex}:${amount}`;
+  if (darkenCache.has(key)) return darkenCache.get(key)!;
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.round(((n >> 16) & 0xff) * amount);
+  const g = Math.round(((n >> 8)  & 0xff) * amount);
+  const b = Math.round(( n        & 0xff) * amount);
+  const result = `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+  darkenCache.set(key, result);
+  return result;
+}
 
 interface EdgePath {
   id: string;
@@ -13,6 +26,7 @@ interface EdgePath {
   my: number;
   label: string;
   importance: 1 | 2 | 3;
+  type: EdgeType;
 }
 
 interface PhaseBand {
@@ -88,10 +102,10 @@ const SvgContent = memo(function SvgContent({
           <polygon points="0 0,7 3.5,0 7" fill="#7F77DD"/>
         </marker>
 
-        {/* Arrowhead markers for edges of different importance levels */}
-        {([1, 2, 3] as const).map(imp => (
-          <marker key={imp} id={`mImp${imp}`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-            <polygon points="0 0,7 3.5,0 7" fill={IMP_COLOR[imp]}/>
+        {/* Arrowhead markers for edges of different types */}
+        {(Object.entries(EDGE_TYPE_COLOR) as [EdgeType, string][]).map(([type, color]) => (
+          <marker key={type} id={`mType-${type}`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill={color}/>
           </marker>
         ))}
         
@@ -136,14 +150,14 @@ const SvgContent = memo(function SvgContent({
           {edgePaths.map(edge => {
             const hi       = connectedEdgeIds ? connectedEdgeIds.has(edge.id) : false;
             const dimS     = connectedEdgeIds ? !hi : false;
-            const impColor = IMP_COLOR[edge.importance];
+            const typeColor = EDGE_TYPE_COLOR[edge.type];
             const opacity  = dimS ? 0.35 : hi ? 1 : 0.55;
             const isOutgoing = hi && selectedId === edge.from;
             const isIncoming = hi && selectedId === edge.to;
-            const hiColor  = isOutgoing ? '#10459a' : isIncoming ? '#528866' : '#7F77DD';
-            const stroke   = hi ? hiColor : impColor;
+            const hiColor  = isOutgoing ? '#10459a' : isIncoming ? '#528866' : typeColor;
+            const stroke   = hi ? hiColor : typeColor;
             const sw       = hi ? 2.2 : edge.importance === 3 ? 2.5 : edge.importance === 2 ? 1.4 : 1.3;
-            const markerId = hi ? `mHi-${isOutgoing ? 'out' : isIncoming ? 'in' : 'def'}` : `mImp${edge.importance}`;
+            const markerId = isOutgoing ? 'mHi-out' : isIncoming ? 'mHi-in' : `mType-${edge.type}`;
             return (
               <g key={edge.id} opacity={opacity}>
                 <path d={edge.path} fill="none"
@@ -158,11 +172,13 @@ const SvgContent = memo(function SvgContent({
                   return (
                     <text x={edge.mx} y={edge.my - 10}
                       textAnchor="middle" fontSize={12} fontFamily="system-ui"
-                      fill={hi ? stroke : '#000000'}
+                      fill={hi ? stroke : darken(typeColor)}
                       stroke="white" strokeWidth="2.8" paintOrder="stroke"
                       style={{ userSelect: 'none' }}>
                       <tspan x={edge.mx} dy="0">{line1}</tspan>
                       {line2 && <tspan x={edge.mx} dy="15">{line2}</tspan>}
+                      <tspan x={edge.mx} dy="15" fontSize={10} fill={darken(typeColor)} stroke="white" strokeWidth="2"
+                        fontStyle="italic" fontWeight="900">[{edge.type}]</tspan>
                     </text>
                   );
                 })()}
