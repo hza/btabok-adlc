@@ -175,8 +175,8 @@ const SvgContent = memo(function SvgContent({
                       fill={hi ? stroke : darken(typeColor)}
                       stroke="white" strokeWidth="2.8" paintOrder="stroke"
                       style={{ userSelect: 'none' }}>
-                      <tspan x={edge.mx} dy="0">{line1}</tspan>
-                      {line2 && <tspan x={edge.mx} dy="15">{line2}</tspan>}
+                      <tspan x={edge.mx} dy="0" fill={darken(typeColor, 0.5)}>{line1}</tspan>
+                      {line2 && <tspan x={edge.mx} dy="15" fill={darken(typeColor, 0.5)}>{line2}</tspan>}
                       <tspan x={edge.mx} dy="15" fontSize={10} fill={darken(typeColor)} stroke="white" strokeWidth="2"
                         fontStyle="italic" fontWeight="900">[{edge.type}]</tspan>
                     </text>
