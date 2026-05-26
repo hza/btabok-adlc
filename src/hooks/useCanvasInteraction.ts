@@ -317,6 +317,18 @@ export function useCanvasInteraction() {
     };
   }, [commitPanScale]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const centerOnNode = useCallback((id: string) => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    const pos = posRef.current[id];
+    if (!pos) return;
+    const sc = scaleRef.current;
+    const nodeW = 220;
+    const nodeH = 120; // approximate center height
+    scrollEl.scrollLeft = CONTENT_OFFSET + pos.x * sc + nodeW * sc / 2 - scrollEl.clientWidth / 2;
+    scrollEl.scrollTop  = CONTENT_OFFSET + pos.y * sc + nodeH * sc / 2 - scrollEl.clientHeight / 2;
+  }, [scrollContainerRef]);
+
   return {
     positions,
     scale: panScale.scale,
@@ -329,5 +341,6 @@ export function useCanvasInteraction() {
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
     resetPositions, fitToScreen, zoomIn, zoomOut, resetZoom,
+    centerOnNode,
   };
 }

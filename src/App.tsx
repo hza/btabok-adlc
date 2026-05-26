@@ -22,7 +22,7 @@ export default function App() {
     transformGRef, containerDivRef, scrollContainerRef, showGridRef,
     handleWheel, startNodeDrag, startPanDrag,
     handleMouseMove, handleMouseUp,
-    resetPositions, fitToScreen, zoomIn, zoomOut, resetZoom,
+    resetPositions, fitToScreen, zoomIn, zoomOut, resetZoom, centerOnNode,
   } = useCanvasInteraction();
 
   const [selectedId,    setSelectedId]    = useState<string | null>(null);
@@ -33,7 +33,8 @@ export default function App() {
     setNavHistory(h => selectedId ? [...h, selectedId] : h);
     setSelectedId(id);
     setSelectedPhase(null);
-  }, [selectedId]);
+    setTimeout(() => centerOnNode(id), 0);
+  }, [selectedId, centerOnNode]);
 
   const navigateBack = React.useCallback(() => {
     setNavHistory(h => {
