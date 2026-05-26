@@ -39,11 +39,15 @@ export default function App() {
   const navigateBack = React.useCallback(() => {
     setNavHistory(h => {
       const prev = h[h.length - 1];
-      if (prev !== undefined) setSelectedId(prev);
-      else setSelectedId(null);
+      if (prev !== undefined) {
+        setSelectedId(prev);
+        setTimeout(() => centerOnNode(prev), 0);
+      } else {
+        setSelectedId(null);
+      }
       return h.slice(0, -1);
     });
-  }, []);
+  }, [centerOnNode]);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(() => window.innerWidth > 600);

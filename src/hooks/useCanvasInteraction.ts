@@ -325,8 +325,11 @@ export function useCanvasInteraction() {
     const sc = scaleRef.current;
     const nodeW = 220;
     const nodeH = 120; // approximate center height
-    scrollEl.scrollLeft = CONTENT_OFFSET + pos.x * sc + nodeW * sc / 2 - scrollEl.clientWidth / 2;
-    scrollEl.scrollTop  = CONTENT_OFFSET + pos.y * sc + nodeH * sc / 2 - scrollEl.clientHeight / 2;
+    scrollEl.scrollTo({
+      left: CONTENT_OFFSET + pos.x * sc + nodeW * sc / 2 - scrollEl.clientWidth / 2,
+      top:  CONTENT_OFFSET + pos.y * sc + nodeH * sc / 2 - scrollEl.clientHeight / 2,
+      behavior: 'smooth',
+    });
   }, [scrollContainerRef]);
 
   return {

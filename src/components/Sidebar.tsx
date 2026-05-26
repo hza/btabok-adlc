@@ -106,8 +106,8 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
           </div>
         );
       })()}
-      {incoming.length > 0 && <ConnList title={`→ Incoming (${incoming.length})`} items={incoming} accent="#1D9E75" onNodeSelect={onNodeSelect}/>}
       {outgoing.length > 0 && <ConnList title={`← Outgoing (${outgoing.length})`} items={outgoing} accent="#7F77DD" onNodeSelect={onNodeSelect}/>}
+      {incoming.length > 0 && <ConnList title={`→ Incoming (${incoming.length})`} items={incoming} accent="#1D9E75" onNodeSelect={onNodeSelect}/>}
     </div>
   );
 });
