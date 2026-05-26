@@ -18,9 +18,11 @@ interface SelectedPanelProps {
   outgoing: { e: EdgeData; n: NodeData }[];
   incoming: { e: EdgeData; n: NodeData }[];
   onPhaseClick: (ph: Phase) => void;
+  onNodeSelect: (id: string) => void;
+  onBack?: () => void;
 }
 
-export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing, incoming, onPhaseClick }: SelectedPanelProps) {
+export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing, incoming, onPhaseClick, onNodeSelect, onBack }: SelectedPanelProps) {
   const bc = badgeColor(node.badge);
   return (
     <div style={{ padding: 16 }}>
@@ -29,9 +31,18 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
           padding: '2px 8px', fontWeight: 700, fontSize: 16, flexShrink: 0 }}>
           {node.num}
         </span>
-        <span style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', lineHeight: 1.35 }}>
+        <span style={{ fontWeight: 700, fontSize: 16, color: '#1E293B', lineHeight: 1.35, flex: 1 }}>
           {node.title}
         </span>
+        {onBack && (
+          <button onClick={onBack} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: '#7F77DD', fontSize: 16, fontWeight: 600,
+            padding: '2px 0', display: 'flex', alignItems: 'center', flexShrink: 0, lineHeight: 1.35,
+          }}>
+            ←
+          </button>
+        )}
       </div>
       <div style={{ color: '#64748B', lineHeight: 1.5, marginBottom: 8 }}>{node.subtitle}</div>
       {node.note && (
@@ -95,24 +106,32 @@ export const SelectedPanel = React.memo(function SelectedPanel({ node, outgoing,
           </div>
         );
       })()}
-      {outgoing.length > 0 && <ConnList title={`→ Outgoing (${outgoing.length})`} items={outgoing} accent="#7F77DD"/>}
-      {incoming.length > 0 && <ConnList title={`← Incoming (${incoming.length})`} items={incoming} accent="#1D9E75"/>}
+      {incoming.length > 0 && <ConnList title={`→ Incoming (${incoming.length})`} items={incoming} accent="#1D9E75" onNodeSelect={onNodeSelect}/>}
+      {outgoing.length > 0 && <ConnList title={`← Outgoing (${outgoing.length})`} items={outgoing} accent="#7F77DD" onNodeSelect={onNodeSelect}/>}
     </div>
   );
 });
 
-function ConnList({ title, items, accent }: {
+function ConnList({ title, items, accent, onNodeSelect }: {
   title: string;
   items: { e: EdgeData; n: NodeData }[];
   accent: string;
+  onNodeSelect: (id: string) => void;
 }) {
+  const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{ fontWeight: 600, fontSize: 13, color: '#94A3B8', marginBottom: 6,
         textTransform: 'uppercase', letterSpacing: '0.05em' }}>{title}</div>
       {items.map(({ e, n }) => (
-        <div key={e.id} style={{ marginBottom: 5, padding: '7px 10px',
-          background: '#F8FAFC', borderRadius: 6, borderLeft: `3px solid ${accent}` }}>
+        <div key={e.id}
+          onClick={() => onNodeSelect(n.id)}
+          onMouseEnter={() => setHoveredId(e.id)}
+          onMouseLeave={() => setHoveredId(null)}
+          style={{ marginBottom: 5, padding: '7px 10px', cursor: 'pointer',
+          background: hoveredId === e.id ? `${accent}12` : '#F8FAFC',
+          borderRadius: 6, borderLeft: `3px solid ${accent}`,
+          transition: 'background 0.12s' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
             <span style={{ fontWeight: 600, color: '#1E293B', fontSize: 14, flex: 1 }}>{n.num}. {n.title}</span>
             {(() => { const s = IMPORTANCE_STYLES[IMPORTANCE_KEY[e.importance]]; return (

@@ -26,7 +26,23 @@ export default function App() {
   } = useCanvasInteraction();
 
   const [selectedId,    setSelectedId]    = useState<string | null>(null);
+  const [navHistory,    setNavHistory]    = useState<string[]>([]);
   const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
+
+  const navigateToNode = React.useCallback((id: string) => {
+    setNavHistory(h => selectedId ? [...h, selectedId] : h);
+    setSelectedId(id);
+    setSelectedPhase(null);
+  }, [selectedId]);
+
+  const navigateBack = React.useCallback(() => {
+    setNavHistory(h => {
+      const prev = h[h.length - 1];
+      if (prev !== undefined) setSelectedId(prev);
+      else setSelectedId(null);
+      return h.slice(0, -1);
+    });
+  }, []);
   const [showSwimlanes, setShowSwimlanes] = useState(true);
   const [showGrid,      setShowGrid]      = useState(true);
   const [showLegend, setShowLegend] = useState(() => window.innerWidth > 600);
@@ -128,12 +144,12 @@ export default function App() {
       const { id, x, y } = pendingSelectRef.current;
       const dx = Math.abs(e.clientX - x);
       const dy = Math.abs(e.clientY - y);
-      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) setSelectedId(id);
+      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) { setSelectedId(id); setNavHistory([]); }
       pendingSelectRef.current = null;
     } else if (panStartPos.current) {
       const dx = Math.abs(e.clientX - panStartPos.current.x);
       const dy = Math.abs(e.clientY - panStartPos.current.y);
-      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) setSelectedId(null);
+      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) { setSelectedId(null); setNavHistory([]); }
       panStartPos.current = null;
     }
     handleMouseUp();
@@ -406,7 +422,7 @@ export default function App() {
             activeEdgeTypes={activeEdgeTypes}
             onToggleEdgeType={handleToggleEdgeType}
           />
-          {selectedNode && !selectedPhase && <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)}/>}
+          {selectedNode && !selectedPhase && <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)} onNodeSelect={navigateToNode} onBack={navHistory.length > 0 ? navigateBack : undefined}/>}
           {selectedPhase && <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>}
         </div>}
       </div>

@@ -306,7 +306,7 @@ export const EDGES: EdgeData[] = [
   { id: 'e110', from: 'n20', to: 'n14', type: 'drives', label: 'System interaction patterns mandate design decisions', importance: 3 },
 
   // ── Value Stream Map (n31) ────────────────────────────────────────────────
-  { id: 'e87', from: 'n02', to: 'n31', type: 'base_for', label: 'Capabilities enable value stream execution', importance: 3 },
+  { id: 'e87', from: 'n31', to: 'n02', type: 'base_for', label: 'Value streams surface the capabilities required for delivery', importance: 3 },
   { id: 'e88', from: 'n31', to: 'n26', type: 'aligns', label: 'Value stream activities align with service blueprint stages', importance: 2 },
   { id: 'e89', from: 'n31', to: 'n16', type: 'base_for', label: 'Value flow delineates bounded context boundaries', importance: 3 },
   { id: 'e91', from: 'n23', to: 'n31', type: 'aligns', label: 'OKRs establish performance targets for value streams', importance: 2 },
