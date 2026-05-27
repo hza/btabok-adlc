@@ -430,6 +430,8 @@ export default function App() {
             activeEdgeTypes={activeEdgeTypes}
             onToggleEdgeType={handleToggleEdgeType}
             onToggleAllEdgeTypes={handleToggleAllEdgeTypes}
+            cardImportanceLevel={cardImportanceLevel}
+            onCardImportanceLevelChange={setCardImportanceLevel}
           />
           {selectedNode && !selectedPhase && <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)} onNodeSelect={navigateToNode} onBack={navHistory.length > 0 ? navigateBack : undefined}/>}
           {selectedPhase && <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>}

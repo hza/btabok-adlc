@@ -234,16 +234,22 @@ export const PhasePanel = React.memo(function PhasePanel({ phase, onClose }: Pha
 
 // ─── LegendPanel ──────────────────────────────────────────────────────────────
 
+const IMPORTANCE_LEVEL_MAP: Record<string, 1 | 2 | 3> = { ultra: 3, extra: 2, high: 1 };
+
 export const LegendPanel = React.memo(function LegendPanel({
   style,
   activeEdgeTypes,
   onToggleEdgeType,
   onToggleAllEdgeTypes,
+  cardImportanceLevel,
+  onCardImportanceLevelChange,
 }: {
   style?: React.CSSProperties;
   activeEdgeTypes?: Set<EdgeType>;
   onToggleEdgeType?: (type: EdgeType) => void;
   onToggleAllEdgeTypes?: (show: boolean) => void;
+  cardImportanceLevel?: 1 | 2 | 3;
+  onCardImportanceLevelChange?: (level: 1 | 2 | 3) => void;
 }) {
   return (
     <div style={style}>
@@ -339,6 +345,42 @@ export const LegendPanel = React.memo(function LegendPanel({
 
           <Hr/>
 
+          <SectionLabel>Importance levels</SectionLabel>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <tbody>
+              {(Object.entries(IMPORTANCE_STYLES) as [string, { label: string; color: string; bg: string; rationale: string }][]).map(([key, s]) => {
+                const level = IMPORTANCE_LEVEL_MAP[key];
+                const active = !cardImportanceLevel || cardImportanceLevel <= level;
+                return (
+                  <tr key={key}>
+                    <td style={{ paddingBottom: 8, paddingRight: 8, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
+                      <span
+                        onClick={() => onCardImportanceLevelChange?.(level)}
+                        title="Click to filter by this importance level"
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 3,
+                          background: active ? s.bg : '#F1F5F9', borderRadius: 20,
+                          padding: '2px 7px', fontSize: 10,
+                          color: active ? s.color : '#94A3B8', fontWeight: 600,
+                          cursor: onCardImportanceLevelChange ? 'pointer' : undefined,
+                          opacity: active ? 1 : 0.5,
+                          outline: cardImportanceLevel === level ? `2px solid ${s.color}` : undefined,
+                          transition: 'opacity 0.15s, background 0.15s, color 0.15s',
+                          userSelect: 'none',
+                        }}
+                      >★ {s.label}</span>
+                    </td>
+                    <td style={{ paddingBottom: 8, color: active ? '#475569' : '#94A3B8', fontSize: 12, lineHeight: 1.5, verticalAlign: 'top', transition: 'color 0.15s' }}>
+                      {s.rationale}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <Hr/>
+
       <SectionLabel>Badge types</SectionLabel>
           {BADGE_TYPES.map(({ badge, color, description }) => (
             <div key={badge} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
@@ -364,30 +406,6 @@ export const LegendPanel = React.memo(function LegendPanel({
               </div>
             );
           })}
-
-          <Hr/>
-
-          <SectionLabel>Importance levels</SectionLabel>
-          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-            <tbody>
-              {(Object.entries(IMPORTANCE_STYLES) as [string, { label: string; color: string; bg: string; rationale: string }][]).map(([key, s]) => (
-                <tr key={key}>
-                  <td style={{ paddingBottom: 8, paddingRight: 8, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 3,
-                      background: s.bg, borderRadius: 20,
-                      padding: '2px 7px', fontSize: 10, color: s.color, fontWeight: 600,
-                    }}>★ {s.label}</span>
-                  </td>
-                  <td style={{ paddingBottom: 8, color: '#475569', fontSize: 12, lineHeight: 1.5, verticalAlign: 'top' }}>
-                    {s.rationale}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <Hr/>
 
           <div style={{ marginTop: 12, background: '#F8FAFC', borderRadius: 8, padding: '10px 12px',
             fontSize: 12, color: '#94A3B8', lineHeight: 1.7 }}>
