@@ -119,15 +119,6 @@ const TopBar = React.memo(function TopBar({
           </svg>
         </IconBtn>
         <Divider/>
-        <IconBtn onClick={onToggleImportantEdgesOnly} title={showImportantEdgesOnly ? 'Show all edges' : 'Show only important edges (importance 3)'}
-          style={{ color: showImportantEdgesOnly ? '#7F77DD' : '#94A3B8' }}>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.5"/>
-            <line x1="9" y1="4.5" x2="9" y2="10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            <circle cx="9" cy="13.5" r="1.2" fill="currentColor"/>
-          </svg>
-        </IconBtn>
-        <Divider/>
         <IconBtn onClick={onDownload} title="Download as SVG">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <line x1="9" y1="2" x2="9" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
