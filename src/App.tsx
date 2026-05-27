@@ -60,13 +60,16 @@ export default function App() {
     setActiveEdgeTypes(prev => {
       const next = new Set(prev);
       if (next.has(type)) {
-        if (next.size === 1) return prev; // keep at least one
         next.delete(type);
       } else {
         next.add(type);
       }
       return next;
     });
+  }, []);
+
+  const handleToggleAllEdgeTypes = useCallback((show: boolean) => {
+    setActiveEdgeTypes(show ? new Set(EDGE_TYPES) : new Set());
   }, []);
   const [saved,       setSaved]       = useState(false);
 
@@ -426,6 +429,7 @@ export default function App() {
             style={{ display: selectedPhase || selectedNode ? 'none' : undefined }}
             activeEdgeTypes={activeEdgeTypes}
             onToggleEdgeType={handleToggleEdgeType}
+            onToggleAllEdgeTypes={handleToggleAllEdgeTypes}
           />
           {selectedNode && !selectedPhase && <SelectedPanel node={selectedNode} outgoing={outgoing} incoming={incoming} onPhaseClick={ph => setSelectedPhase(ph)} onNodeSelect={navigateToNode} onBack={navHistory.length > 0 ? navigateBack : undefined}/>}
           {selectedPhase && <PhasePanel phase={selectedPhase} onClose={() => setSelectedPhase(null)}/>}
